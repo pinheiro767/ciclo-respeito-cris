@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>O Ciclo de Respeito da Cris</title>
     <style>
-        /* ESTILOS GERAIS E ANIMAÇÕES */
         body {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -47,7 +46,6 @@
             padding-bottom: 20px;
         }
         
-        /* INDICADORES (HUD) */
         #indicators {
             position: fixed;
             top: 20px;
@@ -79,7 +77,6 @@
         .knowledge { color: #45b7d1; font-weight: bold; }
         .inventory { color: #f9d342; font-weight: bold; }
 
-        /* CENÁRIO E OBJETOS INTERATIVOS */
         #scenario-container {
             width: 95%;
             max-width: 1200px;
@@ -118,7 +115,6 @@
             font-weight: bold;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             animation: pulse 2s infinite;
-            top: 40%; /* Ajuste o top para que os objetos não fiquem muito baixos */
         }
         
         .interactive-object:hover {
@@ -131,7 +127,6 @@
             50% { box-shadow: 0 5px 15px rgba(78, 205, 196, 0.6); }
         }
 
-        /* PERSONAGEM CRIS E EXPRESSÃO */
         .cris-character {
             position: absolute;
             bottom: 5%;
@@ -167,7 +162,6 @@
             filter: hue-rotate(20deg) drop-shadow(0 4px 8px rgba(255,0,0,0.3));
         }
 
-        /* PAINEL DE HISTÓRIA E OPÇÕES (Layout Corrigido) */
         #story-panel {
             width: 95%;
             max-width: 1200px;
@@ -211,7 +205,29 @@
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
-            justify-content: center; /* Centraliza os botões */
+            justify-content: center;
+        }
+        
+        .popup-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 1;
+            transition: all 0.3s ease;
+            border: 2px solid #4ecdc4;
+            color: #2c3e50;
+        }
+        
+        .popup-message.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
         
         .choice-btn {
@@ -235,8 +251,22 @@
             background: linear-gradient(135deg, #764ba2, #667eea);
         }
         
-        /* PROGRESSO E NOTIFICAÇÕES (MANTIDO) */
+        .choice-btn:active {
+            transform: translateY(-1px);
+        }
         
+        .choice-btn.positive {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+        
+        .choice-btn.negative {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        }
+        
+        .choice-btn.neutral {
+            background: linear-gradient(135deg, #f9d342, #f39c12);
+        }
+
         #progress-bar {
             position: fixed;
             top: 0;
@@ -252,6 +282,37 @@
             background: linear-gradient(90deg, #4ecdc4, #44a08d);
             width: 0%;
             transition: width 0.5s ease;
+        }
+
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border: 2px solid;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        
+        .notification.positive {
+            border-color: #4ecdc4;
+            color: #2c3e50;
+        }
+        
+        .notification.negative {
+            border-color: #ff6b6b;
+            color: #2c3e50;
         }
 
         #mute-button {
@@ -274,32 +335,68 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-
-        /* Partículas flutuantes e Popups (mantidos) */
-        .popup-message {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);
-            padding: 20px 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            z-index: 1000; opacity: 1; transition: all 0.3s ease; border: 2px solid #4ecdc4;
-            color: #2c3e50;
+        
+        #mute-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
         }
         
-        .popup-message.hidden { opacity: 0; pointer-events: none; }
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
         
-        .floating-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .particle {
-            position: absolute; width: 4px; height: 4px; background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%; animation: float 6s infinite ease-in-out;
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
         }
         
-        @keyframes float { 0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10px) rotate(360deg); opacity: 0; } }
-        /* Media Query (mantido) */
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10px) rotate(360deg); opacity: 0; }
+        }
+
         @media (max-width: 768px) {
-            #indicators { position: relative; top: 10px; left: 10px; width: calc(100% - 40px); margin-bottom: 20px; }
-            .choice-btn { min-width: 150px; font-size: 14px; padding: 12px 20px; }
-            #story-panel { padding: 20px; }
-            #story-text { font-size: 16px; }
-            #mute-button { bottom: 15px; right: 15px; width: 45px; height: 45px; font-size: 1.3em; }
+            #indicators {
+                position: relative;
+                top: 10px;
+                left: 10px;
+                width: calc(100% - 40px);
+                margin-bottom: 20px;
+            }
+            
+            .choice-btn {
+                min-width: 150px;
+                font-size: 14px;
+                padding: 12px 20px;
+            }
+            
+            #story-panel {
+                padding: 20px;
+            }
+            
+            #story-text {
+                font-size: 16px;
+            }
+            
+            #mute-button {
+                bottom: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.3em;
+            }
         }
     </style>
 </head>
@@ -329,42 +426,45 @@
             </div>
         </div>
 
+        <button id="mute-button" onclick="toggleMute()">🔇</button>
+    </div>
+    
+    <div id="popup-message" class="popup-message hidden"></div>
+
+    
+    <audio id="background-music" loop muted volume="0.3">
+        <source src="audio/bgm.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-click" muted>
+        <source src="audio/dice_roll.ogg" type="audio/ogg">
+    </audio>
+    <audio id="sfx-success" muted>
+        <source src="audio/coin.wav" type="audio/wav">
+    </audio>
+    <audio id="sfx-fail" muted>
+        <source src="audio/error.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-walk" muted>
+        <source src="audio/move.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-win" muted>
+        <source src="audio/win.wav" type="audio/wav">
+    </audio>
+
         <div id="story-panel">
             <div class="scenario-card">
                 <span id="scenario-icon">🌟</span>
                 <h2 id="module-title">O Ciclo de Respeito da Cris</h2>
                 <p id="scenario-text">Clique no botão "Iniciar Jogo" para começar.</p>
-                <div id="choices-container" style="display:flex;">
+                <div id="choices-container" style="display:block;"> 
                     <button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>
                 </div>
             </div>
         </div>
-        
-        <button id="mute-button" onclick="toggleMute()">🔇</button>
-    </div> <div id="popup-message" class="popup-message hidden"></div>
-
-    
-    <audio id="background-music" loop volume="0.3">
-        <source src="audio/bgm.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="sfx-click">
-        <source src="audio/dice_roll.ogg" type="audio/ogg">
-    </audio>
-    <audio id="sfx-success">
-        <source src="audio/coin.wav" type="audio/wav">
-    </audio>
-    <audio id="sfx-fail">
-        <source src="audio/error.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="sfx-walk">
-        <source src="audio/move.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="sfx-win">
-        <source src="audio/win.wav" type="audio/wav">
-    </audio>
+    </div>
 
     <script>
-        // ESTADO DO JOGO E INVENTÁRIO
+        // ESTADO DO JOGO E INVENTÁRIO (MANTIDO)
         let gameState = {
             ms: 100, mcs: 50, pc: 0,
             inventory: { absorventes: 40, agua: true, calcinhasLimpa: true },
@@ -372,7 +472,7 @@
             totalScenarios: 10
         };
 
-        // Referências aos elementos de áudio e mute
+        // Referências aos elementos de áudio
         const bgMusic = document.getElementById('background-music');
         const sfxClick = document.getElementById('sfx-click');
         const sfxSuccess = document.getElementById('sfx-success');
@@ -380,12 +480,13 @@
         const sfxWalk = document.getElementById('sfx-walk');
         const sfxWin = document.getElementById('sfx-win'); 
         const muteButton = document.getElementById('mute-button');
-        let isMuted = true; // Começa mudo por padrão (Autoplay policy)
+        let isMuted = true;
 
         // --- DADOS DOS CENÁRIOS (MANTIDO) ---
         const scenarios = [
             // C0: INÍCIO (Inacessível diretamente)
             {},
+
             // MÓDULO 1: O ALERTA (Ação 1: Ir ao Banheiro)
             { 
                 icon: "⏰", title: "MÓDULO 1: O Alerta", 
@@ -397,6 +498,7 @@
                     ]
                 }]
             },
+
             // MÓDULO 1: Ação 2: Higiene (Opções)
             { 
                 icon: "🚿", title: "Ação 2: Higiene", 
@@ -411,6 +513,7 @@
                     ]},
                 ]
             },
+
             // MÓDULO 1: Ação 3: Troca (Opções)
             { 
                 icon: "🗑️", title: "Ação 3: Troca", 
@@ -425,6 +528,7 @@
                     ]},
                 ]
             },
+
             // MÓDULO 2: NOITE SAUDÁVEL (Ação 1: O Autocuidado)
             { 
                 icon: "🌙", title: "MÓDULO 2: Noite Saudável", 
@@ -439,6 +543,7 @@
                     ]},
                 ]
             },
+
             // MÓDULO 2: Ação 2: Roupa Íntima
             { 
                 icon: "🩲", title: "Ação 2: Roupa Íntima", 
@@ -456,6 +561,7 @@
                     ]},
                 ]
             },
+
             // MÓDULO 3: CONSCIENTIZAÇÃO E APOIO (Ação 1: Ajudar Ana)
             { 
                 icon: "🫂", title: "MÓDULO 3: Conscientização e Apoio", 
@@ -463,11 +569,12 @@
                 background: "linear-gradient(45deg, #4ecdc4, #556270)",
                 interactiveObjects: [
                     { text: "Ana 😟", top: "40%", left: "70%", choices: [
-                        { text: "✅ Oferecer absorvente e orientação (UBS).", stats: [0, 20, 10], next: 7, popup: "✅ MCS +20, PC +10. (Incentiva o auxílio mútuo e o acesso a orientações.)", inventoryChange: { absorventes: -1 }, sfx: 'success' }
-                        
+                        { text: "✅ Oferecer absorvente e orientação (UBS).", stats: [0, 20, 10], next: 7, popup: "✅ MCS +20, PC +10. (Incentiva o auxílio mútuo e o acesso a orientações.)", inventoryChange: { absorventes: -1 }, sfx: 'success' },
+                        { text: "❌ Dizer que é 'normal' e sugerir papel.", stats: [0, -10, 0], next: 7, popup: "❌ MCS -10. (Não é o ideal para a saúde).", sfx: 'fail' }
                     ]},
                 ]
             },
+
             // MÓDULO 3: Ação 2: Diálogo Educativo
             { 
                 icon: "💬", title: "Ação 2: Diálogo Educativo", 
@@ -482,6 +589,7 @@
                     ]},
                 ]
             },
+
             // MÓDULO 4: ACESSO AO DIREITO (Ação 1: Geração da Autorização)
             { 
                 icon: "🏥", title: "MÓDULO 4: Acesso ao Direito", 
@@ -496,6 +604,7 @@
                     ]},
                 ]
             },
+            
             // MÓDULO 4: Ação 2: Retirada
             { 
                 icon: "🎁", title: "Ação 2: Retirada (Estoque Renovado)", 
@@ -510,6 +619,7 @@
                     ]},
                 ]
             },
+
             // C10: FIM DO JOGO
             { 
                 icon: "🎉", title: "FIM: Ciclo Completo!", 
@@ -523,49 +633,66 @@
             }
         ];
 
-        // --- FUNÇÕES DE ÁUDIO ---
-        function playSound(soundName) {
-            if (isMuted) return;
-            
-            const sounds = { 'click': sfxClick, 'success': sfxSuccess, 'fail': sfxFail, 'walk': sfxWalk, 'win': sfxWin };
-            const sound = sounds[soundName];
-            
-            if (sound) {
-                sound.currentTime = 0;
-                sound.play().catch(e => console.log('SFX play failed:', e));
+        // Floating particles animation
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
             }
         }
 
+        // Audio functions
+        function playSound(soundName) {
+            if (isMuted) return;
+            
+            const sounds = {
+                'click': sfxClick,
+                'success': sfxSuccess,
+                'fail': sfxFail,
+                'walk': sfxWalk,
+                'win': sfxWin
+            };
+            
+            const sound = sounds[soundName];
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log('Audio play failed:', e));
+            }
+        }
+
+        // Mute functionality
         function toggleMute() {
             isMuted = !isMuted;
-            
+            bgMusic.muted = isMuted;
             sfxClick.muted = isMuted;
             sfxSuccess.muted = isMuted;
             sfxFail.muted = isMuted;
             sfxWalk.muted = isMuted;
             sfxWin.muted = isMuted; 
+            muteButton.textContent = isMuted ? '🔇' : '🔊';
 
             if (!isMuted) {
                 playMusic();
             } else {
                 stopMusic();
             }
-
-            muteButton.textContent = isMuted ? '🔇' : '🔊';
         }
 
         function playMusic() {
             if (isMuted) return;
-            bgMusic.loop = true;
-            bgMusic.play().catch(e => console.log("Background music play failed:", e));
+            bgMusic.play().catch(e => console.log("Autoplay music failed:", e));
         }
 
         function stopMusic() {
             bgMusic.pause();
             bgMusic.currentTime = 0;
         }
-
-        // --- FUNÇÕES DE LÓGICA DO JOGO ---
 
         function updateStats(msChange = 0, mcsChange = 0, pcChange = 0, inventoryChange = {}) {
             gameState.ms = Math.max(0, Math.min(100, gameState.ms + msChange));
@@ -581,13 +708,13 @@
             updateDisplay();
             
             if (gameState.ms <= 0) { 
-                setCrisExpression('sad'); 
+                setCharacterEmotion('sad'); 
                 showPopup("🚨 MS ZERADO! Risco de infecção grave. Tente novamente!", 5000); 
                 playSound('fail'); 
                 setTimeout(() => resetGame(), 5000); 
             } 
             else if (gameState.mcs <= 0) { 
-                setCrisExpression('sad'); 
+                setCharacterEmotion('sad'); 
                 showPopup("😔 MCS ZERADO! Sofrer bullying/estigma afeta Cris. Tente novamente!", 5000); 
                 playSound('fail'); 
                 setTimeout(() => resetGame(), 5000); 
@@ -600,6 +727,7 @@
             document.getElementById('pc').textContent = Math.max(0, Math.min(100, gameState.pc));
             document.getElementById('absorventes').textContent = gameState.inventory.absorventes;
             
+            // Update progress bar
             const progress = (gameState.currentScenario / gameState.totalScenarios) * 100;
             document.getElementById('progress-fill').style.width = progress + '%';
         }
@@ -611,15 +739,24 @@
             setTimeout(() => popup.classList.add('hidden'), duration);
         }
 
+        function setCharacterEmotion(emotion) {
+            const cris = document.getElementById('cris-character');
+            cris.className = `cris-character ${emotion}`;
+        }
+
+        // NOVO: Função para alterar a expressão de Cris
         function setCrisExpression(emotion) {
             const crisChar = document.getElementById('cris-character');
+            // Remove todas as classes de emoção
             crisChar.classList.remove('happy', 'sad');
 
+            // Adiciona a classe de emoção correta
             if (emotion === 'happy') {
                 crisChar.classList.add('happy');
             } else if (emotion === 'sad') {
                 crisChar.classList.add('sad');
             }
+            // Efeito de pulso para a expressão
             crisChar.style.transform = 'scale(1.3)';
             setTimeout(() => crisChar.style.transform = 'scale(1.2)', 300);
         }
@@ -627,7 +764,7 @@
         function createInteractionButtons(interactiveObject) {
             const container = document.getElementById('choices-container');
             container.innerHTML = '';
-            container.style.display = 'flex'; 
+            container.style.display = 'flex'; // Usando flex para centralizar
 
             interactiveObject.choices.forEach(choice => {
                 const button = document.createElement('button');
@@ -636,17 +773,18 @@
                 button.addEventListener('click', () => {
                     playSound('click');
                     
+                    // NOVO: Definir expressão baseada no resultado da escolha
                     const isSuccess = choice.stats[0] > 0 || choice.stats[1] > 0 || choice.stats[2] > 0;
                     const hasNegative = choice.stats[0] < 0 || choice.stats[1] < 0 || choice.stats[2] < 0;
 
                     if (choice.next === 'end' || choice.sfx === 'win') {
-                        setCrisExpression('happy');
+                        setCrisExpression('happy'); // Vitória
                     } else if (choice.sfx === 'success' || isSuccess) {
-                        setCrisExpression('happy');
+                        setCrisExpression('happy'); // Sucesso
                     } else if (choice.sfx === 'fail' || hasNegative) {
-                        setCrisExpression('sad');
+                        setCrisExpression('sad'); // Falha/Penalidade
                     } else {
-                        setCrisExpression('normal');
+                        setCrisExpression('normal'); // Neutro
                     }
 
                     if (choice.popup) showPopup(choice.popup);
@@ -676,13 +814,13 @@
                 objectDiv.style.opacity = 1;
 
                 objectDiv.addEventListener('click', () => {
-                    playSound('click'); 
+                    playSound('click'); // Som de clique no objeto interativo
                     document.getElementById('module-title').textContent = scenario.title;
                     createInteractionButtons(obj);
                     const crisChar = document.getElementById('cris-character');
                     crisChar.style.left = obj.left;
                     crisChar.style.animation = 'walk 0.8s ease-in-out 1';
-                    playSound('walk'); 
+                    playSound('walk'); // Som de passos
                     setTimeout(() => crisChar.style.animation = 'walk 1.5s ease-in-out infinite', 800);
                 });
                 area.appendChild(objectDiv);
@@ -699,11 +837,12 @@
             gameState.currentScenario = index;
             const crisChar = document.getElementById('cris-character');
             
+            // NOVO: Volta para a expressão neutra ao mover
             setCrisExpression('normal'); 
 
             crisChar.style.animation = 'walk 0.5s ease-in-out infinite';
             crisChar.style.left = '50%'; 
-            playSound('walk'); 
+            playSound('walk'); // Som de passos ao se mover
             
             document.getElementById('scenario-bg').style.background = scenario.background;
             document.getElementById('scenario-icon').textContent = scenario.icon;
@@ -717,19 +856,59 @@
             }, 1500);
         }
 
-        function loadScenario(index) {
-            if (index === 1) { 
-                // Ação de Desmutar/Iniciar Música no primeiro clique (User Gesture)
-                isMuted = false;
-                muteButton.textContent = '🔊'; 
-                
-                moveCris(1);
-                playMusic(); // Tenta iniciar a música
-            } else {
-                moveCris(index);
+        function makeChoice(choice) {
+            playSound('click');
+            
+            // Apply stat changes
+            if (choice.stats) {
+                gameState.ms += choice.stats[0] || 0;
+                gameState.mcs += choice.stats[1] || 0;
+                gameState.pc += choice.stats[2] || 0;
             }
+            
+            // Apply inventory changes
+            if (choice.inventoryChange) {
+                Object.keys(choice.inventoryChange).forEach(item => {
+                    if (gameState.inventory[item] !== undefined) {
+                        gameState.inventory[item] += choice.inventoryChange[item];
+                    }
+                });
+            }
+            
+            // Play sound effect
+            if (choice.sfx) {
+                playSound(choice.sfx);
+            }
+            
+            // Show popup message
+            if (choice.popup) {
+                showPopup(choice.popup);
+            }
+            
+            // Set character emotion based on choice result
+            if (choice.stats && choice.stats[0] > 0) {
+                setCharacterEmotion('happy');
+            } else if (choice.stats && choice.stats[0] < 0) {
+                setCharacterEmotion('sad');
+            } else {
+                setCharacterEmotion('neutral');
+            }
+            
+            // Update stats display
+            updateStats();
+            
+            // Move to next scenario
+            setTimeout(() => {
+                if (choice.next === 'end' || choice.next >= scenarios.length) {
+                    endGame();
+                } else if (choice.next && choice.next <= scenarios.length - 1) {
+                    loadScenario(choice.next);
+                } else {
+                    endGame();
+                }
+            }, 2500);
         }
-        
+
         function resetGame() {
             stopMusic(); 
             gameState = { 
@@ -738,7 +917,7 @@
                 currentScenario: 0, totalScenarios: 10 
             };
             updateDisplay();
-            setCrisExpression('normal');
+            setCrisExpression('normal'); // Volta para expressão neutra
             document.getElementById('scenario-icon').textContent = '🌟';
             document.getElementById('module-title').textContent = 'O Ciclo de Respeito da Cris';
             document.getElementById('scenario-text').innerHTML = 'Clique no botão "Iniciar Jogo" para começar.';
@@ -746,15 +925,21 @@
             document.getElementById('choices-container').innerHTML = `<button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>`;
             document.getElementById('interaction-area').innerHTML = '';
             document.getElementById('cris-character').style.left = '50%';
-            
-            isMuted = true;
-            muteButton.textContent = '🔇';
+        }
+
+        function loadScenario(index) {
+            if (index === 1) { 
+                moveCris(1);
+                playMusic(); 
+            } else {
+                moveCris(index);
+            }
         }
 
         function showVictory() {
-            playSound('win'); 
-            stopMusic(); 
-            setCrisExpression('happy'); 
+            playSound('win'); // Som de vitória
+            stopMusic(); // Para a música de fundo
+            setCrisExpression('happy'); // Cris feliz na vitória
 
             const card = document.querySelector('.scenario-card');
             card.style.transform = 'translateZ(50px) scale(1.1)';
@@ -772,20 +957,26 @@
             document.getElementById('interaction-area').innerHTML = '';
         }
 
-        // Floating particles (Mantido)
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 15; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                container.appendChild(particle);
-            }
+        function endGame() {
+            showVictory();
         }
 
+        function showStats() {
+            const statsMessage = `
+                Estatísticas Finais da Cris:
+                ❤️ Saúde Menstrual (MS): ${gameState.ms}/100
+                🤝 Habilidades Sociais (MCS): ${gameState.mcs}/100
+                🧠 Conhecimento (PC): ${gameState.pc}/100
+                🎒 Absorventes Restantes: ${gameState.inventory.absorventes}
+                
+                Pontuação Total: ${gameState.ms + gameState.mcs + gameState.pc}
+            `;
+            
+            document.getElementById('scenario-text').textContent = statsMessage;
+            document.getElementById('choices-container').innerHTML = `
+                <button class="choice-btn positive" onclick="location.reload()">🔄 Jogar Novamente</button>
+            `;
+        }
 
         // Initialize game
         document.addEventListener('DOMContentLoaded', () => {
@@ -794,5 +985,5 @@
             muteButton.textContent = isMuted ? '🔇' : '🔊';
         });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98d97dcdf48ff1db',t:'MTc2MDMwMjQ1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
