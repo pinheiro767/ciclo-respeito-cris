@@ -5,69 +5,932 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>O Ciclo de Respeito da Cris</title>
     <style>
-        /* CSS mantido do último passo (Caminhada e Interação) */
+        /* [SEÇÃO DE ESTILOS CSS COMPLETA] - Mantida e não repetida aqui por brevidade */
+        /* ... (Mantenha todo o seu CSS original aqui) ... */
+
         body {
-            box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c); background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite; min-height: 100vh; overflow-x: hidden; perspective: 1000px;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100%;
+            overflow-x: hidden;
+            perspective: 1000px;
         }
         html { height: 100%; }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes walk {
+            0%, 100% { transform: translateX(-50%) translateY(0px); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
         #game-container {
-            position: relative; min-height: 100vh; display: flex; flex-direction: column; transform-style: preserve-3d;
-            align-items: center; justify-content: flex-end; padding-bottom: 20px;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transform-style: preserve-3d;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 20px;
         }
+        
         #indicators {
-            position: fixed; top: 20px; left: 20px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 20px; color: white; z-index: 100;
-            transform: translateZ(50px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            z-index: 100;
+            transform: translateZ(50px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
         }
-        .stat-item { margin: 8px 0; padding: 8px 12px; background: rgba(255,255,255,0.2); border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; }
-        .health { color: #ff6b6b; font-weight: bold; } .social { color: #4ecdc4; font-weight: bold; } .knowledge { color: #45b7d1; font-weight: bold; } .inventory { color: #f9d342; font-weight: bold; }
+        
+        .stat-item {
+            margin: 8px 0;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .health { color: #ff6b6b; font-weight: bold; }
+        .social { color: #4ecdc4; font-weight: bold; }
+        .knowledge { color: #45b7d1; font-weight: bold; }
+        .inventory { color: #f9d342; font-weight: bold; }
 
         #scenario-container {
-            width: 95%; max-width: 1200px; height: 50vh; display: flex; align-items: flex-end; justify-content: center;
-            position: relative; transform-style: preserve-3d; z-index: 5;
+            width: 95%;
+            max-width: 1200px;
+            height: 50vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+            transform-style: preserve-3d;
+            z-index: 5;
         }
+        
         .scenario-background {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-size: cover; background-position: center bottom; border-radius: 25px; opacity: 0.3; transition: all 1s ease; z-index: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center bottom;
+            border-radius: 25px;
+            opacity: 0.3;
+            transition: all 1s ease;
+            z-index: 1;
+        }
+
+        .interactive-object {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #4ecdc4;
+            border-radius: 15px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 15;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        .interactive-object:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 5px 15px rgba(78, 205, 196, 0.6); }
         }
 
         .cris-character {
-            position: absolute; bottom: 5%; left: 50%; z-index: 10;
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            z-index: 10;
             transition: left 1.5s ease-in-out, transform 1.5s ease-in-out;
-            animation: walk 1.5s ease-in-out infinite; 
-        }
-        .cris-body { width: 80px; height: 120px; position: relative; margin: 0 auto; transform: scale(1.2); }
-        .cris-head { width: 40px; height: 40px; background: #fdbcb4; border-radius: 50%; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border: 3px solid #8b4513; }
-        .cris-hair { width: 45px; height: 25px; background: linear-gradient(135deg, #8b4513, #a0522d); border-radius: 50% 50% 20% 20%; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
-        
-        /* NOVO: Olhos para Cris */
-        .cris-eyes {
-            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 8px;
-        }
-        .cris-eye {
-            width: 4px; height: 4px; background: #333; border-radius: 50%;
+            animation: walk 1.5s ease-in-out infinite;
+            transform: translateX(-50%);
         }
 
-        /* NOVO: Expressão de Cris (Boca) */
-        .cris-face { 
-            position: absolute; top: 25px; left: 50%; transform: translateX(-50%);
-            font-size: 10px; /* Reduz o tamanho do texto do emoji */
-            transition: transform 0.3s;
+        .cris-face {
+            font-size: 4em;
+            transition: transform 0.3s ease;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
         }
-        .cris-face::after {
-            content: "😐"; /* Emoji neutro (Padrão) */
+        
+        .cris-character.happy .cris-face {
+            content: "👧";
+            transform: scale(1.2);
+            animation: bounce 0.6s ease-in-out;
+        }
+        
+        .cris-character.sad .cris-face {
+            content: "👧";
+            transform: scale(0.9);
+            filter: grayscale(0.3) drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+        }
+        
+        .cris-character.angry .cris-face {
+            content: "👧";
+            transform: scale(1.1);
+            filter: hue-rotate(20deg) drop-shadow(0 4px 8px rgba(255,0,0,0.3));
+        }
+
+        #story-panel {
+            width: 95%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform: translateZ(20px);
+            z-index: 20;
+        }
+        
+        .scenario-card {
+            text-align: center;
+        }
+        
+        #scenario-icon {
+            font-size: 3em;
             display: block;
+            margin-bottom: 15px;
         }
-        /* Expressão Feliz (Sucesso) */
-        .cris-character.happy .cris-face::after {
-            content: "😊"; /* Emoji feliz */
-            transform: scale(1.5);
+        
+        #module-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2em;
+            font-weight: bold;
         }
-        /* Expressão Triste/Preocupada (Falha) */
+        
+        #scenario-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            min-height: 60px;
+        }
+        
+        #choices-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .popup-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 1;
+            transition: all 0.3s ease;
+            border: 2px solid #4ecdc4;
+            color: #2c3e50;
+        }
+        
+        .popup-message.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .choice-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 2px solid transparent;
+            min-width: 200px;
+        }
+        
+        .choice-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+        
+        .choice-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .choice-btn.positive {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+        
+        .choice-btn.negative {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        }
+        
+        .choice-btn.neutral {
+            background: linear-gradient(135deg, #f9d342, #f39c12);
+        }
+
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+        }
+        
+        #progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border: 2px solid;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        
+        .notification.positive {
+            border-color: #4ecdc4;
+            color: #2c3e50;
+        }
+        
+        .notification.negative {
+            border-color: #ff6b6b;
+            color: #2c3e50;
+        }
+
+        #mute-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        #mute-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10px) rotate(360deg); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            #indicators {
+                position: relative;
+                top: 10px;
+                left: 10px;
+                width: calc(100% - 40px);
+                margin-bottom: 20px;
+            }
+            
+            .choice-btn {
+                min-width: 150px;
+                font-size: 14px;
+                padding: 12px 20px;
+            }
+            
+            #story-panel {
+                padding: 20px;
+            }
+            
+            #story-text {
+                font-size: 16px;
+            }
+            
+            #mute-button {
+                bottom: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="progress-bar">
+        <div id="progress-fill"></div>
+    </div>
+
+    <div id="game-container">
+        <div class="floating-particles" id="particles"></div>
+        
+        <header id="indicators">
+            <h3>Estado da Cris</h3>
+            <div class="stat-item"><span id="stat-ms" class="health">❤️ Saúde (MS): <span id="ms">100</span></span></div>
+            <div class="stat-item"><span id="stat-mcs" class="social">🤝 Social (MCS): <span id="mcs">50</span></span></div>
+            <div class="stat-item"><span id="stat-pc" class="knowledge">🧠 Conhecimento (PC): <span id="pc">0</span></span></div>
+            <div class="stat-item"><span id="stat-inventory" class="inventory">🎒 Absorventes: <span id="absorventes">40</span></span></div>
+        </header>
+
+        <div id="scenario-container">
+            <div class="scenario-background" id="scenario-bg"></div>
+            
+            <div id="interaction-area"></div>
+
+            <div class="cris-character" id="cris-character">
+                <div class="cris-face">👧</div>
+            </div>
+        </div>
+
+        <button id="mute-button" onclick="toggleMute()">🔇</button>
+    </div>
+    
+    <div id="popup-message" class="popup-message hidden"></div>
+
+    
+    <audio id="background-music" loop volume="0.3">
+        <source src="audio/bgm.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-click">
+        <source src="audio/dice_roll.ogg" type="audio/ogg">
+    </audio>
+    <audio id="sfx-success">
+        <source src="audio/coin.wav" type="audio/wav">
+    </audio>
+    <audio id="sfx-fail">
+        <source src="audio/error.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-walk">
+        <source src="audio/move.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-win">
+        <source src="audio/win.wav" type="audio/wav">
+    </audio>
+
+        <div id="story-panel">
+            <div class="scenario-card">
+                <span id="scenario-icon">🌟</span>
+                <h2 id="module-title">O Ciclo de Respeito da Cris</h2>
+                <p id="scenario-text">Clique no botão "Iniciar Jogo" para começar.</p>
+                <div id="choices-container" style="display:flex;"> <button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ESTADO DO JOGO E INVENTÁRIO (MANTIDO)
+        let gameState = {
+            ms: 100, mcs: 50, pc: 0,
+            inventory: { absorventes: 40, agua: true, calcinhasLimpa: true },
+            currentScenario: 0,
+            totalScenarios: 10
+        };
+
+        // Referências aos elementos de áudio
+        const bgMusic = document.getElementById('background-music');
+        const sfxClick = document.getElementById('sfx-click');
+        const sfxSuccess = document.getElementById('sfx-success');
+        const sfxFail = document.getElementById('sfx-fail');
+        const sfxWalk = document.getElementById('sfx-walk');
+        const sfxWin = document.getElementById('sfx-win'); 
+        const muteButton = document.getElementById('mute-button');
+        // NOVO: isMuted inicia como true e é desativado no primeiro clique
+        let isMuted = true; 
+
+        // --- DADOS DOS CENÁRIOS (MANTIDO) ---
+        const scenarios = [
+            // C0: INÍCIO (Inacessível diretamente)
+            {},
+
+            // MÓDULO 1: O ALERTA (Ação 1: Ir ao Banheiro)
+            { 
+                icon: "⏰", title: "MÓDULO 1: O Alerta", 
+                text: "CRIS (PENSAMENTO): Sinto um fluxo intenso e desconforto. Já passou quase 6h. Preciso agir rápido! Clique no ícone de " + "🚻" + " (Banheiro) para continuar.", 
+                background: "linear-gradient(180deg, #ffc72c, #ff9a8d)",
+                interactiveObjects: [{
+                    text: "🚻 Banheiro", top: "50%", left: "70%", choices: [
+                        { text: "Acessar o Banheiro", stats: [0, 0, 0], next: 2 }
+                    ]
+                }]
+            },
+
+            // MÓDULO 1: Ação 2: Higiene (Opções)
+            { 
+                icon: "🚿", title: "Ação 2: Higiene", 
+                text: "CRIS: Qual a melhor forma de me limpar agora? **Escolha a opção clicando no ícone correspondente.**", 
+                background: "linear-gradient(180deg, #a4e4d5, #c0e0e8)",
+                interactiveObjects: [
+                    { text: "✅ Água e Sabão", top: "40%", left: "40%", choices: [
+                        { text: "Higienizar com água limpa e sabonete neutro.", stats: [10, 0, 0], next: 3, popup: "✅ MS +10. (Melhor prevenção de infecções).", sfx: 'success' }
+                    ]},
+                    { text: "❌ Papel Higiênico", top: "40%", left: "60%", choices: [
+                        { text: "Limpar apenas com papel higiênico.", stats: [-10, 0, 0], next: 3, popup: "❌ MS -10. (Risco de infecção urinária.)", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 1: Ação 3: Troca (Opções)
+            { 
+                icon: "🗑️", title: "Ação 3: Troca", 
+                text: "CRIS: Devo usar meu absorvente novo e jogar o antigo no vaso? **Escolha a forma correta de trocar.**", 
+                background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
+                interactiveObjects: [
+                    { text: "✅ Descarte no Lixo", top: "50%", left: "30%", choices: [
+                        { text: "Trocar e descartar no lixo.", stats: [10, 0, 5], next: 4, popup: "✅ MS +10, PC +5. (Prevenção e higiene básica).", inventoryChange: { absorventes: -1 }, sfx: 'success' }
+                    ]},
+                    { text: "❌ Spray Perfumado", top: "50%", left: "70%", choices: [
+                        { text: "Usar spray íntimo perfumado.", stats: [-15, 0, 0], next: 4, popup: "❌ MS -15. Pop-up: 'O uso de perfume íntimo não é indicado, evita agentes químicos!'", inventoryChange: { absorventes: -1 }, sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 2: NOITE SAUDÁVEL (Ação 1: O Autocuidado)
+            { 
+                icon: "🌙", title: "MÓDULO 2: Noite Saudável", 
+                text: "CRIS: Estou com cólica. O que devo fazer para melhorar meu bem-estar antes de dormir? **Clique na escolha que prioriza o autocuidado.**", 
+                background: "linear-gradient(180deg, #2c3e50, #3498db)",
+                interactiveObjects: [
+                    { text: "✅ Hidratação/Nutrição", top: "45%", left: "35%", choices: [
+                        { text: "Beber água e comer algo nutritivo.", stats: [5, 0, 5], next: 5, popup: "✅ MS +5, PC +5. (Autocuidado: hidratação e boa alimentação).", sfx: 'success' }
+                    ]},
+                    { text: "❌ Refrigerante/Deitar", top: "45%", left: "65%", choices: [
+                        { text: "Tomar refrigerante e deitar.", stats: [-5, 0, 0], next: 5, popup: "❌ MS -5. (Ignorando o autocuidado).", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 2: Ação 2: Roupa Íntima
+            { 
+                icon: "🩲", title: "Ação 2: Roupa Íntima", 
+                text: "CRIS: Qual a melhor opção para minha saúde íntima durante o sono? **Escolha a melhor opção para aeração.**", 
+                background: "linear-gradient(135deg, #fceabb, #f8b500)",
+                interactiveObjects: [
+                    { text: "✅ Sem Calcinha", top: "50%", left: "20%", choices: [
+                        { text: "Dormir SEM calcinha.", stats: [20, 0, 0], next: 6, popup: "✅ MS +20. (A melhor opção para evitar umidade/calor e candidíase).", sfx: 'success' }
+                    ]},
+                    { text: "✅ Calcinha de Algodão", top: "50%", left: "50%", choices: [
+                        { text: "Dormir com calcinha de algodão limpa.", stats: [10, 0, 0], next: 6, popup: "✅ MS +10. (Boa opção, conforme o guia).", sfx: 'success' }
+                    ]},
+                    { text: "❌ Calcinha Sintética Usada", top: "50%", left: "80%", choices: [
+                        { text: "Usar calcinha de tecido sintético usada.", stats: [-15, 0, 0], next: 6, popup: "❌ MS -15. (Risco de candidíase.)", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 3: CONSCIENTIZAÇÃO E APOIO (Ação 1: Ajudar Ana)
+            { 
+                icon: "🫂", title: "MÓDULO 3: Conscientização e Apoio", 
+                text: "Ana, uma colega, manchou a calça e está constrangida. Ela não tem absorvente. **Clique em Ana para ajudá-la.**", 
+                background: "linear-gradient(45deg, #4ecdc4, #556270)",
+                interactiveObjects: [
+                    { text: "Ana 😟", top: "40%", left: "70%", choices: [
+                        { text: "✅ Oferecer absorvente e orientação (UBS).", stats: [0, 20, 10], next: 7, popup: "✅ MCS +20, PC +10. (Incentiva o auxílio mútuo e o acesso a orientações.)", inventoryChange: { absorventes: -1 }, sfx: 'success' },
+                        { text: "❌ Dizer que é 'normal' e sugerir papel.", stats: [0, -10, 0], next: 7, popup: "❌ MCS -10. (Não é o ideal para a saúde).", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 3: Ação 2: Diálogo Educativo
+            { 
+                icon: "💬", title: "Ação 2: Diálogo Educativo", 
+                text: "CRIS: Ana, você sabia que a menstruação não previne gravidez? **Clique na resposta certa para educar.**", 
+                background: "linear-gradient(45deg, #a8e6cf, #dcedc8)",
+                interactiveObjects: [
+                    { text: "✅ Sim, Camisinha!", top: "50%", left: "35%", choices: [
+                        { text: "Responder sobre DST/camisinha.", stats: [0, 0, 15], next: 8, popup: "✅ PC +15. (Fato essencial de saúde).", sfx: 'success' }
+                    ]},
+                    { text: "❌ É complicado.", top: "50%", left: "65%", choices: [
+                        { text: "Dizer que é complicado.", stats: [0, 0, 0], next: 8, popup: "❌ PC 0. (Perde a oportunidade de educar).", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 4: ACESSO AO DIREITO (Ação 1: Geração da Autorização)
+            { 
+                icon: "🏥", title: "MÓDULO 4: Acesso ao Direito", 
+                text: "Na farmácia, o atendente pede sua Autorização do Programa Dignidade Menstrual. **Clique na opção de acesso.**", 
+                background: "linear-gradient(180deg, #93a5cf, #e4efe9)",
+                interactiveObjects: [
+                    { text: "✅ App Meu SUS Digital", top: "40%", left: "35%", choices: [
+                        { text: "Abrir o app Meu SUS Digital.", stats: [5, 0, 10], next: 9, popup: "✅ PC +10. (Acesso correto ao benefício).", sfx: 'success' }
+                    ]},
+                    { text: "❌ Sem Documento", top: "40%", left: "65%", choices: [
+                        { text: "Dizer que não tem o documento.", stats: [-5, -5, 0], next: 9, popup: "Cenário de Apoio: Vá à UBS mais próxima para imprimir o documento!", sfx: 'fail' }
+                    ]},
+                ]
+            },
+            
+            // MÓDULO 4: Ação 2: Retirada
+            { 
+                icon: "🎁", title: "Ação 2: Retirada (Estoque Renovado)", 
+                text: "O atendente pergunta qual tipo prefere. **Qual sua resposta sobre a marca?**", 
+                background: "linear-gradient(45deg, #f6d365, #fda085)",
+                interactiveObjects: [
+                    { text: "✅ Aceitar o Disponível", top: "50%", left: "30%", choices: [
+                        { text: "Aceitar o que estiver disponível (desde que seja externo).", stats: [5, 0, 10], next: 10, popup: "✅ PC +10. (Conhecimento sobre a logística de distribuição).", inventoryChange: { absorventes: 40 }, sfx: 'success' }
+                    ]},
+                    { text: "❌ Insistir em Marca", top: "50%", left: "70%", choices: [
+                        { text: "Insistir em uma marca específica.", stats: [-5, -5, 0], next: 10, popup: "❌ Você não conseguiu retirar todos os absorventes hoje. Perde tempo.", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // C10: FIM DO JOGO
+            { 
+                icon: "🎉", title: "FIM: Ciclo Completo!", 
+                text: "Parabéns! Você completou a jornada de Cris.", 
+                background: "linear-gradient(45deg, #ff9a9e, #fecfef)", 
+                interactiveObjects: [{
+                    text: "🏆 Ver Resultados", top: "50%", left: "50%", choices: [{
+                        text: "Ver Resultados", stats: [0, 0, 0], next: 'end', sfx: 'win'
+                    }]
+                }] 
+            }
+        ];
+
+        // Floating particles animation
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Audio functions
+        function playSound(soundName) {
+            // NOVO: Verifica se o áudio está mudo globalmente no JS (controlado pelo toggleMute)
+            if (isMuted) return;
+            
+            const sounds = {
+                'click': sfxClick,
+                'success': sfxSuccess,
+                'fail': sfxFail,
+                'walk': sfxWalk,
+                'win': sfxWin
+            };
+            
+            const sound = sounds[soundName];
+            if (sound) {
+                sound.currentTime = 0;
+                // Os elementos de áudio SFX não têm a propriedade 'muted' no HTML, são controlados pelo JS
+                sound.play().catch(e => console.log('SFX play failed:', e));
+            }
+        }
+
+        // Mute functionality
+        function toggleMute() {
+            isMuted = !isMuted;
+            
+            // NOVO: Garante que todos os SFX obedeçam ao estado `isMuted`
+            sfxClick.muted = isMuted;
+            sfxSuccess.muted = isMuted;
+            sfxFail.muted = isMuted;
+            sfxWalk.muted = isMuted;
+            sfxWin.muted = isMuted; 
+
+            // NOVO: Controla a música de fundo
+            if (!isMuted) {
+                playMusic();
+            } else {
+                stopMusic();
+            }
+
+            muteButton.textContent = isMuted ? '🔇' : '🔊';
+        }
+
+        function playMusic() {
+            if (isMuted) return;
+            // Tenta dar play na música de fundo
+            bgMusic.play().catch(e => console.log("Background music play failed:", e));
+        }
+
+        function stopMusic() {
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+        }
+
+        function updateStats(msChange = 0, mcsChange = 0, pcChange = 0, inventoryChange = {}) {
+            gameState.ms = Math.max(0, Math.min(100, gameState.ms + msChange));
+            gameState.mcs = Math.max(0, Math.min(100, gameState.mcs + mcsChange));
+            gameState.pc = Math.max(0, Math.min(100, gameState.pc + pcChange));
+            
+            for (const item in inventoryChange) {
+                if (gameState.inventory.hasOwnProperty(item)) {
+                    gameState.inventory[item] += inventoryChange[item];
+                }
+            }
+            
+            updateDisplay();
+            
+            if (gameState.ms <= 0) { 
+                setCharacterEmotion('sad'); 
+                showPopup("🚨 MS ZERADO! Risco de infecção grave. Tente novamente!", 5000); 
+                playSound('fail'); 
+                setTimeout(() => resetGame(), 5000); 
+            } 
+            else if (gameState.mcs <= 0) { 
+                setCharacterEmotion('sad'); 
+                showPopup("😔 MCS ZERADO! Sofrer bullying/estigma afeta Cris. Tente novamente!", 5000); 
+                playSound('fail'); 
+                setTimeout(() => resetGame(), 5000); 
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('ms').textContent = Math.max(0, Math.min(100, gameState.ms));
+            document.getElementById('mcs').textContent = Math.max(0, Math.min(100, gameState.mcs));
+            document.getElementById('pc').textContent = Math.max(0, Math.min(100, gameState.pc));
+            document.getElementById('absorventes').textContent = gameState.inventory.absorventes;
+            
+            // Update progress bar
+            const progress = (gameState.currentScenario / gameState.totalScenarios) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        function showPopup(message, duration = 4000) {
+            const popup = document.getElementById('popup-message');
+            popup.innerHTML = message;
+            popup.classList.remove('hidden');
+            setTimeout(() => popup.classList.add('hidden'), duration);
+        }
+
+        function setCharacterEmotion(emotion) {
+            const cris = document.getElementById('cris-character');
+            cris.className = `cris-character ${emotion}`;
+        }
+
+        // Função de Expressão de Cris (Mantida da última alteração)
+        function setCrisExpression(emotion) {
+            const crisChar = document.getElementById('cris-character');
+            crisChar.classList.remove('happy', 'sad');
+
+            if (emotion === 'happy') {
+                crisChar.classList.add('happy');
+            } else if (emotion === 'sad') {
+                crisChar.classList.add('sad');
+            }
+            crisChar.style.transform = 'scale(1.3)';
+            setTimeout(() => crisChar.style.transform = 'scale(1.2)', 300);
+        }
+
+        function createInteractionButtons(interactiveObject) {
+            const container = document.getElementById('choices-container');
+            container.innerHTML = '';
+            container.style.display = 'flex'; 
+
+            interactiveObject.choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.className = 'choice-btn';
+                button.innerHTML = choice.text;
+                button.addEventListener('click', () => {
+                    playSound('click');
+                    
+                    const isSuccess = choice.stats[0] > 0 || choice.stats[1] > 0 || choice.stats[2] > 0;
+                    const hasNegative = choice.stats[0] < 0 || choice.stats[1] < 0 || choice.stats[2] < 0;
+
+                    if (choice.next === 'end' || choice.sfx === 'win') {
+                        setCrisExpression('happy');
+                    } else if (choice.sfx === 'success' || isSuccess) {
+                        setCrisExpression('happy');
+                    } else if (choice.sfx === 'fail' || hasNegative) {
+                        setCrisExpression('sad');
+                    } else {
+                        setCrisExpression('normal');
+                    }
+
+                    if (choice.popup) showPopup(choice.popup);
+                    const inventoryChange = choice.inventoryChange || {};
+                    updateStats(choice.stats[0], choice.stats[1], choice.stats[2], inventoryChange);
+
+                    container.style.display = 'none'; 
+                    moveCris(choice.next);
+                });
+                container.appendChild(button);
+            });
+            document.getElementById('scenario-text').innerHTML = interactiveObject.text;
+        }
+
+        function loadInteractiveObjects(scenario) {
+            const area = document.getElementById('interaction-area');
+            area.innerHTML = '';
+
+            if (!scenario.interactiveObjects) return;
+
+            scenario.interactiveObjects.forEach(obj => {
+                const objectDiv = document.createElement('div');
+                objectDiv.className = 'interactive-object';
+                objectDiv.innerHTML = obj.text;
+                objectDiv.style.top = obj.top;
+                objectDiv.style.left = obj.left;
+                objectDiv.style.opacity = 1;
+
+                objectDiv.addEventListener('click', () => {
+                    playSound('click'); 
+                    document.getElementById('module-title').textContent = scenario.title;
+                    createInteractionButtons(obj);
+                    const crisChar = document.getElementById('cris-character');
+                    crisChar.style.left = obj.left;
+                    crisChar.style.animation = 'walk 0.8s ease-in-out 1';
+                    playSound('walk'); 
+                    setTimeout(() => crisChar.style.animation = 'walk 1.5s ease-in-out infinite', 800);
+                });
+                area.appendChild(objectDiv);
+            });
+        }
+
+        function moveCris(index) {
+            if (index === 'end') { showVictory(); return; }
+            if (index === 'restart') { resetGame(); return; }
+            
+            const scenario = scenarios[index];
+            if (!scenario) return;
+
+            gameState.currentScenario = index;
+            const crisChar = document.getElementById('cris-character');
+            
+            setCrisExpression('normal'); 
+
+            crisChar.style.animation = 'walk 0.5s ease-in-out infinite';
+            crisChar.style.left = '50%'; 
+            playSound('walk'); 
+            
+            document.getElementById('scenario-bg').style.background = scenario.background;
+            document.getElementById('scenario-icon').textContent = scenario.icon;
+            document.getElementById('module-title').textContent = scenario.title;
+            document.getElementById('scenario-text').textContent = scenario.text;
+            document.getElementById('choices-container').style.display = 'none';
+            
+            setTimeout(() => {
+                loadInteractiveObjects(scenario);
+                updateDisplay();
+            }, 1500);
+        }
+
+        function loadScenario(index) {
+            // NOVO: Se for a primeira cena (index 1), assume que o usuário clicou e desmuta/inicia a música
+            if (index === 1) { 
+                // A ação de clique no botão 'Iniciar Jogo' garante o User Gesture.
+                // Agora, removemos o estado 'mudo' inicial (isMuted) e tentamos reproduzir.
+                isMuted = false;
+                muteButton.textContent = '🔊'; // Atualiza o ícone
+                moveCris(1);
+                playMusic(); // Tenta iniciar a música
+            } else {
+                moveCris(index);
+            }
+        }
+        
+        function resetGame() {
+            stopMusic(); 
+            gameState = { 
+                ms: 100, mcs: 50, pc: 0, 
+                inventory: { absorventes: 40, agua: true, calcinhasLimpa: true }, 
+                currentScenario: 0, totalScenarios: 10 
+            };
+            updateDisplay();
+            setCrisExpression('normal');
+            document.getElementById('scenario-icon').textContent = '🌟';
+            document.getElementById('module-title').textContent = 'O Ciclo de Respeito da Cris';
+            document.getElementById('scenario-text').innerHTML = 'Clique no botão "Iniciar Jogo" para começar.';
+            document.getElementById('choices-container').style.display = 'flex';
+            document.getElementById('choices-container').innerHTML = `<button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>`;
+            document.getElementById('interaction-area').innerHTML = '';
+            document.getElementById('cris-character').style.left = '50%';
+            
+            // Garante que a música não tente iniciar automaticamente no reset, mas fique pronta
+            isMuted = true;
+            muteButton.textContent = '🔇';
+        }
+
+        function showVictory() {
+            playSound('win'); 
+            stopMusic(); 
+            setCrisExpression('happy'); 
+
+            const card = document.querySelector('.scenario-card');
+            card.style.transform = 'translateZ(50px) scale(1.1)';
+            document.getElementById('scenario-icon').textContent = '🏆';
+            document.getElementById('module-title').textContent = 'Jornada Completa!';
+            let message = "Parabéns! Cris completou sua jornada de autocuidado. ";
+            if (gameState.ms >= 80 && gameState.pc >= 50) { message += "Ela dominou os cuidados com a saúde íntima! 🌟"; } 
+            else if (gameState.ms >= 60) { message += "Ela aprendeu muito sobre autocuidado! 💝"; } 
+            else { message += "Ela ainda tem muito a aprender sobre saúde! 📚"; }
+            message += `<br> Saúde final: **${gameState.ms}**, Conhecimento: **${gameState.pc}**`;
+            document.getElementById('scenario-text').innerHTML = message;
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.style.display = 'flex';
+            choicesContainer.innerHTML = `<button class="choice-btn" onclick="resetGame()">🔄 Nova Jornada</button>`;
+            document.getElementById('interaction-area').innerHTML = '';
+        }
+
+        function endGame() {
+            showVictory();
+        }
+
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            updateDisplay();
+            // Inicia o botão de mute no estado "mutado" (🔇)
+            muteButton.textContent = isMuted ? '🔇' : '🔊';
+        });
+    </script>
+</body>
+</html>
         .cris-character.sad .cris-face::after {
             content: "😟"; /* Emoji preocupado */
             transform: scale(1.5);
@@ -658,3 +1521,4 @@
     </script>
 </body>
 </html>
+
