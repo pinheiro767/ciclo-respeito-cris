@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Ciclo de Respeito da Cris</title>
+    <style>
+        /* CSS mantido do último passo (Caminhada e Interação) */
+        body {
+            box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c); background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite; min-height: 100vh; overflow-x: hidden; perspective: 1000px;
+        }
+        html { height: 100%; }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        #game-container {
+            position: relative; min-height: 100vh; display: flex; flex-direction: column; transform-style: preserve-3d;
+            align-items: center; justify-content: flex-end; padding-bottom: 20px;
+        }
+        #indicators {
+            position: fixed; top: 20px; left: 20px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 20px; color: white; z-index: 100;
+            transform: translateZ(50px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;
+        }
+        .stat-item { margin: 8px 0; padding: 8px 12px; background: rgba(255,255,255,0.2); border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; }
+        .health { color: #ff6b6b; font-weight: bold; } .social { color: #4ecdc4; font-weight: bold; } .knowledge { color: #45b7d1; font-weight: bold; } .inventory { color: #f9d342; font-weight: bold; }
+
+        #scenario-container {
+            width: 95%; max-width: 1200px; height: 50vh; display: flex; align-items: flex-end; justify-content: center;
+            position: relative; transform-style: preserve-3d; z-index: 5;
+        }
+        .scenario-background {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover; background-position: center bottom; border-radius: 25px; opacity: 0.3; transition: all 1s ease; z-index: 1;
+        }
+
+        .cris-character {
+            position: absolute; bottom: 5%; left: 50%; z-index: 10;
+            transition: left 1.5s ease-in-out, transform 1.5s ease-in-out;
+            animation: walk 1.5s ease-in-out infinite; 
+        }
+        .cris-body { width: 80px; height: 120px; position: relative; margin: 0 auto; transform: scale(1.2); }
+        .cris-head { width: 40px; height: 40px; background: #fdbcb4; border-radius: 50%; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border: 3px solid #8b4513; }
+        .cris-hair { width: 45px; height: 25px; background: linear-gradient(135deg, #8b4513, #a0522d); border-radius: 50% 50% 20% 20%; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+        .cris-face { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 15px; }
+        .cris-body-torso { width: 40px; height: 45px; background: #e76f51; border-radius: 8px; position: absolute; top: 35px; left: 50%; transform: translateX(-50%); border-bottom: 5px solid #2a9d8f; }
+        
+        .cris-arms { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); width: 60px; }
+        .cris-arm { width: 25px; height: 5px; background: #fdbcb4; border-radius: 2px; position: absolute; animation: armSwing 0.8s ease-in-out infinite; }
+        .cris-arm.left { left: -30px; transform-origin: top right; }
+        .cris-arm.right { right: -30px; transform-origin: top left; animation-delay: 0.4s; }
+        
+        .cris-legs { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
+        .cris-leg-part { width: 15px; height: 40px; background: #264653; border-radius: 4px; position: relative; animation: legWalk 0.8s ease-in-out infinite; transform-origin: top center; }
+        .cris-leg-part.left { animation-delay: 0s; }
+        .cris-leg-part.right { animation-delay: 0.4s; }
+        .cris-foot { width: 18px; height: 8px; background: #2a9d8f; border-radius: 2px 2px 4px 4px; position: absolute; bottom: -8px; left: -2px; }
+
+        @keyframes walk { 0%, 100% { transform: translateY(0px) scale(1.2); } 50% { transform: translateY(-3px) scale(1.2); } }
+        @keyframes armSwing { 0%, 100% { transform: rotate(20deg); } 50% { transform: rotate(-20deg); } }
+        @keyframes legWalk { 0%, 100% { transform: rotate(10deg); } 50% { transform: rotate(-10deg); } }
+
+        #interaction-area {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; pointer-events: none;
+        }
+        .interactive-object {
+            position: absolute; font-size: 3em; cursor: pointer; padding: 10px; border-radius: 15px;
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, opacity 0.3s; pointer-events: auto; animation: objectFloat 2s ease-in-out infinite;
+            opacity: 0; 
+        }
+        .interactive-object:hover { transform: scale(1.1) translateY(-5px); }
+        @keyframes objectFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        .scenario-card {
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 25px;
+            padding: 20px; max-width: 600px; width: 80%; text-align: center; color: white;
+            transform: translateZ(30px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: absolute; top: 10%; z-index: 5; transition: all 0.6s;
+        }
+        #choices-container { display: none; }
+        #scenario-text { font-size: 1.1em; line-height: 1.5; margin-bottom: 0; }
+        
+        .popup-message { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) translateZ(100px);
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); padding: 30px; border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); border: 2px solid rgba(255, 255, 255, 0.5); z-index: 1000; max-width: 400px; text-align: center;
+            color: #333; font-size: 1.2em; animation: popupAppear 0.5s ease;
+        }
+        @keyframes popupAppear { 0% { transform: translate(-50%, -50%) translateZ(100px) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) translateZ(100px) scale(1); opacity: 1; } }
+        .hidden { display: none; }
+
+        #mute-button {
+            position: fixed; bottom: 20px; right: 20px; z-index: 100;
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
+            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5em; cursor: pointer; color: white; transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        #mute-button:hover {
+            transform: scale(1.1); background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles" id="particles"></div>
+    <div id="game-container">
+        
+        <header id="indicators">
+            <h3>Estado da Cris</h3>
+            <div class="stat-item"><span id="stat-ms" class="health">❤️ Saúde (MS): 100</span></div>
+            <div class="stat-item"><span id="stat-mcs" class="social">🤝 Social (MCS): 50</span></div>
+            <div class="stat-item"><span id="stat-pc" class="knowledge">🧠 Conhecimento (PC): 0</span></div>
+            <div class="stat-item"><span id="stat-inventory" class="inventory">🎒 Absorventes: 40</span></div>
+        </header>
+        
+        <div id="scenario-container">
+            <div class="scenario-background" id="scenario-bg"></div>
+            
+            <div id="interaction-area"></div>
+
+            <div class="cris-character" id="cris-character">
+                <div class="cris-body">
+                    <div class="cris-hair"></div>
+                    <div class="cris-head">
+                        <div class="cris-face"></div> 
+                    </div>
+                    <div class="cris-body-torso"></div>
+                    <div class="cris-arms">
+                        <div class="cris-arm left"></div>
+                        <div class="cris-arm right"></div>
+                    </div>
+                    <div class="cris-legs">
+                        <div class="cris-leg-part left"></div>
+                        <div class="cris-leg-part right"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="scenario-card">
+                <span id="scenario-icon">🌟</span>
+                <h2 id="module-title">O Ciclo de Respeito da Cris</h2>
+                <p id="scenario-text">Clique no botão "Iniciar Jogo" para começar.</p>
+                <div id="choices-container" style="display:block;"> 
+                    <button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="progress-bar"><div id="progress-fill"></div></div>
+
+        <button id="mute-button" onclick="toggleMute()">🔇</button>
+    </div>
+    
+    <div id="popup-message" class="popup-message hidden"></div>
+
+    
+    <audio id="background-music" loop muted volume="0.3">
+        <source src="audio/bgm.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-click" muted>
+        <source src="audio/dice_roll.ogg" type="audio/ogg">
+    </audio>
+    <audio id="sfx-success" muted>
+        <source src="audio/coin.wav" type="audio/wav">
+    </audio>
+    <audio id="sfx-fail" muted>
+        <source src="audio/error.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-walk" muted>
+        <source src="audio/move.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-win" muted>
+        <source src="audio/win.wav" type="audio/wav">
+    </audio>
+
+
+    <script>
+        // ESTADO DO JOGO E INVENTÁRIO (MANTIDO)
+        let gameState = {
+            ms: 100, mcs: 50, pc: 0,
+            inventory: { absorventes: 40, agua: true, calcinhasLimpa: true },
+            currentScenario: 0,
+            totalScenarios: 10
+        };
+
+        // Referências aos elementos de áudio
+        const bgMusic = document.getElementById('background-music');
+        const sfxClick = document.getElementById('sfx-click');
+        const sfxSuccess = document.getElementById('sfx-success');
+        const sfxFail = document.getElementById('sfx-fail');
+        const sfxWalk = document.getElementById('sfx-walk');
+        const sfxWin = document.getElementById('sfx-win'); // NOVO
+        const muteButton = document.getElementById('mute-button');
+        let isMuted = true;
+
+        // --- DADOS DOS CENÁRIOS (MANTIDO) ---
+        const scenarios = [
+            // C0: INÍCIO (Inacessível diretamente)
+            {},
+
+            // MÓDULO 1: O ALERTA (Ação 1: Ir ao Banheiro)
+            { 
+                icon: "⏰", title: "MÓDULO 1: O Alerta", 
+                text: "CRIS (PENSAMENTO): Sinto um fluxo intenso e desconforto. Já passou quase 6h. Preciso agir rápido! Clique no ícone de " + "🚻" + " (Banheiro) para continuar.", 
+                background: "linear-gradient(180deg, #ffc72c, #ff9a8d)",
+                interactiveObjects: [{
+                    text: "🚻 Banheiro", top: "50%", left: "70%", choices: [
+                        { text: "Acessar o Banheiro", stats: [0, 0, 0], next: 2 }
+                    ]
+                }]
+            },
+
+            // MÓDULO 1: Ação 2: Higiene (Opções)
+            { 
+                icon: "🚿", title: "Ação 2: Higiene", 
+                text: "CRIS: Qual a melhor forma de me limpar agora? **Escolha a opção clicando no ícone correspondente.**", 
+                background: "linear-gradient(180deg, #a4e4d5, #c0e0e8)",
+                interactiveObjects: [
+                    { text: "✅ Água e Sabão", top: "40%", left: "40%", choices: [
+                        { text: "Higienizar com água limpa e sabonete neutro.", stats: [10, 0, 0], next: 3, popup: "✅ MS +10. (Melhor prevenção de infecções).", sfx: 'success' }
+                    ]},
+                    { text: "❌ Papel Higiênico", top: "40%", left: "60%", choices: [
+                        { text: "Limpar apenas com papel higiênico.", stats: [-10, 0, 0], next: 3, popup: "❌ MS -10. (Risco de infecção urinária.)", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 1: Ação 3: Troca (Opções)
+            { 
+                icon: "🗑️", title: "Ação 3: Troca", 
+                text: "CRIS: Devo usar meu absorvente novo e jogar o antigo no vaso? **Escolha a forma correta de trocar.**", 
+                background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
+                interactiveObjects: [
+                    { text: "✅ Descarte no Lixo", top: "50%", left: "30%", choices: [
+                        { text: "Trocar e descartar no lixo.", stats: [10, 0, 5], next: 4, popup: "✅ MS +10, PC +5. (Prevenção e higiene básica).", inventoryChange: { absorventes: -1 }, sfx: 'success' }
+                    ]},
+                    { text: "❌ Spray Perfumado", top: "50%", left: "70%", choices: [
+                        { text: "Usar spray íntimo perfumado.", stats: [-15, 0, 0], next: 4, popup: "❌ MS -15. Pop-up: 'O uso de perfume íntimo não é indicado, evita agentes químicos!'", inventoryChange: { absorventes: -1 }, sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 2: NOITE SAUDÁVEL (Ação 1: O Autocuidado)
+            { 
+                icon: "🌙", title: "MÓDULO 2: Noite Saudável", 
+                text: "CRIS: Estou com cólica. O que devo fazer para melhorar meu bem-estar antes de dormir? **Clique na escolha que prioriza o autocuidado.**", 
+                background: "linear-gradient(180deg, #2c3e50, #3498db)",
+                interactiveObjects: [
+                    { text: "✅ Hidratação/Nutrição", top: "45%", left: "35%", choices: [
+                        { text: "Beber água e comer algo nutritivo.", stats: [5, 0, 5], next: 5, popup: "✅ MS +5, PC +5. (Autocuidado: hidratação e boa alimentação).", sfx: 'success' }
+                    ]},
+                    { text: "❌ Refrigerante/Deitar", top: "45%", left: "65%", choices: [
+                        { text: "Tomar refrigerante e deitar.", stats: [-5, 0, 0], next: 5, popup: "❌ MS -5. (Ignorando o autocuidado).", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 2: Ação 2: Roupa Íntima
+            { 
+                icon: "🩲", title: "Ação 2: Roupa Íntima", 
+                text: "CRIS: Qual a melhor opção para minha saúde íntima durante o sono? **Escolha a melhor opção para aeração.**", 
+                background: "linear-gradient(135deg, #fceabb, #f8b500)",
+                interactiveObjects: [
+                    { text: "✅ Sem Calcinha", top: "50%", left: "20%", choices: [
+                        { text: "Dormir SEM calcinha.", stats: [20, 0, 0], next: 6, popup: "✅ MS +20. (A melhor opção para evitar umidade/calor e candidíase).", sfx: 'success' }
+                    ]},
+                    { text: "✅ Calcinha de Algodão", top: "50%", left: "50%", choices: [
+                        { text: "Dormir com calcinha de algodão limpa.", stats: [10, 0, 0], next: 6, popup: "✅ MS +10. (Boa opção, conforme o guia).", sfx: 'success' }
+                    ]},
+                    { text: "❌ Calcinha Sintética Usada", top: "50%", left: "80%", choices: [
+                        { text: "Usar calcinha de tecido sintético usada.", stats: [-15, 0, 0], next: 6, popup: "❌ MS -15. (Risco de candidíase.)", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 3: CONSCIENTIZAÇÃO E APOIO (Ação 1: Ajudar Ana)
+            { 
+                icon: "🫂", title: "MÓDULO 3: Conscientização e Apoio", 
+                text: "Ana, uma colega, manchou a calça e está constrangida. Ela não tem absorvente. **Clique em Ana para ajudá-la.**", 
+                background: "linear-gradient(45deg, #4ecdc4, #556270)",
+                interactiveObjects: [
+                    { text: "Ana 😟", top: "40%", left: "70%", choices: [
+                        { text: "✅ Oferecer absorvente e orientação (UBS).", stats: [0, 20, 10], next: 7, popup: "✅ MCS +20, PC +10. (Incentiva o auxílio mútuo e o acesso a orientações.)", inventoryChange: { absorventes: -1 }, sfx: 'success' },
+                        { text: "❌ Dizer que é 'normal' e sugerir papel.", stats: [0, -10, 0], next: 7, popup: "❌ MCS -10. (Não é o ideal para a saúde).", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 3: Ação 2: Diálogo Educativo
+            { 
+                icon: "💬", title: "Ação 2: Diálogo Educativo", 
+                text: "CRIS: Ana, você sabia que a menstruação não previne gravidez? **Clique na resposta certa para educar.**", 
+                background: "linear-gradient(45deg, #a8e6cf, #dcedc8)",
+                interactiveObjects: [
+                    { text: "✅ Sim, Camisinha!", top: "50%", left: "35%", choices: [
+                        { text: "Responder sobre DST/camisinha.", stats: [0, 0, 15], next: 8, popup: "✅ PC +15. (Fato essencial de saúde).", sfx: 'success' }
+                    ]},
+                    { text: "❌ É complicado.", top: "50%", left: "65%", choices: [
+                        { text: "Dizer que é complicado.", stats: [0, 0, 0], next: 8, popup: "❌ PC 0. (Perde a oportunidade de educar).", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 4: ACESSO AO DIREITO (Ação 1: Geração da Autorização)
+            { 
+                icon: "🏥", title: "MÓDULO 4: Acesso ao Direito", 
+                text: "Na farmácia, o atendente pede sua Autorização do Programa Dignidade Menstrual. **Clique na opção de acesso.**", 
+                background: "linear-gradient(180deg, #93a5cf, #e4efe9)",
+                interactiveObjects: [
+                    { text: "✅ App Meu SUS Digital", top: "40%", left: "35%", choices: [
+                        { text: "Abrir o app Meu SUS Digital.", stats: [5, 0, 10], next: 9, popup: "✅ PC +10. (Acesso correto ao benefício).", sfx: 'success' }
+                    ]},
+                    { text: "❌ Sem Documento", top: "40%", left: "65%", choices: [
+                        { text: "Dizer que não tem o documento.", stats: [-5, -5, 0], next: 9, popup: "Cenário de Apoio: Vá à UBS mais próxima para imprimir o documento!", sfx: 'fail' }
+                    ]},
+                ]
+            },
+            
+            // MÓDULO 4: Ação 2: Retirada
+            { 
+                icon: "🎁", title: "Ação 2: Retirada (Estoque Renovado)", 
+                text: "O atendente pergunta qual tipo prefere. **Qual sua resposta sobre a marca?**", 
+                background: "linear-gradient(45deg, #f6d365, #fda085)",
+                interactiveObjects: [
+                    { text: "✅ Aceitar o Disponível", top: "50%", left: "30%", choices: [
+                        { text: "Aceitar o que estiver disponível (desde que seja externo).", stats: [5, 0, 10], next: 10, popup: "✅ PC +10. (Conhecimento sobre a logística de distribuição).", inventoryChange: { absorventes: 40 }, sfx: 'success' }
+                    ]},
+                    { text: "❌ Insistir em Marca", top: "50%", left: "70%", choices: [
+                        { text: "Insistir em uma marca específica.", stats: [-5, -5, 0], next: 10, popup: "❌ Você não conseguiu retirar todos os absorventes hoje. Perde tempo.", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // C10: FIM DO JOGO
+            { icon: "🎉", title: "FIM: Ciclo Completo!", text: "Parabéns! Você completou a jornada de Cris.", background: "linear-gradient(45deg, #ff9a9e, #fecfef)", interactiveObjects: [{text: "🏆 Ver Resultados", top: "50%", left: "50%", choices: [{text: "Ver Resultados", stats: [0, 0, 0], next: 'end', sfx: 'win'}]}] }
+        ];
+
+        // --- FUNÇÕES DE ÁUDIO ---
+        function playMusic() {
+            if (isMuted) return;
+            bgMusic.play().catch(e => console.log("Autoplay music failed:", e));
+        }
+
+        function stopMusic() {
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+        }
+
+        function playSound(type) {
+            if (isMuted) return;
+            let sound;
+            switch (type) {
+                case 'click': sound = sfxClick; break;
+                case 'success': sound = sfxSuccess; break;
+                case 'fail': sound = sfxFail; break;
+                case 'walk': sound = sfxWalk; break;
+                case 'win': sound = sfxWin; break; // NOVO: Som de vitória
+                default: return;
+            }
+            if (sound) {
+                // Para garantir que o som toque imediatamente, mesmo se já estiver tocando
+                sound.currentTime = 0; 
+                sound.play().catch(e => console.log(`Play sound ${type} failed:`, e));
+            }
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            bgMusic.muted = isMuted;
+            sfxClick.muted = isMuted;
+            sfxSuccess.muted = isMuted;
+            sfxFail.muted = isMuted;
+            sfxWalk.muted = isMuted;
+            sfxWin.muted = isMuted; // Adicionado o mute para o som de vitória
+            muteButton.textContent = isMuted ? '🔇' : '🔊';
+
+            if (!isMuted) {
+                playMusic();
+            } else {
+                stopMusic();
+            }
+        }
+
+        // --- FUNÇÕES DE LÓGICA DO JOGO ---
+        function updateStats(msChange, mcsChange, pcChange, inventoryChange = {}) {
+            gameState.ms = Math.max(0, Math.min(100, gameState.ms + msChange));
+            gameState.mcs = Math.max(0, Math.min(100, gameState.mcs + mcsChange));
+            gameState.pc = Math.max(0, Math.min(100, gameState.pc + pcChange));
+            for (const item in inventoryChange) {
+                if (gameState.inventory.hasOwnProperty(item)) {
+                    gameState.inventory[item] += inventoryChange[item];
+                }
+            }
+            updateDisplay();
+            if (gameState.ms <= 0) { showPopup("🚨 MS ZERADO! Risco de infeção grave. Tente novamente!", 5000); playSound('fail'); setTimeout(() => resetGame(), 5000); } 
+            else if (gameState.mcs <= 0) { showPopup("😔 MCS ZERADO! Sofrer bullying/estigma afeta Cris. Tente novamente!", 5000); playSound('fail'); setTimeout(() => resetGame(), 5000); }
+        }
+
+        function updateDisplay() {
+            document.getElementById('stat-ms').innerHTML = `❤️ Saúde (MS): **${gameState.ms}**`;
+            document.getElementById('stat-mcs').innerHTML = `🤝 Social (MCS): **${gameState.mcs}**`;
+            document.getElementById('stat-pc').innerHTML = `🧠 Conhecimento (PC): **${gameState.pc}**`;
+            document.getElementById('stat-inventory').innerHTML = `🎒 Absorventes: **${gameState.inventory.absorventes}**`;
+            const progress = (gameState.currentScenario / (scenarios.length - 1)) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        function showPopup(message, duration = 4000) {
+            const popup = document.getElementById('popup-message');
+            popup.innerHTML = message;
+            popup.classList.remove('hidden');
+            // Mantém playSound('click') para pop-up simples
+            setTimeout(() => popup.classList.add('hidden'), duration);
+        }
+
+        function createInteractionButtons(interactiveObject) {
+            const container = document.getElementById('choices-container');
+            container.innerHTML = '';
+            container.style.display = 'block';
+
+            interactiveObject.choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.className = 'choice-btn';
+                button.innerHTML = choice.text;
+                button.addEventListener('click', () => {
+                    playSound('click'); // Som de clique no botão de escolha
+                    if (choice.popup) showPopup(choice.popup);
+                    const inventoryChange = choice.inventoryChange || {};
+                    updateStats(choice.stats[0], choice.stats[1], choice.stats[2], inventoryChange);
+
+                    // Toca SFX de sucesso, falha ou vitória se definido na escolha
+                    if (choice.sfx) playSound(choice.sfx);
+
+                    container.style.display = 'none'; 
+                    moveCris(choice.next);
+                });
+                container.appendChild(button);
+            });
+            document.getElementById('scenario-text').innerHTML = interactiveObject.text;
+        }
+
+        function loadInteractiveObjects(scenario) {
+            const area = document.getElementById('interaction-area');
+            area.innerHTML = '';
+
+            if (!scenario.interactiveObjects) return;
+
+            scenario.interactiveObjects.forEach(obj => {
+                const objectDiv = document.createElement('div');
+                objectDiv.className = 'interactive-object';
+                objectDiv.innerHTML = obj.text;
+                objectDiv.style.top = obj.top;
+                objectDiv.style.left = obj.left;
+                objectDiv.style.opacity = 1;
+
+                objectDiv.addEventListener('click', () => {
+                    playSound('click'); // Som de clique no objeto interativo
+                    document.getElementById('module-title').textContent = scenario.title;
+                    createInteractionButtons(obj);
+                    const crisChar = document.getElementById('cris-character');
+                    crisChar.style.left = obj.left;
+                    crisChar.style.animation = 'walk 0.8s ease-in-out 1';
+                    playSound('walk'); // Som de passos
+                    setTimeout(() => crisChar.style.animation = 'walk 1.5s ease-in-out infinite', 800);
+                });
+                area.appendChild(objectDiv);
+            });
+        }
+
+        function moveCris(index) {
+            if (index === 'end') { showVictory(); return; }
+            if (index === 'restart') { resetGame(); return; }
+            
+            const scenario = scenarios[index];
+            if (!scenario) return;
+
+            gameState.currentScenario = index;
+            const crisChar = document.getElementById('cris-character');
+            
+            crisChar.style.animation = 'walk 0.5s ease-in-out infinite';
+            crisChar.style.left = '50%'; 
+            playSound('walk'); // Som de passos ao se mover
+            
+            document.getElementById('scenario-bg').style.background = scenario.background;
+            document.getElementById('scenario-icon').textContent = scenario.icon;
+            document.getElementById('module-title').textContent = scenario.title;
+            document.getElementById('scenario-text').textContent = scenario.text;
+            document.getElementById('choices-container').style.display = 'none';
+            
+            setTimeout(() => {
+                loadInteractiveObjects(scenario);
+                updateDisplay();
+            }, 1500);
+        }
+
+        function loadScenario(index) {
+            if (index === 1) { 
+                moveCris(1);
+                playMusic(); 
+            } else {
+                moveCris(index);
+            }
+        }
+
+        function showVictory() {
+            playSound('win'); // Som de vitória
+            stopMusic(); // Para a música de fundo
+            const card = document.querySelector('.scenario-card');
+            card.style.transform = 'translateZ(50px) scale(1.1)';
+            document.getElementById('scenario-icon').textContent = '🏆';
+            document.getElementById('module-title').textContent = 'Jornada Completa!';
+            let message = "Parabéns! Cris completou sua jornada de autocuidado. ";
+            if (gameState.ms >= 80 && gameState.pc >= 50) { message += "Ela dominou os cuidados com a saúde íntima! 🌟"; } 
+            else if (gameState.ms >= 60) { message += "Ela aprendeu muito sobre autocuidado! 💝"; } 
+            else { message += "Ela ainda tem muito a aprender sobre saúde! 📚"; }
+            message += `<br> Saúde final: **${gameState.ms}**, Conhecimento: **${gameState.pc}**`;
+            document.getElementById('scenario-text').innerHTML = message;
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.style.display = 'block';
+            choicesContainer.innerHTML = `<button class="choice-btn" onclick="resetGame()">🔄 Nova Jornada</button>`;
+            document.getElementById('interaction-area').innerHTML = '';
+        }
+
+        function resetGame() {
+            stopMusic(); 
+            gameState = { 
+                ms: 100, mcs: 50, pc: 0, 
+                inventory: { absorventes: 40, agua: true, calcinhasLimpa: true }, 
+                currentScenario: 0, totalScenarios: 10 
+            };
+            updateDisplay();
+            document.getElementById('scenario-icon').textContent = '🌟';
+            document.getElementById('module-title').textContent = 'O Ciclo de Respeito da Cris';
+            document.getElementById('scenario-text').innerHTML = 'Clique no botão "Iniciar Jogo" para começar.';
+            document.getElementById('choices-container').style.display = 'block';
+            document.getElementById('choices-container').innerHTML = `<button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>`;
+            document.getElementById('interaction-area').innerHTML = '';
+            document.getElementById('cris-character').style.left = '50%';
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            updateDisplay();
+            muteButton.textContent = isMuted ? '🔇' : '🔊';
+        });
+    </script>
+</body>
+</html>
