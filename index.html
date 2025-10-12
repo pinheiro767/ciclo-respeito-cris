@@ -37,12 +37,42 @@
         .cris-character {
             position: absolute; bottom: 5%; left: 50%; z-index: 10;
             transition: left 1.5s ease-in-out, transform 1.5s ease-in-out;
-            animation: walk 1.5s ease-in-out infinite; 
+            animation: walk 1.5s ease-in-out infinite; 
         }
         .cris-body { width: 80px; height: 120px; position: relative; margin: 0 auto; transform: scale(1.2); }
         .cris-head { width: 40px; height: 40px; background: #fdbcb4; border-radius: 50%; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border: 3px solid #8b4513; }
         .cris-hair { width: 45px; height: 25px; background: linear-gradient(135deg, #8b4513, #a0522d); border-radius: 50% 50% 20% 20%; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
-        .cris-face { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 15px; }
+        
+        /* NOVO: Olhos para Cris */
+        .cris-eyes {
+            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 8px;
+        }
+        .cris-eye {
+            width: 4px; height: 4px; background: #333; border-radius: 50%;
+        }
+
+        /* NOVO: Expressão de Cris (Boca) */
+        .cris-face { 
+            position: absolute; top: 25px; left: 50%; transform: translateX(-50%);
+            font-size: 10px; /* Reduz o tamanho do texto do emoji */
+            transition: transform 0.3s;
+        }
+        .cris-face::after {
+            content: "😐"; /* Emoji neutro (Padrão) */
+            display: block;
+        }
+        /* Expressão Feliz (Sucesso) */
+        .cris-character.happy .cris-face::after {
+            content: "😊"; /* Emoji feliz */
+            transform: scale(1.5);
+        }
+        /* Expressão Triste/Preocupada (Falha) */
+        .cris-character.sad .cris-face::after {
+            content: "😟"; /* Emoji preocupado */
+            transform: scale(1.5);
+        }
+        
         .cris-body-torso { width: 40px; height: 45px; background: #e76f51; border-radius: 8px; position: absolute; top: 35px; left: 50%; transform: translateX(-50%); border-bottom: 5px solid #2a9d8f; }
         
         .cris-arms { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); width: 60px; }
@@ -67,7 +97,9 @@
             position: absolute; font-size: 3em; cursor: pointer; padding: 10px; border-radius: 15px;
             background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s, opacity 0.3s; pointer-events: auto; animation: objectFloat 2s ease-in-out infinite;
-            opacity: 0; 
+            opacity: 0; 
+            /* Ajustado para ficar um pouco mais acima */
+            top: 40%; 
         }
         .interactive-object:hover { transform: scale(1.1) translateY(-5px); }
         @keyframes objectFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -79,7 +111,34 @@
             transform: translateZ(30px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             position: absolute; top: 10%; z-index: 5; transition: all 0.6s;
         }
-        #choices-container { display: none; }
+        
+        /* NOVO: Layout das opções com Flexbox e espaçamento */
+        #choices-container {
+            display: none; /* Mantido para JS controlar */
+            margin-top: 20px; /* Mais espaço acima */
+            display: flex; /* Habilita o Flexbox */
+            flex-wrap: wrap; /* Permite que os botões quebrem a linha */
+            justify-content: center; /* Centraliza os botões */
+            gap: 15px; /* Espaçamento entre os botões */
+        }
+        .choice-btn {
+            background: rgba(255, 255, 255, 0.8);
+            color: #4b0082; /* Cor mais vibrante para contraste */
+            border: none;
+            border-radius: 15px;
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 150px; /* Garante que não fiquem muito pequenos */
+        }
+        .choice-btn:hover {
+             background: rgba(255, 255, 255, 1);
+             transform: translateY(-2px);
+        }
+        
         #scenario-text { font-size: 1.1em; line-height: 1.5; margin-bottom: 0; }
         
         .popup-message { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) translateZ(100px);
@@ -124,7 +183,11 @@
                 <div class="cris-body">
                     <div class="cris-hair"></div>
                     <div class="cris-head">
-                        <div class="cris-face"></div> 
+                        <div class="cris-eyes">
+                            <div class="cris-eye"></div>
+                            <div class="cris-eye"></div>
+                        </div>
+                        <div class="cris-face"></div> 
                     </div>
                     <div class="cris-body-torso"></div>
                     <div class="cris-arms">
@@ -142,7 +205,7 @@
                 <span id="scenario-icon">🌟</span>
                 <h2 id="module-title">O Ciclo de Respeito da Cris</h2>
                 <p id="scenario-text">Clique no botão "Iniciar Jogo" para começar.</p>
-                <div id="choices-container" style="display:block;"> 
+                <div id="choices-container" style="display:block;"> 
                     <button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>
                 </div>
             </div>
@@ -191,7 +254,7 @@
         const sfxSuccess = document.getElementById('sfx-success');
         const sfxFail = document.getElementById('sfx-fail');
         const sfxWalk = document.getElementById('sfx-walk');
-        const sfxWin = document.getElementById('sfx-win'); // NOVO
+        const sfxWin = document.getElementById('sfx-win'); 
         const muteButton = document.getElementById('mute-button');
         let isMuted = true;
 
@@ -201,9 +264,9 @@
             {},
 
             // MÓDULO 1: O ALERTA (Ação 1: Ir ao Banheiro)
-            { 
-                icon: "⏰", title: "MÓDULO 1: O Alerta", 
-                text: "CRIS (PENSAMENTO): Sinto um fluxo intenso e desconforto. Já passou quase 6h. Preciso agir rápido! Clique no ícone de " + "🚻" + " (Banheiro) para continuar.", 
+            { 
+                icon: "⏰", title: "MÓDULO 1: O Alerta", 
+                text: "CRIS (PENSAMENTO): Sinto um fluxo intenso e desconforto. Já passou quase 6h. Preciso agir rápido! Clique no ícone de " + "🚻" + " (Banheiro) para continuar.", 
                 background: "linear-gradient(180deg, #ffc72c, #ff9a8d)",
                 interactiveObjects: [{
                     text: "🚻 Banheiro", top: "50%", left: "70%", choices: [
@@ -213,9 +276,9 @@
             },
 
             // MÓDULO 1: Ação 2: Higiene (Opções)
-            { 
-                icon: "🚿", title: "Ação 2: Higiene", 
-                text: "CRIS: Qual a melhor forma de me limpar agora? **Escolha a opção clicando no ícone correspondente.**", 
+            { 
+                icon: "🚿", title: "Ação 2: Higiene", 
+                text: "CRIS: Qual a melhor forma de me limpar agora? **Escolha a opção clicando no ícone correspondente.**", 
                 background: "linear-gradient(180deg, #a4e4d5, #c0e0e8)",
                 interactiveObjects: [
                     { text: "✅ Água e Sabão", top: "40%", left: "40%", choices: [
@@ -228,9 +291,9 @@
             },
 
             // MÓDULO 1: Ação 3: Troca (Opções)
-            { 
-                icon: "🗑️", title: "Ação 3: Troca", 
-                text: "CRIS: Devo usar meu absorvente novo e jogar o antigo no vaso? **Escolha a forma correta de trocar.**", 
+            { 
+                icon: "🗑️", title: "Ação 3: Troca", 
+                text: "CRIS: Devo usar meu absorvente novo e jogar o antigo no vaso? **Escolha a forma correta de trocar.**", 
                 background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
                 interactiveObjects: [
                     { text: "✅ Descarte no Lixo", top: "50%", left: "30%", choices: [
@@ -243,9 +306,9 @@
             },
 
             // MÓDULO 2: NOITE SAUDÁVEL (Ação 1: O Autocuidado)
-            { 
-                icon: "🌙", title: "MÓDULO 2: Noite Saudável", 
-                text: "CRIS: Estou com cólica. O que devo fazer para melhorar meu bem-estar antes de dormir? **Clique na escolha que prioriza o autocuidado.**", 
+            { 
+                icon: "🌙", title: "MÓDULO 2: Noite Saudável", 
+                text: "CRIS: Estou com cólica. O que devo fazer para melhorar meu bem-estar antes de dormir? **Clique na escolha que prioriza o autocuidado.**", 
                 background: "linear-gradient(180deg, #2c3e50, #3498db)",
                 interactiveObjects: [
                     { text: "✅ Hidratação/Nutrição", top: "45%", left: "35%", choices: [
@@ -258,9 +321,9 @@
             },
 
             // MÓDULO 2: Ação 2: Roupa Íntima
-            { 
-                icon: "🩲", title: "Ação 2: Roupa Íntima", 
-                text: "CRIS: Qual a melhor opção para minha saúde íntima durante o sono? **Escolha a melhor opção para aeração.**", 
+            { 
+                icon: "🩲", title: "Ação 2: Roupa Íntima", 
+                text: "CRIS: Qual a melhor opção para minha saúde íntima durante o sono? **Escolha a melhor opção para aeração.**", 
                 background: "linear-gradient(135deg, #fceabb, #f8b500)",
                 interactiveObjects: [
                     { text: "✅ Sem Calcinha", top: "50%", left: "20%", choices: [
@@ -276,9 +339,9 @@
             },
 
             // MÓDULO 3: CONSCIENTIZAÇÃO E APOIO (Ação 1: Ajudar Ana)
-            { 
-                icon: "🫂", title: "MÓDULO 3: Conscientização e Apoio", 
-                text: "Ana, uma colega, manchou a calça e está constrangida. Ela não tem absorvente. **Clique em Ana para ajudá-la.**", 
+            { 
+                icon: "🫂", title: "MÓDULO 3: Conscientização e Apoio", 
+                text: "Ana, uma colega, manchou a calça e está constrangida. Ela não tem absorvente. **Clique em Ana para ajudá-la.**", 
                 background: "linear-gradient(45deg, #4ecdc4, #556270)",
                 interactiveObjects: [
                     { text: "Ana 😟", top: "40%", left: "70%", choices: [
@@ -289,9 +352,9 @@
             },
 
             // MÓDULO 3: Ação 2: Diálogo Educativo
-            { 
-                icon: "💬", title: "Ação 2: Diálogo Educativo", 
-                text: "CRIS: Ana, você sabia que a menstruação não previne gravidez? **Clique na resposta certa para educar.**", 
+            { 
+                icon: "💬", title: "Ação 2: Diálogo Educativo", 
+                text: "CRIS: Ana, você sabia que a menstruação não previne gravidez? **Clique na resposta certa para educar.**", 
                 background: "linear-gradient(45deg, #a8e6cf, #dcedc8)",
                 interactiveObjects: [
                     { text: "✅ Sim, Camisinha!", top: "50%", left: "35%", choices: [
@@ -304,9 +367,9 @@
             },
 
             // MÓDULO 4: ACESSO AO DIREITO (Ação 1: Geração da Autorização)
-            { 
-                icon: "🏥", title: "MÓDULO 4: Acesso ao Direito", 
-                text: "Na farmácia, o atendente pede sua Autorização do Programa Dignidade Menstrual. **Clique na opção de acesso.**", 
+            { 
+                icon: "🏥", title: "MÓDULO 4: Acesso ao Direito", 
+                text: "Na farmácia, o atendente pede sua Autorização do Programa Dignidade Menstrual. **Clique na opção de acesso.**", 
                 background: "linear-gradient(180deg, #93a5cf, #e4efe9)",
                 interactiveObjects: [
                     { text: "✅ App Meu SUS Digital", top: "40%", left: "35%", choices: [
@@ -319,9 +382,9 @@
             },
             
             // MÓDULO 4: Ação 2: Retirada
-            { 
-                icon: "🎁", title: "Ação 2: Retirada (Estoque Renovado)", 
-                text: "O atendente pergunta qual tipo prefere. **Qual sua resposta sobre a marca?**", 
+            { 
+                icon: "🎁", title: "Ação 2: Retirada (Estoque Renovado)", 
+                text: "O atendente pergunta qual tipo prefere. **Qual sua resposta sobre a marca?**", 
                 background: "linear-gradient(45deg, #f6d365, #fda085)",
                 interactiveObjects: [
                     { text: "✅ Aceitar o Disponível", top: "50%", left: "30%", choices: [
@@ -337,7 +400,7 @@
             { icon: "🎉", title: "FIM: Ciclo Completo!", text: "Parabéns! Você completou a jornada de Cris.", background: "linear-gradient(45deg, #ff9a9e, #fecfef)", interactiveObjects: [{text: "🏆 Ver Resultados", top: "50%", left: "50%", choices: [{text: "Ver Resultados", stats: [0, 0, 0], next: 'end', sfx: 'win'}]}] }
         ];
 
-        // --- FUNÇÕES DE ÁUDIO ---
+        // --- FUNÇÕES DE ÁUDIO (MANTIDO) ---
         function playMusic() {
             if (isMuted) return;
             bgMusic.play().catch(e => console.log("Autoplay music failed:", e));
@@ -356,12 +419,11 @@
                 case 'success': sound = sfxSuccess; break;
                 case 'fail': sound = sfxFail; break;
                 case 'walk': sound = sfxWalk; break;
-                case 'win': sound = sfxWin; break; // NOVO: Som de vitória
+                case 'win': sound = sfxWin; break; 
                 default: return;
             }
             if (sound) {
-                // Para garantir que o som toque imediatamente, mesmo se já estiver tocando
-                sound.currentTime = 0; 
+                sound.currentTime = 0; 
                 sound.play().catch(e => console.log(`Play sound ${type} failed:`, e));
             }
         }
@@ -373,7 +435,7 @@
             sfxSuccess.muted = isMuted;
             sfxFail.muted = isMuted;
             sfxWalk.muted = isMuted;
-            sfxWin.muted = isMuted; // Adicionado o mute para o som de vitória
+            sfxWin.muted = isMuted; 
             muteButton.textContent = isMuted ? '🔇' : '🔊';
 
             if (!isMuted) {
@@ -394,8 +456,8 @@
                 }
             }
             updateDisplay();
-            if (gameState.ms <= 0) { showPopup("🚨 MS ZERADO! Risco de infeção grave. Tente novamente!", 5000); playSound('fail'); setTimeout(() => resetGame(), 5000); } 
-            else if (gameState.mcs <= 0) { showPopup("😔 MCS ZERADO! Sofrer bullying/estigma afeta Cris. Tente novamente!", 5000); playSound('fail'); setTimeout(() => resetGame(), 5000); }
+            if (gameState.ms <= 0) { setCrisExpression('sad'); showPopup("🚨 MS ZERADO! Risco de infeção grave. Tente novamente!", 5000); playSound('fail'); setTimeout(() => resetGame(), 5000); } 
+            else if (gameState.mcs <= 0) { setCrisExpression('sad'); showPopup("😔 MCS ZERADO! Sofrer bullying/estigma afeta Cris. Tente novamente!", 5000); playSound('fail'); setTimeout(() => resetGame(), 5000); }
         }
 
         function updateDisplay() {
@@ -411,29 +473,58 @@
             const popup = document.getElementById('popup-message');
             popup.innerHTML = message;
             popup.classList.remove('hidden');
-            // Mantém playSound('click') para pop-up simples
             setTimeout(() => popup.classList.add('hidden'), duration);
         }
+
+        // NOVO: Função para alterar a expressão de Cris
+        function setCrisExpression(emotion) {
+            const crisChar = document.getElementById('cris-character');
+            // Remove todas as classes de emoção
+            crisChar.classList.remove('happy', 'sad');
+
+            // Adiciona a classe de emoção correta
+            if (emotion === 'happy') {
+                crisChar.classList.add('happy');
+            } else if (emotion === 'sad') {
+                crisChar.classList.add('sad');
+            }
+            // Efeito de pulso para a expressão
+            crisChar.style.transform = 'scale(1.3)';
+            setTimeout(() => crisChar.style.transform = 'scale(1.2)', 300);
+        }
+
 
         function createInteractionButtons(interactiveObject) {
             const container = document.getElementById('choices-container');
             container.innerHTML = '';
-            container.style.display = 'block';
+            container.style.display = 'flex'; // Usando flex para centralizar
 
             interactiveObject.choices.forEach(choice => {
                 const button = document.createElement('button');
                 button.className = 'choice-btn';
                 button.innerHTML = choice.text;
                 button.addEventListener('click', () => {
-                    playSound('click'); // Som de clique no botão de escolha
+                    playSound('click'); 
+                    
+                    // NOVO: Definir expressão baseada no resultado da escolha
+                    const isSuccess = choice.stats[0] > 0 || choice.stats[1] > 0 || choice.stats[2] > 0;
+                    const hasNegative = choice.stats[0] < 0 || choice.stats[1] < 0 || choice.stats[2] < 0;
+
+                    if (choice.next === 'end' || choice.sfx === 'win') {
+                        setCrisExpression('happy'); // Vitória
+                    } else if (choice.sfx === 'success' || isSuccess) {
+                        setCrisExpression('happy'); // Sucesso
+                    } else if (choice.sfx === 'fail' || hasNegative) {
+                        setCrisExpression('sad'); // Falha/Penalidade
+                    } else {
+                        setCrisExpression('normal'); // Neutro
+                    }
+
                     if (choice.popup) showPopup(choice.popup);
                     const inventoryChange = choice.inventoryChange || {};
                     updateStats(choice.stats[0], choice.stats[1], choice.stats[2], inventoryChange);
 
-                    // Toca SFX de sucesso, falha ou vitória se definido na escolha
-                    if (choice.sfx) playSound(choice.sfx);
-
-                    container.style.display = 'none'; 
+                    container.style.display = 'none'; 
                     moveCris(choice.next);
                 });
                 container.appendChild(button);
@@ -479,8 +570,11 @@
             gameState.currentScenario = index;
             const crisChar = document.getElementById('cris-character');
             
+            // NOVO: Volta para a expressão neutra ao mover
+            setCrisExpression('normal'); 
+
             crisChar.style.animation = 'walk 0.5s ease-in-out infinite';
-            crisChar.style.left = '50%'; 
+            crisChar.style.left = '50%'; 
             playSound('walk'); // Som de passos ao se mover
             
             document.getElementById('scenario-bg').style.background = scenario.background;
@@ -496,9 +590,9 @@
         }
 
         function loadScenario(index) {
-            if (index === 1) { 
+            if (index === 1) { 
                 moveCris(1);
-                playMusic(); 
+                playMusic(); 
             } else {
                 moveCris(index);
             }
@@ -507,34 +601,37 @@
         function showVictory() {
             playSound('win'); // Som de vitória
             stopMusic(); // Para a música de fundo
+            setCrisExpression('happy'); // Cris feliz na vitória
+
             const card = document.querySelector('.scenario-card');
             card.style.transform = 'translateZ(50px) scale(1.1)';
             document.getElementById('scenario-icon').textContent = '🏆';
             document.getElementById('module-title').textContent = 'Jornada Completa!';
             let message = "Parabéns! Cris completou sua jornada de autocuidado. ";
-            if (gameState.ms >= 80 && gameState.pc >= 50) { message += "Ela dominou os cuidados com a saúde íntima! 🌟"; } 
-            else if (gameState.ms >= 60) { message += "Ela aprendeu muito sobre autocuidado! 💝"; } 
+            if (gameState.ms >= 80 && gameState.pc >= 50) { message += "Ela dominou os cuidados com a saúde íntima! 🌟"; } 
+            else if (gameState.ms >= 60) { message += "Ela aprendeu muito sobre autocuidado! 💝"; } 
             else { message += "Ela ainda tem muito a aprender sobre saúde! 📚"; }
             message += `<br> Saúde final: **${gameState.ms}**, Conhecimento: **${gameState.pc}**`;
             document.getElementById('scenario-text').innerHTML = message;
             const choicesContainer = document.getElementById('choices-container');
-            choicesContainer.style.display = 'block';
+            choicesContainer.style.display = 'flex';
             choicesContainer.innerHTML = `<button class="choice-btn" onclick="resetGame()">🔄 Nova Jornada</button>`;
             document.getElementById('interaction-area').innerHTML = '';
         }
 
         function resetGame() {
-            stopMusic(); 
-            gameState = { 
-                ms: 100, mcs: 50, pc: 0, 
-                inventory: { absorventes: 40, agua: true, calcinhasLimpa: true }, 
-                currentScenario: 0, totalScenarios: 10 
+            stopMusic(); 
+            gameState = { 
+                ms: 100, mcs: 50, pc: 0, 
+                inventory: { absorventes: 40, agua: true, calcinhasLimpa: true }, 
+                currentScenario: 0, totalScenarios: 10 
             };
             updateDisplay();
+            setCrisExpression('normal'); // Volta para expressão neutra
             document.getElementById('scenario-icon').textContent = '🌟';
             document.getElementById('module-title').textContent = 'O Ciclo de Respeito da Cris';
             document.getElementById('scenario-text').innerHTML = 'Clique no botão "Iniciar Jogo" para começar.';
-            document.getElementById('choices-container').style.display = 'block';
+            document.getElementById('choices-container').style.display = 'flex';
             document.getElementById('choices-container').innerHTML = `<button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>`;
             document.getElementById('interaction-area').innerHTML = '';
             document.getElementById('cris-character').style.left = '50%';
