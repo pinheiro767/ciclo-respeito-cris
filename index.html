@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>O Ciclo de Respeito da Cris</title>
     <style>
         body {
@@ -19,22 +18,23 @@
             perspective: 1000px;
         }
         html { height: 100%; }
+        
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-      
+        
         @keyframes walk {
             0%, 100% { transform: translateX(-50%) translateY(0px); }
             50% { transform: translateX(-50%) translateY(-5px); }
         }
-      
+        
         @keyframes bounce {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
         }
-      
+        
         #game-container {
             position: relative;
             min-height: 100vh;
@@ -68,16 +68,16 @@
         }
 
         @keyframes fadeInTitle {
-            0% {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-20px);
+            0% { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(-20px); 
             }
-            100% {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0px);
+            100% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(0px); 
             }
         }
-      
+        
 
 
         #scenario-container {
@@ -91,7 +91,7 @@
             transform-style: preserve-3d;
             z-index: 5;
         }
-      
+        
         .scenario-background {
             position: absolute;
             top: 0;
@@ -111,33 +111,112 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
             border: 4px solid #ffffff;
             border-radius: 20px;
-            padding: 20px 30px;
+            padding: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.6s ease;
             z-index: 15;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 16px;
             color: white;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
             animation: pulse 2s infinite;
-            min-width: 200px;
-            text-align: center;
+            width: 280px;
+            height: 280px;
+            text-align: justify;
+            text-align-last: center;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-      
+        
         .interactive-object:hover {
-            transform: scale(1.15);
+            transform: scale(1.05);
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
-            background: linear-gradient(135deg, #764ba2, #f093fb);
-            border-color: #f093fb;
+            animation: none;
         }
-      
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .interactive-object.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: justify;
+            text-align-last: center;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+
+        .choice-option {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            text-align: justify;
+            text-align-last: center;
+            line-height: 1.3;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .choice-option:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
+            transform: scale(1.05);
+        }
+
+        .choice-option.correct {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border-color: #4ecdc4;
+        }
+
+        .choice-option.incorrect {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-color: #ff6b6b;
+        }
+        
         @keyframes pulse {
-            0%, 100% {
+            0%, 100% { 
                 box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
                 border-color: #ffffff;
             }
-            50% {
+            50% { 
                 box-shadow: 0 8px 25px rgba(78, 205, 196, 0.8), 0 0 20px rgba(240, 147, 251, 0.6);
                 border-color: #4ecdc4;
             }
@@ -159,19 +238,19 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
         }
-      
+        
         .cris-character.happy .cris-face {
             content: "👧";
             transform: scale(1.2);
             animation: bounce 0.6s ease-in-out;
         }
-      
+        
         .cris-character.sad .cris-face {
             content: "👧";
             transform: scale(0.9);
             filter: grayscale(0.3) drop-shadow(0 4px 8px rgba(0,0,0,0.4));
         }
-      
+        
         .cris-character.angry .cris-face {
             content: "👧";
             transform: scale(1.1);
@@ -191,24 +270,24 @@
             transform: translateZ(20px);
             z-index: 20;
         }
-      
+        
         .scenario-card {
             text-align: center;
         }
-      
+        
         #scenario-icon {
             font-size: 3em;
             display: block;
             margin-bottom: 15px;
         }
-      
+        
         #module-title {
             color: #2c3e50;
             margin-bottom: 20px;
             font-size: 2em;
             font-weight: bold;
         }
-      
+        
         #scenario-text {
             font-size: 18px;
             line-height: 1.6;
@@ -216,14 +295,14 @@
             margin-bottom: 25px;
             min-height: 60px;
         }
-      
+        
         #choices-container {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
             justify-content: center;
         }
-      
+        
         .popup-message {
             position: fixed;
             top: 50%;
@@ -240,12 +319,12 @@
             border: 2px solid #4ecdc4;
             color: #2c3e50;
         }
-      
+        
         .popup-message.hidden {
             opacity: 0;
             pointer-events: none;
         }
-      
+        
         .choice-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -260,25 +339,25 @@
             border: 2px solid transparent;
             min-width: 200px;
         }
-      
+        
         .choice-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             background: linear-gradient(135deg, #764ba2, #667eea);
         }
-      
+        
         .choice-btn:active {
             transform: translateY(-1px);
         }
-      
+        
         .choice-btn.positive {
             background: linear-gradient(135deg, #4ecdc4, #44a08d);
         }
-      
+        
         .choice-btn.negative {
             background: linear-gradient(135deg, #ff6b6b, #ee5a52);
         }
-      
+        
         .choice-btn.neutral {
             background: linear-gradient(135deg, #f9d342, #f39c12);
         }
@@ -292,7 +371,7 @@
             background: rgba(255, 255, 255, 0.2);
             z-index: 1000;
         }
-      
+        
         #progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #4ecdc4, #44a08d);
@@ -315,17 +394,17 @@
             transition: all 0.3s ease;
             border: 2px solid;
         }
-      
+        
         .notification.show {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1.05);
         }
-      
+        
         .notification.positive {
             border-color: #4ecdc4;
             color: #2c3e50;
         }
-      
+        
         .notification.negative {
             border-color: #ff6b6b;
             color: #2c3e50;
@@ -351,12 +430,12 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-      
+        
         #mute-button:hover {
             transform: scale(1.1);
             background: rgba(255, 255, 255, 0.3);
         }
-      
+        
         .floating-particles {
             position: fixed;
             top: 0;
@@ -366,7 +445,7 @@
             pointer-events: none;
             z-index: 1;
         }
-      
+        
         .particle {
             position: absolute;
             width: 4px;
@@ -375,7 +454,7 @@
             border-radius: 50%;
             animation: float 6s infinite ease-in-out;
         }
-      
+        
         .floating-panty {
             position: absolute;
             font-size: 2em;
@@ -384,7 +463,7 @@
             pointer-events: none;
             z-index: 2;
         }
-      
+        
         .medal-animation {
             position: fixed;
             font-size: 3em;
@@ -392,7 +471,7 @@
             pointer-events: none;
             animation: medalDrop 2s ease-out forwards;
         }
-      
+        
         .bomb-animation {
             position: fixed;
             font-size: 3em;
@@ -400,7 +479,7 @@
             pointer-events: none;
             animation: bombExplode 1.5s ease-out forwards;
         }
-      
+        
         .cotton-candy {
             position: absolute;
             font-size: 2.5em;
@@ -409,220 +488,304 @@
             pointer-events: none;
             z-index: 1000;
         }
-      
+        
         @keyframes float {
             0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
             90% { opacity: 1; }
             100% { transform: translateY(-10px) rotate(360deg); opacity: 0; }
         }
-      
+        
         @keyframes floatPanty {
-            0% {
-                transform: translateY(100vh) rotate(0deg) scale(0.8);
-                opacity: 0;
+            0% { 
+                transform: translateY(100vh) rotate(0deg) scale(0.8); 
+                opacity: 0; 
             }
-            10% {
-                opacity: 0.7;
+            10% { 
+                opacity: 0.7; 
             }
-            50% {
-                transform: translateY(50vh) rotate(180deg) scale(1.2);
-                opacity: 0.8;
+            50% { 
+                transform: translateY(50vh) rotate(180deg) scale(1.2); 
+                opacity: 0.8; 
             }
-            90% {
-                opacity: 0.7;
+            90% { 
+                opacity: 0.7; 
             }
-            100% {
-                transform: translateY(-20px) rotate(360deg) scale(0.8);
-                opacity: 0;
+            100% { 
+                transform: translateY(-20px) rotate(360deg) scale(0.8); 
+                opacity: 0; 
             }
         }
-      
+        
         @keyframes medalDrop {
-            0% {
-                transform: translateY(-100px) scale(0.5) rotate(0deg);
-                opacity: 0;
+            0% { 
+                transform: translateY(-100px) scale(0.5) rotate(0deg); 
+                opacity: 0; 
             }
-            50% {
-                transform: translateY(50px) scale(1.2) rotate(180deg);
-                opacity: 1;
+            50% { 
+                transform: translateY(50px) scale(1.2) rotate(180deg); 
+                opacity: 1; 
             }
-            100% {
-                transform: translateY(200px) scale(1) rotate(360deg);
-                opacity: 0;
+            100% { 
+                transform: translateY(200px) scale(1) rotate(360deg); 
+                opacity: 0; 
             }
         }
-      
+        
         @keyframes bombExplode {
-            0% {
-                transform: scale(0.5) rotate(0deg);
-                opacity: 1;
+            0% { 
+                transform: scale(0.5) rotate(0deg); 
+                opacity: 1; 
             }
-            50% {
-                transform: scale(1.5) rotate(180deg);
-                opacity: 0.8;
+            50% { 
+                transform: scale(1.5) rotate(180deg); 
+                opacity: 0.8; 
             }
-            100% {
-                transform: scale(2) rotate(360deg);
-                opacity: 0;
+            100% { 
+                transform: scale(2) rotate(360deg); 
+                opacity: 0; 
             }
         }
-      
+        
         @keyframes cottonCandyFall {
-            0% {
-                transform: translateY(-100px) rotate(0deg) scale(0.8);
-                opacity: 0;
+            0% { 
+                transform: translateY(-100px) rotate(0deg) scale(0.8); 
+                opacity: 0; 
             }
-            20% {
-                opacity: 1;
+            20% { 
+                opacity: 1; 
             }
-            80% {
-                opacity: 1;
+            80% { 
+                opacity: 1; 
             }
-            100% {
-                transform: translateY(100vh) rotate(720deg) scale(1.2);
-                opacity: 0;
+            100% { 
+                transform: translateY(100vh) rotate(720deg) scale(1.2); 
+                opacity: 0; 
             }
         }
 
-        /* Mobile-first responsive design */
+        /* Mobile-first responsive design - iPhone otimizado */
         @media (max-width: 480px) {
             #main-title {
-                font-size: 1.4em;
-                padding: 8px 15px;
-                top: 10px;
-                max-width: 90%;
+                font-size: 1.2em;
+                padding: 6px 12px;
+                top: 5px;
+                max-width: 95%;
                 text-align: center;
+                line-height: 1.2;
             }
-          
+            
             #game-container {
-                padding-top: 80px;
-                padding-left: 10px;
-                padding-right: 10px;
+                padding-top: 60px;
+                padding-left: 5px;
+                padding-right: 5px;
+                min-height: 100vh;
             }
-          
-            /* CORREÇÃO: Aumentado para dar mais espaço, e margin reduzido */
+            
             #scenario-container {
-                height: 35vh;
+                height: 20vh;
                 width: 100%;
-                margin-bottom: 5px;
+                margin-bottom: 10px;
             }
-          
-            /* CORREÇÃO: Posicionamento relativo e margens ajustadas */
+            
             .interactive-object {
-                min-width: 140px;
-                padding: 12px 18px;
-                font-size: 14px;
-                border-radius: 15px;
-                position: relative; 
-                top: auto; 
-                left: auto; 
-                margin: 8px 5px; 
-                display: inline-block;
+                width: 180px;
+                height: 180px;
+                padding: 12px;
+                font-size: 12px;
+                border-radius: 12px;
+                position: relative;
+                margin: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                line-height: 1.2;
+                border-width: 2px;
             }
-          
-            /* CORREÇÃO: Puxado para baixo (bottom: 5%) para corrigir o "muito alto" */
+            
+            .card-front, .card-back {
+                padding: 12px;
+                font-size: 12px;
+                line-height: 1.2;
+            }
+            
+            .choice-option {
+                padding: 10px;
+                margin: 4px 0;
+                font-size: 11px;
+                min-height: 35px;
+                border-radius: 8px;
+                line-height: 1.2;
+            }
+            
             #interaction-area {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
                 align-items: center;
-                gap: 12px;
+                gap: 8px;
                 position: absolute;
-                bottom: 5%;
+                bottom: 2px;
                 left: 50%;
                 transform: translateX(-50%);
-                width: 95%;
-                max-width: 450px;
-                align-content: flex-end; 
+                width: 98%;
+                max-width: 400px;
+                align-content: flex-end;
+                z-index: 25;
             }
-          
-            /* CORREÇÃO: Puxado para o fundo do cenário (bottom: 0%) */
+            
             .cris-character {
-                bottom: 0%;
-                font-size: 0.8em;
+                bottom: -2%;
+                font-size: 0.7em;
             }
-          
+            
             .cris-face {
-                font-size: 3em;
+                font-size: 2.5em;
             }
-          
+            
             .choice-btn {
                 width: 100%;
-                max-width: 320px;
-                font-size: 16px;
-                padding: 16px 20px;
-                margin: 8px auto;
-                border-radius: 12px;
+                max-width: 280px;
+                font-size: 15px;
+                padding: 14px 18px;
+                margin: 6px auto;
+                border-radius: 10px;
                 touch-action: manipulation;
                 -webkit-tap-highlight-color: transparent;
                 display: block;
                 box-sizing: border-box;
+                min-height: 48px;
             }
-          
+            
             #choices-container {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
                 width: 100%;
-                margin-top: 15px;
+                margin-top: 10px;
             }
-          
-            /* CORREÇÃO: margin-top reduzido para corrigir o "muito baixo" */
+            
             #story-panel {
-                padding: 15px;
-                margin-top: 5px; 
-                border-radius: 20px;
+                padding: 12px;
+                margin-top: 8px;
+                border-radius: 15px;
                 width: 100%;
                 box-sizing: border-box;
             }
-          
+            
             #scenario-text {
-                font-size: 16px;
-                line-height: 1.5;
-                margin-bottom: 15px;
-                min-height: auto;
-            }
-          
-            #module-title {
-                font-size: 1.4em;
+                font-size: 14px;
+                line-height: 1.4;
                 margin-bottom: 12px;
+                min-height: auto;
+                text-align: center;
             }
-          
-            #scenario-icon {
-                font-size: 2.5em;
+            
+            #module-title {
+                font-size: 1.2em;
                 margin-bottom: 8px;
+                line-height: 1.2;
             }
-          
+            
+            #scenario-icon {
+                font-size: 2em;
+                margin-bottom: 6px;
+            }
+            
             #mute-button {
-                bottom: 20px;
-                right: 20px;
-                width: 50px;
-                height: 50px;
-                font-size: 1.5em;
+                bottom: 15px;
+                right: 15px;
+                width: 44px;
+                height: 44px;
+                font-size: 1.3em;
                 touch-action: manipulation;
                 -webkit-tap-highlight-color: transparent;
             }
-          
+            
             .popup-message {
-                width: 90%;
-                max-width: 350px;
-                padding: 15px 20px;
-                font-size: 16px;
-                border-radius: 12px;
+                width: 92%;
+                max-width: 320px;
+                padding: 12px 16px;
+                font-size: 14px;
+                border-radius: 10px;
+                line-height: 1.3;
             }
-          
+            
+            .notification {
+                width: 92%;
+                max-width: 320px;
+                padding: 12px 16px;
+                font-size: 14px;
+                border-radius: 10px;
+            }
+            
             .medal-animation, .bomb-animation {
-                font-size: 2.5em;
-            }
-          
-            .cotton-candy {
                 font-size: 2em;
             }
-          
-            .floating-panty {
+            
+            .cotton-candy {
                 font-size: 1.5em;
+            }
+            
+            .floating-panty {
+                font-size: 1.2em;
+            }
+            
+            .particle {
+                width: 3px;
+                height: 3px;
+            }
+        }
+
+        /* iPhone SE e telas muito pequenas */
+        @media (max-width: 375px) {
+            #main-title {
+                font-size: 1em;
+                padding: 4px 8px;
+                top: 3px;
+                max-width: 98%;
+            }
+            
+            .interactive-object {
+                width: 150px;
+                height: 150px;
+                padding: 8px;
+                font-size: 10px;
+                margin: 3px;
+            }
+            
+            .card-front, .card-back {
+                padding: 8px;
+                font-size: 10px;
+            }
+            
+            .choice-option {
+                padding: 8px;
+                margin: 3px 0;
+                font-size: 10px;
+                min-height: 30px;
+            }
+            
+            #story-panel {
+                padding: 8px;
+                margin-top: 5px;
+            }
+            
+            #scenario-text {
+                font-size: 12px;
+                margin-bottom: 8px;
+            }
+            
+            #module-title {
+                font-size: 1em;
+                margin-bottom: 6px;
+            }
+            
+            .choice-btn {
+                font-size: 13px;
+                padding: 12px 15px;
+                min-height: 44px;
             }
         }
 
@@ -632,24 +795,26 @@
                 padding: 10px 20px;
                 top: 15px;
             }
-          
+            
             #game-container {
                 padding-top: 100px;
                 padding-left: 15px;
                 padding-right: 15px;
             }
-          
+            
             #scenario-container {
                 height: 30vh;
                 margin-bottom: 15px;
             }
-          
+            
             .interactive-object {
-                min-width: 160px;
-                padding: 18px 25px;
-                font-size: 16px;
+                width: 260px;
+                height: 260px;
+                padding: 18px;
+                font-size: 15px;
+                line-height: 1.3;
             }
-          
+            
             .choice-btn {
                 width: 100%;
                 max-width: 280px;
@@ -661,7 +826,7 @@
                 -webkit-tap-highlight-color: transparent;
                 box-sizing: border-box;
             }
-          
+            
             #choices-container {
                 display: flex;
                 flex-direction: column;
@@ -670,17 +835,17 @@
                 width: 100%;
                 margin-top: 15px;
             }
-          
+            
             #story-panel {
                 padding: 20px;
                 margin-top: 15px;
             }
-          
+            
             #scenario-text {
                 font-size: 17px;
                 margin-bottom: 15px;
             }
-          
+            
             #mute-button {
                 bottom: 15px;
                 right: 15px;
@@ -696,15 +861,17 @@
             #main-title {
                 font-size: 2.2em;
             }
-          
+            
             #scenario-container {
                 height: 45vh;
             }
-          
+            
             .interactive-object {
-                min-width: 180px;
-                padding: 20px 28px;
-                font-size: 17px;
+                width: 320px;
+                height: 320px;
+                padding: 22px;
+                font-size: 16px;
+                line-height: 1.4;
             }
         }
 
@@ -716,11 +883,14 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        button, .interactive-object {
+        button, .interactive-object, .choice-option {
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            cursor: pointer;
         }
 
         /* Prevent zoom on input focus */
@@ -731,24 +901,55 @@
         /* Smooth scrolling for mobile */
         html {
             -webkit-overflow-scrolling: touch;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* iOS Safari specific fixes */
+        body {
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Prevent bounce scrolling on iOS */
+        #game-container {
+            -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Better button touch targets for iOS */
+        .choice-btn, .interactive-object, .choice-option {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border: none;
+            outline: none;
+        }
+
+        /* Fix for iOS viewport units */
+        @supports (-webkit-touch-callout: none) {
+            #game-container {
+                min-height: -webkit-fill-available;
+            }
         }
     </style>
-
 </head>
 <body>
     <div id="progress-bar">
         <div id="progress-fill"></div>
     </div>
+
     <div id="game-container">
         <div class="floating-particles" id="particles"></div>
-      
+        
         <h1 id="main-title">O Ciclo de Respeito da Cris</h1>
-      
+        
 
 
         <div id="scenario-container">
             <div class="scenario-background" id="scenario-bg"></div>
-          
+            
             <div id="interaction-area"></div>
 
             <div class="cris-character" id="cris-character">
@@ -758,10 +959,10 @@
 
         <button id="mute-button" onclick="toggleMute()">🔇</button>
     </div>
-  
+    
     <div id="popup-message" class="popup-message hidden"></div>
 
-  
+    
     <audio id="background-music" loop muted volume="0.3">
         <source src="audio/bgm.mp3" type="audio/mpeg">
     </audio>
@@ -781,600 +982,647 @@
         <source src="audio/win.wav" type="audio/wav">
     </audio>
 
-    <div id="story-panel">
-        <div class="scenario-card">
-            <span id="scenario-icon">🌟</span>
-            <h2 id="module-title">O Ciclo de Respeito da Cris</h2>
-            <p id="scenario-text">Clique no botão "Iniciar Jogo" para começar.</p>
-            <div id="choices-container" style="display:block;">
-                <button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>
+        <div id="story-panel">
+            <div class="scenario-card">
+                <span id="scenario-icon">🌟</span>
+                <h2 id="module-title">O Ciclo de Respeito da Cris</h2>
+                <p id="scenario-text">Clique no botão "Iniciar Jogo" para começar.</p>
+                <div id="choices-container" style="display:block;"> 
+                    <button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // ESTADO DO JOGO SIMPLIFICADO  
-    let gameState = {  
-        currentScenario: 0,  
-        totalScenarios: 12  
-    };  
+    <script>
+        // ESTADO DO JOGO SIMPLIFICADO
+        let gameState = {
+            currentScenario: 0,
+            totalScenarios: 12
+        };
 
-    // Referências aos elementos de áudio  
-    const bgMusic = document.getElementById('background-music');  
-    const sfxClick = document.getElementById('sfx-click');  
-    const sfxSuccess = document.getElementById('sfx-success');  
-    const sfxFail = document.getElementById('sfx-fail');  
-    const sfxWalk = document.getElementById('sfx-walk');  
-    const sfxWin = document.getElementById('sfx-win');   
-    const muteButton = document.getElementById('mute-button');  
-    let isMuted = true;  
+        // Referências aos elementos de áudio
+        const bgMusic = document.getElementById('background-music');
+        const sfxClick = document.getElementById('sfx-click');
+        const sfxSuccess = document.getElementById('sfx-success');
+        const sfxFail = document.getElementById('sfx-fail');
+        const sfxWalk = document.getElementById('sfx-walk');
+        const sfxWin = document.getElementById('sfx-win'); 
+        const muteButton = document.getElementById('mute-button');
+        let isMuted = true;
 
-    // --- DADOS DOS CENÁRIOS COM NOVAS PERGUNTAS EDUCATIVAS ---  
-    const scenarios = [  
-        // C0: INÍCIO (Inacessível diretamente)  
-        {},  
+        // --- DADOS DOS CENÁRIOS COM NOVAS PERGUNTAS EDUCATIVAS ---
+        const scenarios = [
+            // C0: INÍCIO (Inacessível diretamente)
+            {},
 
-        // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 1  
-        {   
-            icon: "⏰", title: "MÓDULO 1: Higiene e Cuidados Básicos",   
-            text: "Em média, de quanto em quanto tempo o absorvente deve ser trocado para evitar riscos à saúde?",   
-            background: "linear-gradient(180deg, #ffc72c, #ff9a8d)",  
-            interactiveObjects: [  
-                { text: "Aproximadamente 6 horas", top: "40%", left: "30%", choices: [  
-                    { text: "Aproximadamente seis horas, mas caso o seu fluxo seja muito intenso você pode aumentar a frequência de troca, conforme sua necessidade.", stats: [15, 0, 15], coins: 3, next: 2, popup: "✅ Correto! A troca regular previne infecções.", sfx: 'success' }  
-                ]},  
-                { text: "Uma vez por dia", top: "40%", left: "70%", choices: [  
-                    { text: "Trocar apenas uma vez por dia.", stats: [-10, 0, 0], coins: -2, bombs: 1, next: 2, popup: "❌ Muito tempo! Risco de infecções.", sfx: 'fail' }  
-                ]},  
-            ]  
-        },  
+            // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 1
+            { 
+                icon: "⏰", title: "MÓDULO 1: Higiene e Cuidados Básicos", 
+                text: "Em média, de quanto em quanto tempo o absorvente deve ser trocado para evitar riscos à saúde?", 
+                background: "linear-gradient(180deg, #ffc72c, #ff9a8d)",
+                interactiveObjects: [
+                    { 
+                        question: "Em média, de quanto em quanto tempo o absorvente deve ser trocado?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "Aproximadamente 6 horas", correct: true, coins: 3, next: 2, popup: "✅ Correto! A troca regular previne infecções.", sfx: 'success' },
+                            { text: "Uma vez por dia", correct: false, bombs: 1, next: 2, popup: "❌ Muito tempo! Risco de infecções.", sfx: 'fail' },
+                            { text: "Apenas quando necessário", correct: false, bombs: 1, next: 2, popup: "❌ Pode causar infecções!", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            },
 
-        // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 2  
-        {   
-            icon: "🚿", title: "Higiene Íntima",   
-            text: "Ao fazer a higiene íntima durante a menstruação, qual deve ser o maior cuidado?",   
-            background: "linear-gradient(180deg, #a4e4d5, #c0e0e8)",  
-            interactiveObjects: [  
-                { text: "Água e Sabonete", top: "40%", left: "30%", choices: [  
-                    { text: "Sempre que possível, lavar a área externa da região íntima com água e sabonete.", stats: [15, 0, 15], coins: 3, next: 3, popup: "✅ Perfeito! Higiene adequada é fundamental.", sfx: 'success' }  
-                ]},  
-                { text: "Apenas Papel", top: "40%", left: "70%", choices: [  
-                    { text: "Usar apenas papel higiênico.", stats: [-10, 0, 0], coins: -2, bombs: 1, next: 3, popup: "❌ Insuficiente para higiene adequada.", sfx: 'fail' }  
-                ]},  
-            ]  
-        },  
+            // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 2
+            { 
+                icon: "🚿", title: "Higiene Íntima", 
+                text: "Ao fazer a higiene íntima durante a menstruação, qual deve ser o maior cuidado?", 
+                background: "linear-gradient(180deg, #a4e4d5, #c0e0e8)",
+                interactiveObjects: [
+                    { 
+                        question: "Qual o melhor método para higiene íntima durante a menstruação?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "Água e sabonete neutro", correct: true, coins: 3, next: 3, popup: "✅ Perfeito! Higiene adequada é fundamental.", sfx: 'success' },
+                            { text: "Apenas papel higiênico", correct: false, bombs: 1, next: 3, popup: "❌ Insuficiente para higiene adequada.", sfx: 'fail' },
+                            { text: "Duchas vaginais", correct: false, bombs: 1, next: 3, popup: "❌ Pode alterar o pH vaginal!", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            },
 
-        // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 3  
-        {   
-            icon: "🩲", title: "Tipo de Tecido",   
-            text: "Qual tipo de tecido é o mais recomendado para as calcinhas, especialmente no período menstrual?",   
-            background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",  
-            interactiveObjects: [  
-                { text: "Algodão", top: "40%", left: "30%", choices: [  
-                    { text: "O algodão é um tecido natural, respirável e absorvente, que ajuda a prevenir a proliferação de fungos e bactérias.", stats: [10, 0, 10], coins: 2, next: 4, popup: "✅ Correto! Algodão é o melhor tecido.", sfx: 'success' }  
-                ]},  
-                { text: "Sintético", top: "40%", left: "70%", choices: [  
-                    { text: "Tecido sintético é melhor.", stats: [-10, 0, 0], coins: -1, bombs: 1, next: 4, popup: "❌ Tecidos sintéticos podem causar irritações.", sfx: 'fail' }  
-                ]},  
-            ]  
-        },  
+            // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 3
+            { 
+                icon: "🩲", title: "Tipo de Tecido", 
+                text: "Qual tipo de tecido é o mais recomendado para as calcinhas, especialmente no período menstrual?", 
+                background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
+                interactiveObjects: [
+                    { 
+                        question: "Qual tecido é melhor para calcinhas no período menstrual?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "Algodão", correct: true, coins: 2, next: 4, popup: "✅ Correto! Algodão é respirável e absorvente.", sfx: 'success' },
+                            { text: "Tecido sintético", correct: false, bombs: 1, next: 4, popup: "❌ Pode causar irritações e alergias.", sfx: 'fail' },
+                            { text: "Renda", correct: false, bombs: 1, next: 4, popup: "❌ Não é adequada para o período menstrual.", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            },
 
-        // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 4  
-        {   
-            icon: "🚫", title: "Produtos Íntimos",   
-            text: "O uso de spray ou perfume íntimo é recomendado para a higiene íntima?",   
-            background: "linear-gradient(180deg, #2c3e50, #3498db)",  
-            interactiveObjects: [  
-                { text: "Não é recomendado", top: "40%", left: "30%", choices: [  
-                    { text: "Não. Deve-se evitar produtos com cheiro e corantes que possam causar irritações e alergias.", stats: [10, 0, 10], coins: 2, next: 5, popup: "✅ Correto! Evite produtos químicos.", sfx: 'success' }  
-                ]},  
-                { text: "É recomendado", top: "40%", left: "70%", choices: [  
-                    { text: "Sim, é importante usar perfumes íntimos.", stats: [-15, 0, 0], coins: -3, bombs: 1, next: 5, popup: "❌ Produtos químicos podem causar irritações!", sfx: 'fail' }  
-                ]},  
-            ]  
-        },  
+            // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 4
+            { 
+                icon: "🚫", title: "Produtos Íntimos", 
+                text: "O uso de spray ou perfume íntimo é recomendado para a higiene íntima?", 
+                background: "linear-gradient(180deg, #2c3e50, #3498db)",
+                interactiveObjects: [
+                    { 
+                        question: "É recomendado usar perfumes íntimos durante a menstruação?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "Não é recomendado", correct: true, coins: 2, next: 5, popup: "✅ Correto! Evite produtos químicos.", sfx: 'success' },
+                            { text: "Sim, é essencial", correct: false, bombs: 1, next: 5, popup: "❌ Pode causar irritações e alergias!", sfx: 'fail' },
+                            { text: "Apenas perfumes caros", correct: false, bombs: 1, next: 5, popup: "❌ Qualquer perfume íntimo pode irritar!", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            },
 
-        // MÓDULO 2: SAÚDE E MITOS - Pergunta 1  
-        {   
-            icon: "🦠", title: "MÓDULO 2: Saúde e Mitos",   
-            text: "A ausência de higiene adequada (como a troca tardia do absorvente) pode colaborar para o crescimento de qual fungo em ambiente úmido e quente?",   
-            background: "linear-gradient(135deg, #fceabb, #f8b500)",  
-            interactiveObjects: [  
-                { text: "Candidíase", top: "40%", left: "30%", choices: [  
-                    { text: "Candidíase.", stats: [15, 0, 15], coins: 3, next: 6, popup: "✅ Correto! A candidíase cresce em ambientes úmidos.", sfx: 'success' }  
-                ]},  
-                { text: "Gripe", top: "40%", left: "70%", choices: [  
-                    { text: "Gripe.", stats: [0, 0, 0], coins: -1, bombs: 1, next: 6, popup: "❌ Incorreto. A gripe não está relacionada à higiene íntima.", sfx: 'fail' }  
-                ]},  
-            ]  
-        },  
+            // MÓDULO 2: SAÚDE E MITOS - Pergunta 1
+            { 
+                icon: "🦠", title: "MÓDULO 2: Saúde e Mitos", 
+                text: "A ausência de higiene adequada pode colaborar para o crescimento de qual fungo?", 
+                background: "linear-gradient(135deg, #fceabb, #f8b500)",
+                interactiveObjects: [
+                    { 
+                        question: "Qual fungo pode crescer com higiene inadequada durante a menstruação?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "Candidíase", correct: true, coins: 3, next: 6, popup: "✅ Correto! A candidíase cresce em ambientes úmidos.", sfx: 'success' },
+                            { text: "Gripe", correct: false, bombs: 1, next: 6, popup: "❌ Gripe não é um fungo!", sfx: 'fail' },
+                            { text: "Resfriado", correct: false, bombs: 1, next: 6, popup: "❌ Resfriado não está relacionado!", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            },
 
-        // MÓDULO 2: SAÚDE E MITOS - Pergunta 2  
-        {   
-            icon: "🤰", title: "Mitos sobre Menstruação",   
-            text: "A menstruação serve como um método de prevenção de gravidez ou de infecções sexualmente transmissíveis (IST)?",   
-            background: "linear-gradient(45deg, #4ecdc4, #556270)",  
-            interactiveObjects: [  
-                { text: "Não previne", top: "40%", left: "30%", choices: [  
-                    { text: "Não. Para prevenir gravidez é preciso usar método contraceptivo, e para IST, usar preservativos.", stats: [0, 0, 20], coins: 4, next: 7, popup: "✅ Excelente! Mito importante desmistificado.", sfx: 'success' }  
-                ]},  
-                { text: "Sim, previne", top: "40%", left: "70%", choices: [  
-                    { text: "Sim, a menstruação previne gravidez e IST.", stats: [0, -10, 0], coins: -2, bombs: 1, next: 7, popup: "❌ Mito perigoso! Sempre use proteção.", sfx: 'fail' }  
-                ]},  
-            ]  
-        },  
+            // MÓDULO 2: SAÚDE E MITOS - Pergunta 2
+            { 
+                icon: "🤰", title: "Mitos sobre Menstruação", 
+                text: "A menstruação serve como método de prevenção de gravidez ou IST?", 
+                background: "linear-gradient(45deg, #4ecdc4, #556270)",
+                interactiveObjects: [
+                    { 
+                        question: "A menstruação previne gravidez ou infecções sexualmente transmissíveis?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "Não previne nada", correct: true, coins: 4, next: 7, popup: "✅ Excelente! Sempre use proteção adequada.", sfx: 'success' },
+                            { text: "Previne gravidez", correct: false, bombs: 1, next: 7, popup: "❌ Mito perigoso! Pode engravidar durante a menstruação.", sfx: 'fail' },
+                            { text: "Previne IST", correct: false, bombs: 1, next: 7, popup: "❌ Mito perigoso! Sempre use preservativo.", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            },
 
-        // MÓDULO 2: SAÚDE E MITOS - Pergunta 3  
-        {   
-            icon: "🏃‍♀️", title: "Exercícios e Menstruação",   
-            text: "É proibido fazer exercícios físicos durante o período menstrual?",   
-            background: "linear-gradient(45deg, #a8e6cf, #dcedc8)",  
-            interactiveObjects: [  
-                { text: "Não há contraindicação", top: "40%", left: "30%", choices: [  
-                    { text: "Não há contraindicação, inclusive a prática regular pode reduzir as cólicas.", stats: [0, 10, 10], coins: 2, next: 8, popup: "✅ Correto! Exercícios podem ajudar.", sfx: 'success' }  
-                ]},  
-                { text: "É proibido", top: "40%", left: "70%", choices: [  
-                    { text: "Sim, é proibido fazer exercícios.", stats: [0, -5, 0], coins: -1, bombs: 1, next: 8, popup: "❌ Mito! Exercícios são benéficos.", sfx: 'fail' }  
-                ]},  
-            ]  
-        },  
+            // MÓDULO 2: SAÚDE E MITOS - Pergunta 3
+            { 
+                icon: "🏃‍♀️", title: "Exercícios e Menstruação", 
+                text: "É proibido fazer exercícios físicos durante o período menstrual?", 
+                background: "linear-gradient(45deg, #a8e6cf, #dcedc8)",
+                interactiveObjects: [
+                    { 
+                        question: "Pode fazer exercícios durante a menstruação?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "Sim, pode e é benéfico", correct: true, coins: 2, next: 8, popup: "✅ Correto! Exercícios podem reduzir cólicas.", sfx: 'success' },
+                            { text: "É totalmente proibido", correct: false, bombs: 1, next: 8, popup: "❌ Mito! Exercícios são benéficos.", sfx: 'fail' },
+                            { text: "Só exercícios leves", correct: false, bombs: 1, next: 8, popup: "❌ Pode fazer qualquer exercício que se sinta confortável.", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            },
 
-        // MÓDULO 2: SAÚDE E MITOS - Pergunta 4  
-        {   
-            icon: "🧻", title: "Materiais Inadequados",   
-            text: "Qual destes materiais é considerado impróprio para absorver o sangue, podendo resultar em doenças e infecções urogenitais?",   
-            background: "linear-gradient(180deg, #93a5cf, #e4efe9)",  
-            interactiveObjects: [  
-                { text: "Tecido sintético/papel", top: "40%", left: "30%", choices: [  
-                    { text: "Pedaços de tecido sintético e/ou papel higiênico.", stats: [0, 15, 15], coins: 3, next: 9, popup: "✅ Correto! Esses materiais são inadequados.", sfx: 'success' }  
-                ]},  
-                { text: "Absorventes próprios", top: "40%", left: "70%", choices: [  
-                    { text: "Absorventes próprios para menstruação.", stats: [0, -5, 0], coins: -1, bombs: 1, next: 9, popup: "❌ Absorventes próprios são seguros!", sfx: 'fail' }  
-                ]},  
-            ]  
-        },  
+            // MÓDULO 2: SAÚDE E MITOS - Pergunta 4
+            { 
+                icon: "🧻", title: "Materiais Inadequados", 
+                text: "Qual material é impróprio para absorver o sangue menstrual?", 
+                background: "linear-gradient(180deg, #93a5cf, #e4efe9)",
+                interactiveObjects: [
+                    { 
+                        question: "Qual material NÃO deve ser usado para absorver o sangue menstrual?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "Papel higiênico ou panos", correct: true, coins: 3, next: 9, popup: "✅ Correto! Esses materiais podem causar infecções.", sfx: 'success' },
+                            { text: "Absorventes descartáveis", correct: false, bombs: 1, next: 9, popup: "❌ Absorventes próprios são seguros!", sfx: 'fail' },
+                            { text: "Coletores menstruais", correct: false, bombs: 1, next: 9, popup: "❌ Coletores são uma opção segura!", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            },
 
-        // MÓDULO 3: ACESSO AO PROGRAMA - Pergunta 1  
-        {   
-            icon: "📱", title: "MÓDULO 3: Acesso ao Programa",   
-            text: "Para retirar os absorventes na Farmácia Popular, qual documento essencial deve ser gerado pelo Meu SUS Digital, além do CPF e documento com foto?",   
-            background: "linear-gradient(45deg, #f6d365, #fda085)",  
-            interactiveObjects: [  
-                { text: "Autorização do Programa", top: "40%", left: "30%", choices: [  
-                    { text: "A 'Autorização do Programa Dignidade Menstrual'.", stats: [0, 0, 10], coins: 2, next: 10, popup: "✅ PC +10, +2 🪙! Correto! Documento liberado para retirada.", inventoryChange: { absorventes: 40 }, sfx: 'success' }  
-                ]},  
-                { text: "Receita médica", top: "40%", left: "70%", choices: [  
-                    { text: "Uma receita médica.", stats: [0, -5, 0], coins: -1, bombs: 1, next: 10, popup: "❌ MCS -5, -1 🪙, +1 💣! Não precisa de receita médica!", sfx: 'fail' }  
-                ]},  
-            ]  
-        },  
+            // MÓDULO 3: ACESSO AO PROGRAMA - Pergunta 1
+            { 
+                icon: "📱", title: "MÓDULO 3: Acesso ao Programa", 
+                text: "Para retirar absorventes na Farmácia Popular, qual documento é essencial?", 
+                background: "linear-gradient(45deg, #f6d365, #fda085)",
+                interactiveObjects: [
+                    { 
+                        question: "Qual documento é necessário para retirar absorventes na Farmácia Popular?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "Autorização do Programa Dignidade Menstrual", correct: true, coins: 2, next: 10, popup: "✅ Correto! Documento gerado pelo Meu SUS Digital.", sfx: 'success' },
+                            { text: "Receita médica", correct: false, bombs: 1, next: 10, popup: "❌ Não precisa de receita médica!", sfx: 'fail' },
+                            { text: "Cartão do SUS apenas", correct: false, bombs: 1, next: 10, popup: "❌ Precisa da autorização específica!", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            },
 
-        // MÓDULO 3: ACESSO AO PROGRAMA - Pergunta 2  
-        {   
-            icon: "📅", title: "Período de Retirada",   
-            text: "Qual é o período correto (em dias) que Cris tem direito a retirar um novo estoque de 40 absorventes?",   
-            background: "linear-gradient(45deg, #ff9a9e, #fecfef)",  
-            interactiveObjects: [  
-                { text: "A cada 56 dias", top: "40%", left: "30%", choices: [  
-                    { text: "A cada 56 dias (o que cobre dois ciclos menstruais).", stats: [0, 0, 15], coins: 3, next: 11, popup: "✅ PC +15, +3 🪙! Correto! Inventário atualizado.", inventoryChange: { absorventes: 40 }, sfx: 'success' }  
-                ]},  
-                { text: "Todo mês", top: "40%", left: "70%", choices: [  
-                    { text: "Todo mês (30 dias).", stats: [0, 0, 0], coins: -1, bombs: 1, next: 11, popup: "❌ -1 🪙, +1 💣! Incorreto. O período é de 56 dias.", sfx: 'fail' }  
-                ]},  
-            ]  
-        },  
+            // MÓDULO 3: ACESSO AO PROGRAMA - Pergunta 2
+            { 
+                icon: "📅", title: "Período de Retirada", 
+                text: "Qual é o período correto para retirar um novo estoque de absorventes?", 
+                background: "linear-gradient(45deg, #ff9a9e, #fecfef)",
+                interactiveObjects: [
+                    { 
+                        question: "De quantos em quantos dias pode retirar 40 absorventes?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "A cada 56 dias", correct: true, coins: 3, next: 11, popup: "✅ Correto! Cobre dois ciclos menstruais.", sfx: 'success' },
+                            { text: "Todo mês (30 dias)", correct: false, bombs: 1, next: 11, popup: "❌ Incorreto. O período é de 56 dias.", sfx: 'fail' },
+                            { text: "A cada 3 meses", correct: false, bombs: 1, next: 11, popup: "❌ Muito tempo! É a cada 56 dias.", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            },
 
-        // MÓDULO 3: ACESSO AO PROGRAMA - Pergunta 3  
-        {   
-            icon: "⏰", title: "Logística do Programa",   
-            text: "Se Cris esquecer de ir à farmácia por um mês, ela pode retirar os absorventes referentes ao mês anterior?",   
-            background: "linear-gradient(135deg, #667eea, #764ba2)",  
-            interactiveObjects: [  
-                { text: "Não pode", top: "40%", left: "30%", choices: [  
-                    { text: "Não, pois não poderão ser feitas retiradas referentes a meses anteriores.", stats: [0, 0, 10], coins: 2, next: 'end', popup: "✅ PC +10, +2 🪙! Correto! Importante saber a logística do programa.", sfx: 'success' }  
-                ]},  
-                { text: "Pode retirar", top: "40%", left: "70%", choices: [  
-                    { text: "Sim, pode retirar meses anteriores.", stats: [0, 0, 0], coins: -1, bombs: 1, next: 'end', popup: "❌ -1 🪙, +1 💣! Incorreto. Não é possível retirar meses anteriores.", sfx: 'fail' }  
-                ]},  
-            ]  
-        }  
-    ];  
+            // MÓDULO 3: ACESSO AO PROGRAMA - Pergunta 3
+            { 
+                icon: "⏰", title: "Logística do Programa", 
+                text: "Se esquecer de ir à farmácia, pode retirar absorventes de meses anteriores?", 
+                background: "linear-gradient(135deg, #667eea, #764ba2)",
+                interactiveObjects: [
+                    { 
+                        question: "É possível retirar absorventes referentes a meses anteriores?", 
+                        top: "40%", 
+                        left: "50%", 
+                        choices: [
+                            { text: "Não é possível", correct: true, coins: 2, next: 'end', popup: "✅ Correto! Importante saber a logística do programa.", sfx: 'success' },
+                            { text: "Sim, pode retirar", correct: false, bombs: 1, next: 'end', popup: "❌ Incorreto. Não é possível retirar meses anteriores.", sfx: 'fail' },
+                            { text: "Só com justificativa médica", correct: false, bombs: 1, next: 'end', popup: "❌ Não é possível mesmo com justificativa.", sfx: 'fail' }
+                        ]
+                    }
+                ]
+            }
+        ];
 
-    // Floating particles animation  
-    function createParticles() {  
-        const container = document.getElementById('particles');  
-        for (let i = 0; i < 15; i++) {  
-            const particle = document.createElement('div');  
-            particle.className = 'particle';  
-            particle.style.left = Math.random() * 100 + '%';  
-            particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';  
-            particle.style.animationDelay = Math.random() * 15 + 's';  
-            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';  
-            container.appendChild(particle);  
-        }  
-    }  
+        // Floating particles animation
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
 
-    // Floating panties animation  
-    function createFloatingPanties() {  
-        const container = document.getElementById('particles');  
-        const pantyEmojis = ['🩲', '👙', '🩱'];  
-          
-        for (let i = 0; i < 8; i++) {  
-            const panty = document.createElement('div');  
-            panty.className = 'floating-panty';  
-            panty.textContent = pantyEmojis[Math.floor(Math.random() * pantyEmojis.length)];  
-            panty.style.left = Math.random() * 100 + '%';  
-            panty.style.animationDelay = Math.random() * 12 + 's';  
-            panty.style.animationDuration = (Math.random() * 8 + 12) + 's';  
-              
-            // Random colors for variety  
-            const colors = ['#ff9a9e', '#fad0c4', '#a8e6cf', '#dcedc8', '#ffecd2', '#fcb69f'];  
-            panty.style.filter = `hue-rotate(${Math.random() * 360}deg)`;  
-              
-            container.appendChild(panty);  
-        }  
-    }  
+        // Floating panties animation
+        function createFloatingPanties() {
+            const container = document.getElementById('particles');
+            const pantyEmojis = ['🩲', '👙', '🩱'];
+            
+            for (let i = 0; i < 8; i++) {
+                const panty = document.createElement('div');
+                panty.className = 'floating-panty';
+                panty.textContent = pantyEmojis[Math.floor(Math.random() * pantyEmojis.length)];
+                panty.style.left = Math.random() * 100 + '%';
+                panty.style.animationDelay = Math.random() * 12 + 's';
+                panty.style.animationDuration = (Math.random() * 8 + 12) + 's';
+                
+                // Random colors for variety
+                const colors = ['#ff9a9e', '#fad0c4', '#a8e6cf', '#dcedc8', '#ffecd2', '#fcb69f'];
+                panty.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+                
+                container.appendChild(panty);
+            }
+        }
 
-    // Medal animation for correct answers  
-    function showMedal() {  
-        const medals = ['🏅', '🥇', '⭐', '🌟'];  
-        const medal = document.createElement('div');  
-        medal.className = 'medal-animation';  
-        medal.textContent = medals[Math.floor(Math.random() * medals.length)];  
-        medal.style.left = Math.random() * 80 + 10 + '%';  
-        medal.style.top = '20%';  
-        document.body.appendChild(medal);  
-          
-        setTimeout(() => {  
-            if (medal.parentNode) {  
-                medal.parentNode.removeChild(medal);  
-            }  
-        }, 2000);  
-    }  
+        // Medal animation for correct answers
+        function showMedal() {
+            const medals = ['🏅', '🥇', '⭐', '🌟'];
+            const medal = document.createElement('div');
+            medal.className = 'medal-animation';
+            medal.textContent = medals[Math.floor(Math.random() * medals.length)];
+            medal.style.left = Math.random() * 80 + 10 + '%';
+            medal.style.top = '20%';
+            document.body.appendChild(medal);
+            
+            setTimeout(() => {
+                if (medal.parentNode) {
+                    medal.parentNode.removeChild(medal);
+                }
+            }, 2000);
+        }
 
-    // Bomb animation for wrong answers  
-    function showBomb() {  
-        const bombs = ['💣', '💥', '🔥'];  
-        const bomb = document.createElement('div');  
-        bomb.className = 'bomb-animation';  
-        bomb.textContent = bombs[Math.floor(Math.random() * bombs.length)];  
-        bomb.style.left = Math.random() * 80 + 10 + '%';  
-        bomb.style.top = '30%';  
-        document.body.appendChild(bomb);  
-          
-        setTimeout(() => {  
-            if (bomb.parentNode) {  
-                bomb.parentNode.removeChild(bomb);  
-            }  
-        }, 1500);  
-    }  
+        // Bomb animation for wrong answers
+        function showBomb() {
+            const bombs = ['💣', '💥', '🔥'];
+            const bomb = document.createElement('div');
+            bomb.className = 'bomb-animation';
+            bomb.textContent = bombs[Math.floor(Math.random() * bombs.length)];
+            bomb.style.left = Math.random() * 80 + 10 + '%';
+            bomb.style.top = '30%';
+            document.body.appendChild(bomb);
+            
+            setTimeout(() => {
+                if (bomb.parentNode) {
+                    bomb.parentNode.removeChild(bomb);
+                }
+            }, 1500);
+        }
 
-    // Cotton candy rain for victory  
-    function createCottonCandyRain() {  
-        const cottonCandyEmojis = ['🍭', '🧁', '🍰', '🎂', '🍬'];  
-          
-        for (let i = 0; i < 20; i++) {  
-            setTimeout(() => {  
-                const candy = document.createElement('div');  
-                candy.className = 'cotton-candy';  
-                candy.textContent = cottonCandyEmojis[Math.floor(Math.random() * cottonCandyEmojis.length)];  
-                candy.style.left = Math.random() * 100 + '%';  
-                candy.style.animationDelay = Math.random() * 2 + 's';  
-                candy.style.filter = `hue-rotate(${Math.random() * 360}deg)`;  
-                document.body.appendChild(candy);  
-                  
-                setTimeout(() => {  
-                    if (candy.parentNode) {  
-                        candy.parentNode.removeChild(candy);  
-                    }  
-                }, 4000);  
-            }, i * 200);  
-        }  
-    }  
+        // Cotton candy rain for victory
+        function createCottonCandyRain() {
+            const cottonCandyEmojis = ['🍭', '🧁', '🍰', '🎂', '🍬'];
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const candy = document.createElement('div');
+                    candy.className = 'cotton-candy';
+                    candy.textContent = cottonCandyEmojis[Math.floor(Math.random() * cottonCandyEmojis.length)];
+                    candy.style.left = Math.random() * 100 + '%';
+                    candy.style.animationDelay = Math.random() * 2 + 's';
+                    candy.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(candy);
+                    
+                    setTimeout(() => {
+                        if (candy.parentNode) {
+                            candy.parentNode.removeChild(candy);
+                        }
+                    }, 4000);
+                }, i * 200);
+            }
+        }
 
-    // Audio functions  
-    function playSound(soundName) {  
-        if (isMuted) return;  
-          
-        const sounds = {  
-            'click': sfxClick,  
-            'success': sfxSuccess,  
-            'fail': sfxFail,  
-            'walk': sfxWalk,  
-            'win': sfxWin  
-        };  
-          
-        const sound = sounds[soundName];  
-        if (sound) {  
-            sound.currentTime = 0;  
-            sound.play().catch(e => console.log('Audio play failed:', e));  
-        }  
-    }  
+        // Audio functions
+        function playSound(soundName) {
+            if (isMuted) return;
+            
+            const sounds = {
+                'click': sfxClick,
+                'success': sfxSuccess,
+                'fail': sfxFail,
+                'walk': sfxWalk,
+                'win': sfxWin
+            };
+            
+            const sound = sounds[soundName];
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log('Audio play failed:', e));
+            }
+        }
 
-    // Mute functionality  
-    function toggleMute() {  
-        isMuted = !isMuted;  
-        bgMusic.muted = isMuted;  
-        sfxClick.muted = isMuted;  
-        sfxSuccess.muted = isMuted;  
-        sfxFail.muted = isMuted;  
-        sfxWalk.muted = isMuted;  
-        sfxWin.muted = isMuted;   
-        muteButton.textContent = isMuted ? '🔇' : '🔊';  
+        // Mute functionality
+        function toggleMute() {
+            isMuted = !isMuted;
+            bgMusic.muted = isMuted;
+            sfxClick.muted = isMuted;
+            sfxSuccess.muted = isMuted;
+            sfxFail.muted = isMuted;
+            sfxWalk.muted = isMuted;
+            sfxWin.muted = isMuted; 
+            muteButton.textContent = isMuted ? '🔇' : '🔊';
 
-        if (!isMuted) {  
-            playMusic();  
-        } else {  
-            stopMusic();  
-        }  
-    }  
+            if (!isMuted) {
+                playMusic();
+            } else {
+                stopMusic();
+            }
+        }
 
-    function playMusic() {  
-        if (isMuted) return;  
-        bgMusic.play().catch(e => console.log("Autoplay music failed:", e));  
-    }  
+        function playMusic() {
+            if (isMuted) return;
+            bgMusic.play().catch(e => console.log("Autoplay music failed:", e));
+        }
 
-    function stopMusic() {  
-        bgMusic.pause();  
-        bgMusic.currentTime = 0;  
-    }  
+        function stopMusic() {
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+        }
 
-    function updateStats() {  
-        updateDisplay();  
-    }  
+        function updateStats() {
+            updateDisplay();
+        }
 
-    function updateDisplay() {  
-        // Update progress bar  
-        const progress = (gameState.currentScenario / gameState.totalScenarios) * 100;  
-        document.getElementById('progress-fill').style.width = progress + '%';  
-    }  
+        function updateDisplay() {
+            // Update progress bar
+            const progress = (gameState.currentScenario / gameState.totalScenarios) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
 
-    function showPopup(message, duration = 4000) {  
-        const popup = document.getElementById('popup-message');  
-        popup.innerHTML = message;  
-        popup.classList.remove('hidden');  
-        setTimeout(() => popup.classList.add('hidden'), duration);  
-    }  
+        function showPopup(message, duration = 4000) {
+            const popup = document.getElementById('popup-message');
+            popup.innerHTML = message;
+            popup.classList.remove('hidden');
+            setTimeout(() => popup.classList.add('hidden'), duration);
+        }
 
-    function setCharacterEmotion(emotion) {  
-        const cris = document.getElementById('cris-character');  
-        cris.className = `cris-character ${emotion}`;  
-    }  
+        function setCharacterEmotion(emotion) {
+            const cris = document.getElementById('cris-character');
+            cris.className = `cris-character ${emotion}`;
+        }
 
-    // NOVO: Função para alterar a expressão de Cris  
-    function setCrisExpression(emotion) {  
-        const crisChar = document.getElementById('cris-character');  
-        // Remove todas as classes de emoção  
-        crisChar.classList.remove('happy', 'sad');  
+        // NOVO: Função para alterar a expressão de Cris
+        function setCrisExpression(emotion) {
+            const crisChar = document.getElementById('cris-character');
+            // Remove todas as classes de emoção
+            crisChar.classList.remove('happy', 'sad');
 
-        // Adiciona a classe de emoção correta  
-        if (emotion === 'happy') {  
-            crisChar.classList.add('happy');  
-        } else if (emotion === 'sad') {  
-            crisChar.classList.add('sad');  
-        }  
-        // Efeito de pulso para a expressão  
-        crisChar.style.transform = 'scale(1.3)';  
-        setTimeout(() => crisChar.style.transform = 'scale(1.2)', 300);  
-    }  
+            // Adiciona a classe de emoção correta
+            if (emotion === 'happy') {
+                crisChar.classList.add('happy');
+            } else if (emotion === 'sad') {
+                crisChar.classList.add('sad');
+            }
+            // Efeito de pulso para a expressão
+            crisChar.style.transform = 'scale(1.3)';
+            setTimeout(() => crisChar.style.transform = 'scale(1.2)', 300);
+        }
 
-    function createInteractionButtons(interactiveObject) {  
-        const container = document.getElementById('choices-container');  
-        container.innerHTML = '';  
-        container.style.display = 'flex'; // Usando flex para centralizar  
+        function handleChoice(choice, choiceElement) {
+            playSound('click');
+            
+            // Visual feedback on the choice
+            if (choice.correct) {
+                choiceElement.classList.add('correct');
+                setCrisExpression('happy');
+                showMedal();
+                if (choice.coins) {
+                    // Add coins visual effect
+                    for (let i = 0; i < choice.coins; i++) {
+                        setTimeout(() => createCoinEffect(), i * 200);
+                    }
+                }
+            } else {
+                choiceElement.classList.add('incorrect');
+                setCrisExpression('sad');
+                showBomb();
+                if (choice.bombs) {
+                    // Add bomb visual effect
+                    for (let i = 0; i < choice.bombs; i++) {
+                        setTimeout(() => showBomb(), i * 300);
+                    }
+                }
+            }
 
-        interactiveObject.choices.forEach(choice => {  
-            const button = document.createElement('button');  
-            button.className = 'choice-btn';  
-            button.innerHTML = choice.text;  
-            button.addEventListener('click', () => {  
-                playSound('click');  
-                  
-                // NOVO: Definir expressão baseada no resultado da escolha  
-                const isSuccess = choice.stats[0] > 0 || choice.stats[1] > 0 || choice.stats[2] > 0;  
-                const hasNegative = choice.stats[0] < 0 || choice.stats[1] < 0 || choice.stats[2] < 0;  
+            // Show popup message
+            if (choice.popup) {
+                showPopup(choice.popup);
+            }
 
-                if (choice.next === 'end' || choice.sfx === 'win') {  
-                    setCrisExpression('happy'); // Vitória  
-                    showMedal(); // Medalha para vitória  
-                } else if (choice.sfx === 'success' || isSuccess) {  
-                    setCrisExpression('happy'); // Sucesso  
-                    showMedal(); // Medalha para acerto  
-                } else if (choice.sfx === 'fail' || hasNegative) {  
-                    setCrisExpression('sad'); // Falha/Penalidade  
-                    showBomb(); // Bomba para erro  
-                } else {  
-                    setCrisExpression('normal'); // Neutro  
-                }  
+            // Disable all choices after selection
+            const allChoices = choiceElement.parentNode.querySelectorAll('.choice-option');
+            allChoices.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt !== choiceElement) {
+                    opt.style.opacity = '0.5';
+                }
+            });
 
-                if (choice.popup) showPopup(choice.popup);  
-                updateStats();  
+            // Move to next scenario after delay
+            setTimeout(() => {
+                moveCris(choice.next);
+            }, 2500);
+        }
 
-                container.style.display = 'none';   
-                moveCris(choice.next);  
-            });  
-            container.appendChild(button);  
-        });  
-        document.getElementById('scenario-text').innerHTML = interactiveObject.text;  
-    }  
+        function createCoinEffect() {
+            const coin = document.createElement('div');
+            coin.textContent = '🪙';
+            coin.style.position = 'fixed';
+            coin.style.fontSize = '2em';
+            coin.style.left = Math.random() * 80 + 10 + '%';
+            coin.style.top = '20%';
+            coin.style.zIndex = '1000';
+            coin.style.pointerEvents = 'none';
+            coin.style.animation = 'medalDrop 2s ease-out forwards';
+            document.body.appendChild(coin);
+            
+            setTimeout(() => {
+                if (coin.parentNode) {
+                    coin.parentNode.removeChild(coin);
+                }
+            }, 2000);
+        }
 
-    function loadInteractiveObjects(scenario) {  
-        const area = document.getElementById('interaction-area');  
-        area.innerHTML = '';  
+        function loadInteractiveObjects(scenario) {
+            const area = document.getElementById('interaction-area');
+            area.innerHTML = '';
 
-        if (!scenario.interactiveObjects) return;  
+            if (!scenario.interactiveObjects) return;
 
-        scenario.interactiveObjects.forEach((obj, index) => {  
-            const objectDiv = document.createElement('div');  
-            objectDiv.className = 'interactive-object';  
-            objectDiv.innerHTML = obj.text;  
-            objectDiv.style.top = obj.top;  
-            objectDiv.style.left = obj.left;  
-            objectDiv.style.opacity = 1;  
-              
-            // Add different colors for each card  
-            const colors = [  
-                'linear-gradient(135deg, #667eea, #764ba2)',  
-                'linear-gradient(135deg, #f093fb, #f5576c)',  
-                'linear-gradient(135deg, #4ecdc4, #44a08d)',  
-                'linear-gradient(135deg, #ffecd2, #fcb69f)'  
-            ];  
-            objectDiv.style.background = colors[index % colors.length];  
+            scenario.interactiveObjects.forEach((obj, index) => {
+                const objectDiv = document.createElement('div');
+                objectDiv.className = 'interactive-object';
+                
+                // Create card structure with front and back
+                const cardInner = document.createElement('div');
+                cardInner.className = 'card-inner';
+                
+                const cardFront = document.createElement('div');
+                cardFront.className = 'card-front';
+                cardFront.innerHTML = `<div style="font-size: 1.2em; margin-bottom: 10px;">❓</div><div>${obj.question}</div>`;
+                
+                const cardBack = document.createElement('div');
+                cardBack.className = 'card-back';
+                
+                // Create choice options
+                obj.choices.forEach(choice => {
+                    const choiceDiv = document.createElement('div');
+                    choiceDiv.className = 'choice-option';
+                    choiceDiv.textContent = choice.text;
+                    choiceDiv.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        handleChoice(choice, choiceDiv);
+                    });
+                    cardBack.appendChild(choiceDiv);
+                });
+                
+                cardInner.appendChild(cardFront);
+                cardInner.appendChild(cardBack);
+                objectDiv.appendChild(cardInner);
+                
+                objectDiv.style.top = obj.top;
+                objectDiv.style.left = obj.left;
+                objectDiv.style.opacity = 1;
+                
+                // Add different colors for each card
+                const colors = [
+                    'linear-gradient(135deg, #667eea, #764ba2)',
+                    'linear-gradient(135deg, #f093fb, #f5576c)',
+                    'linear-gradient(135deg, #4ecdc4, #44a08d)',
+                    'linear-gradient(135deg, #ffecd2, #fcb69f)'
+                ];
+                cardFront.style.background = colors[index % colors.length];
 
-            objectDiv.addEventListener('click', () => {  
-                playSound('click'); // Som de clique no objeto interativo  
-                document.getElementById('module-title').textContent = scenario.title;  
-                createInteractionButtons(obj);  
-                const crisChar = document.getElementById('cris-character');  
-                crisChar.style.left = obj.left;  
-                crisChar.style.animation = 'walk 0.8s ease-in-out 1';  
-                playSound('walk'); // Som de passos  
-                setTimeout(() => crisChar.style.animation = 'walk 1.5s ease-in-out infinite', 800);  
-            });  
-            area.appendChild(objectDiv);  
-        });  
-    }  
+                objectDiv.addEventListener('click', () => {
+                    if (!objectDiv.classList.contains('flipped')) {
+                        playSound('click');
+                        objectDiv.classList.add('flipped');
+                        const crisChar = document.getElementById('cris-character');
+                        crisChar.style.left = obj.left;
+                        crisChar.style.animation = 'walk 0.8s ease-in-out 1';
+                        playSound('walk');
+                        setTimeout(() => crisChar.style.animation = 'walk 1.5s ease-in-out infinite', 800);
+                    }
+                });
+                
+                area.appendChild(objectDiv);
+            });
+        }
 
-    function moveCris(index) {  
-        if (index === 'end') { showVictory(); return; }  
-        if (index === 'restart') { resetGame(); return; }  
-          
-        const scenario = scenarios[index];  
-        if (!scenario) return;  
+        function moveCris(index) {
+            if (index === 'end') { showVictory(); return; }
+            if (index === 'restart') { resetGame(); return; }
+            
+            const scenario = scenarios[index];
+            if (!scenario) return;
 
-        gameState.currentScenario = index;  
-        const crisChar = document.getElementById('cris-character');  
-          
-        // NOVO: Volta para a expressão neutra ao mover  
-        setCrisExpression('normal');   
+            gameState.currentScenario = index;
+            const crisChar = document.getElementById('cris-character');
+            
+            // NOVO: Volta para a expressão neutra ao mover
+            setCrisExpression('normal'); 
 
-        crisChar.style.animation = 'walk 0.5s ease-in-out infinite';  
-        crisChar.style.left = '50%';   
-        playSound('walk'); // Som de passos ao se mover  
-          
-        document.getElementById('scenario-bg').style.background = scenario.background;  
-        document.getElementById('scenario-icon').textContent = scenario.icon;  
-        document.getElementById('module-title').textContent = scenario.title;  
-        document.getElementById('scenario-text').textContent = scenario.text;  
-        document.getElementById('choices-container').style.display = 'none';  
-          
-        setTimeout(() => {  
-            loadInteractiveObjects(scenario);  
-            updateDisplay();  
-        }, 1500);  
-    }  
-
-    function makeChoice(choice) {  
-        playSound('click');  
-          
-        // Apply stat changes  
-        if (choice.stats) {  
-            gameState.ms += choice.stats[0] || 0;  
-            gameState.mcs += choice.stats[1] || 0;  
-            gameState.pc += choice.stats[2] || 0;  
-        }  
-          
-        // Apply inventory changes  
-        if (choice.inventoryChange) {  
-            Object.keys(choice.inventoryChange).forEach(item => {  
-                if (gameState.inventory[item] !== undefined) {  
-                    gameState.inventory[item] += choice.inventoryChange[item];  
-                }  
-            });  
-        }  
-          
-        // Play sound effect  
-        if (choice.sfx) {  
-            playSound(choice.sfx);  
-        }  
-          
-        // Show popup message  
-        if (choice.popup) {  
-            showPopup(choice.popup);  
-        }  
-          
-        // Set character emotion based on choice result  
-        if (choice.stats && choice.stats[0] > 0) {  
-            setCharacterEmotion('happy');  
-        } else if (choice.stats && choice.stats[0] < 0) {  
-            setCharacterEmotion('sad');  
-        } else {  
-            setCharacterEmotion('neutral');  
-        }  
-          
-        // Update stats display  
-        updateStats();  
-          
-        // Move to next scenario  
-        setTimeout(() => {  
-            if (choice.next === 'end' || choice.next >= scenarios.length) {  
-                endGame();  
-            } else if (choice.next && choice.next <= scenarios.length - 1) {  
-                loadScenario(choice.next);  
-            } else {  
-                endGame();  
-            }  
-        }, 2500);  
-    }  
-
-    function resetGame() {  
-        stopMusic();   
-        gameState = {   
-            currentScenario: 0,   
-            totalScenarios: 12  
-        };  
-        updateDisplay();  
-        setCrisExpression('normal'); // Volta para expressão neutra  
-        document.getElementById('scenario-icon').textContent = '🌟';  
-        document.getElementById('module-title').textContent = 'O Ciclo de Respeito da Cris';  
-        document.getElementById('scenario-text').innerHTML = 'Clique no botão "Iniciar Jogo" para começar.';  
-        document.getElementById('choices-container').style.display = 'flex';  
-        document.getElementById('choices-container').innerHTML = `<button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>`;  
-        document.getElementById('interaction-area').innerHTML = '';  
-        document.getElementById('cris-character').style.left = '50%';  
-    }  
-
-    function loadScenario(index) {  
-        if (index === 1) {   
-            moveCris(1);  
-            playMusic();   
-        } else {  
-            moveCris(index);  
-        }  
-    }  
-
-    function showVictory() {  
-        playSound('win'); // Som de vitória  
-        stopMusic(); // Para a música de fundo  
-        setCrisExpression('happy'); // Cris feliz na vitória  
-        createCottonCandyRain(); // Chuva de algodão doce!  
-
-        const card = document.querySelector('.scenario-card');  
-        card.style.transform = 'translateZ(50px) scale(1.1)';  
-        document.getElementById('scenario-icon').textContent = '🏆';  
-        document.getElementById('module-title').textContent = 'Jornada Completa!';  
-        let message = "Parabéns! Cris completou sua jornada de autocuidado e aprendeu muito sobre saúde menstrual! 🌟💝";  
-        document.getElementById('scenario-text').innerHTML = message;  
-        const choicesContainer = document.getElementById('choices-container');  
-        choicesContainer.style.display = 'flex';  
-        choicesContainer.innerHTML = `<button class="choice-btn" onclick="resetGame()">🔄 Nova Jornada</button>`;  
-        document.getElementById('interaction-area').innerHTML = '';  
-    }  
-
-    function endGame() {  
-        showVictory();  
-    }  
+            crisChar.style.animation = 'walk 0.5s ease-in-out infinite';
+            crisChar.style.left = '50%'; 
+            playSound('walk'); // Som de passos ao se mover
+            
+            document.getElementById('scenario-bg').style.background = scenario.background;
+            document.getElementById('scenario-icon').textContent = scenario.icon;
+            document.getElementById('module-title').textContent = scenario.title;
+            document.getElementById('scenario-text').textContent = scenario.text;
+            document.getElementById('choices-container').style.display = 'none';
+            
+            setTimeout(() => {
+                loadInteractiveObjects(scenario);
+                updateDisplay();
+            }, 1500);
+        }
 
 
 
-    // Initialize game  
-    document.addEventListener('DOMContentLoaded', () => {  
-        createParticles();  
-        createFloatingPanties();  
-        updateDisplay();  
-        muteButton.textContent = isMuted ? '🔇' : '🔊';  
-    });  
-</script>
+        function resetGame() {
+            stopMusic(); 
+            gameState = { 
+                currentScenario: 0, 
+                totalScenarios: 12
+            };
+            updateDisplay();
+            setCrisExpression('normal'); // Volta para expressão neutra
+            document.getElementById('scenario-icon').textContent = '🌟';
+            document.getElementById('module-title').textContent = 'O Ciclo de Respeito da Cris';
+            document.getElementById('scenario-text').innerHTML = 'Clique no botão "Iniciar Jogo" para começar.';
+            document.getElementById('choices-container').style.display = 'flex';
+            document.getElementById('choices-container').innerHTML = `<button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>`;
+            document.getElementById('interaction-area').innerHTML = '';
+            document.getElementById('cris-character').style.left = '50%';
+        }
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e71ee604f47e8c',t:'MTc2MDQ0NTM2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
+        function loadScenario(index) {
+            if (index === 1) { 
+                moveCris(1);
+                playMusic(); 
+            } else {
+                moveCris(index);
+            }
+        }
+
+        function showVictory() {
+            playSound('win'); // Som de vitória
+            stopMusic(); // Para a música de fundo
+            setCrisExpression('happy'); // Cris feliz na vitória
+            createCottonCandyRain(); // Chuva de algodão doce!
+
+            const card = document.querySelector('.scenario-card');
+            card.style.transform = 'translateZ(50px) scale(1.1)';
+            document.getElementById('scenario-icon').textContent = '🏆';
+            document.getElementById('module-title').textContent = 'Jornada Completa!';
+            let message = "Parabéns! Cris completou sua jornada de autocuidado e aprendeu muito sobre saúde menstrual! 🌟💝";
+            document.getElementById('scenario-text').innerHTML = message;
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.style.display = 'flex';
+            choicesContainer.innerHTML = `<button class="choice-btn" onclick="resetGame()">🔄 Nova Jornada</button>`;
+            document.getElementById('interaction-area').innerHTML = '';
+        }
+
+        function endGame() {
+            showVictory();
+        }
+
+
+
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            createFloatingPanties();
+            updateDisplay();
+            muteButton.textContent = isMuted ? '🔇' : '🔊';
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e74523f75a0353',t:'MTc2MDQ0NjkzNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
