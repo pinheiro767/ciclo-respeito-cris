@@ -42,40 +42,43 @@
             flex-direction: column;
             transform-style: preserve-3d;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: flex-start;
+            padding-top: 120px;
             padding-bottom: 20px;
         }
-        
-        #indicators {
+
+        #main-title {
             position: fixed;
             top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            font-size: 2.5em;
+            font-weight: bold;
             color: white;
-            z-index: 100;
-            transform: translateZ(50px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            backdrop-filter: blur(15px);
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            opacity: 0;
+            animation: fadeInTitle 3s ease-in-out 1s forwards;
+        }
+
+        @keyframes fadeInTitle {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(-20px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(0px); 
+            }
         }
         
-        .stat-item {
-            margin: 8px 0;
-            padding: 8px 12px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .health { color: #ff6b6b; font-weight: bold; }
-        .social { color: #4ecdc4; font-weight: bold; }
-        .knowledge { color: #45b7d1; font-weight: bold; }
-        .inventory { color: #f9d342; font-weight: bold; }
+
 
         #scenario-container {
             width: 95%;
@@ -105,26 +108,39 @@
 
         .interactive-object {
             position: absolute;
-            background: rgba(255, 255, 255, 0.9);
-            border: 3px solid #4ecdc4;
-            border-radius: 15px;
-            padding: 10px 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: 4px solid #ffffff;
+            border-radius: 20px;
+            padding: 20px 30px;
             cursor: pointer;
             transition: all 0.3s ease;
             z-index: 15;
             font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            font-size: 18px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
             animation: pulse 2s infinite;
+            min-width: 200px;
+            text-align: center;
         }
         
         .interactive-object:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            transform: scale(1.15);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, #764ba2, #f093fb);
+            border-color: #f093fb;
         }
         
         @keyframes pulse {
-            0%, 100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
-            50% { box-shadow: 0 5px 15px rgba(78, 205, 196, 0.6); }
+            0%, 100% { 
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+                border-color: #ffffff;
+            }
+            50% { 
+                box-shadow: 0 8px 25px rgba(78, 205, 196, 0.8), 0 0 20px rgba(240, 147, 251, 0.6);
+                border-color: #4ecdc4;
+            }
         }
 
         .cris-character {
@@ -360,20 +376,52 @@
             animation: float 6s infinite ease-in-out;
         }
         
+        .floating-panty {
+            position: absolute;
+            font-size: 2em;
+            opacity: 0.7;
+            animation: floatPanty 12s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
         @keyframes float {
             0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
             90% { opacity: 1; }
             100% { transform: translateY(-10px) rotate(360deg); opacity: 0; }
         }
+        
+        @keyframes floatPanty {
+            0% { 
+                transform: translateY(100vh) rotate(0deg) scale(0.8); 
+                opacity: 0; 
+            }
+            10% { 
+                opacity: 0.7; 
+            }
+            50% { 
+                transform: translateY(50vh) rotate(180deg) scale(1.2); 
+                opacity: 0.8; 
+            }
+            90% { 
+                opacity: 0.7; 
+            }
+            100% { 
+                transform: translateY(-20px) rotate(360deg) scale(0.8); 
+                opacity: 0; 
+            }
+        }
 
         @media (max-width: 768px) {
-            #indicators {
-                position: relative;
-                top: 10px;
-                left: 10px;
-                width: calc(100% - 40px);
-                margin-bottom: 20px;
+            #main-title {
+                font-size: 1.8em;
+                padding: 10px 20px;
+                top: 15px;
+            }
+            
+            #game-container {
+                padding-top: 140px;
             }
             
             .choice-btn {
@@ -408,13 +456,9 @@
     <div id="game-container">
         <div class="floating-particles" id="particles"></div>
         
-        <header id="indicators">
-            <h3>Estado da Cris</h3>
-            <div class="stat-item"><span id="stat-ms" class="health">❤️ Saúde (MS): <span id="ms">100</span></span></div>
-            <div class="stat-item"><span id="stat-mcs" class="social">🤝 Social (MCS): <span id="mcs">50</span></span></div>
-            <div class="stat-item"><span id="stat-pc" class="knowledge">🧠 Conhecimento (PC): <span id="pc">0</span></span></div>
-            <div class="stat-item"><span id="stat-inventory" class="inventory">🎒 Absorventes: <span id="absorventes">40</span></span></div>
-        </header>
+        <h1 id="main-title">O Ciclo de Respeito da Cris</h1>
+        
+
 
         <div id="scenario-container">
             <div class="scenario-background" id="scenario-bg"></div>
@@ -464,12 +508,10 @@
     </div>
 
     <script>
-        // ESTADO DO JOGO E INVENTÁRIO (MANTIDO)
+        // ESTADO DO JOGO SIMPLIFICADO
         let gameState = {
-            ms: 100, mcs: 50, pc: 0,
-            inventory: { absorventes: 40, agua: true, calcinhasLimpa: true },
             currentScenario: 0,
-            totalScenarios: 10
+            totalScenarios: 12
         };
 
         // Referências aos elementos de áudio
@@ -482,154 +524,174 @@
         const muteButton = document.getElementById('mute-button');
         let isMuted = true;
 
-        // --- DADOS DOS CENÁRIOS (MANTIDO) ---
+        // --- DADOS DOS CENÁRIOS COM NOVAS PERGUNTAS EDUCATIVAS ---
         const scenarios = [
             // C0: INÍCIO (Inacessível diretamente)
             {},
 
-            // MÓDULO 1: O ALERTA (Ação 1: Ir ao Banheiro)
+            // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 1
             { 
-                icon: "⏰", title: "MÓDULO 1: O Alerta", 
-                text: "CRIS (PENSAMENTO): Sinto um fluxo intenso e desconforto. Já passou quase 6h. Preciso agir rápido! Clique no ícone de " + "🚻" + " (Banheiro) para continuar.", 
+                icon: "⏰", title: "MÓDULO 1: Higiene e Cuidados Básicos", 
+                text: "Em média, de quanto em quanto tempo o absorvente deve ser trocado para evitar riscos à saúde?", 
                 background: "linear-gradient(180deg, #ffc72c, #ff9a8d)",
-                interactiveObjects: [{
-                    text: "🚻 Banheiro", top: "50%", left: "70%", choices: [
-                        { text: "Acessar o Banheiro", stats: [0, 0, 0], next: 2 }
-                    ]
-                }]
+                interactiveObjects: [
+                    { text: "Aproximadamente 6 horas", top: "40%", left: "30%", choices: [
+                        { text: "Aproximadamente seis horas, mas caso o seu fluxo seja muito intenso você pode aumentar a frequência de troca, conforme sua necessidade.", stats: [15, 0, 15], coins: 3, next: 2, popup: "✅ Correto! A troca regular previne infecções.", sfx: 'success' }
+                    ]},
+                    { text: "Uma vez por dia", top: "40%", left: "70%", choices: [
+                        { text: "Trocar apenas uma vez por dia.", stats: [-10, 0, 0], coins: -2, bombs: 1, next: 2, popup: "❌ Muito tempo! Risco de infecções.", sfx: 'fail' }
+                    ]},
+                ]
             },
 
-            // MÓDULO 1: Ação 2: Higiene (Opções)
+            // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 2
             { 
-                icon: "🚿", title: "Ação 2: Higiene", 
-                text: "CRIS: Qual a melhor forma de me limpar agora? **Escolha a opção clicando no ícone correspondente.**", 
+                icon: "🚿", title: "Higiene Íntima", 
+                text: "Ao fazer a higiene íntima durante a menstruação, qual deve ser o maior cuidado?", 
                 background: "linear-gradient(180deg, #a4e4d5, #c0e0e8)",
                 interactiveObjects: [
-                    { text: "✅ Água e Sabão", top: "40%", left: "40%", choices: [
-                        { text: "Higienizar com água limpa e sabonete neutro.", stats: [10, 0, 0], next: 3, popup: "✅ MS +10. (Melhor prevenção de infecções).", sfx: 'success' }
+                    { text: "Água e Sabonete", top: "40%", left: "30%", choices: [
+                        { text: "Sempre que possível, lavar a área externa da região íntima com água e sabonete.", stats: [15, 0, 15], coins: 3, next: 3, popup: "✅ Perfeito! Higiene adequada é fundamental.", sfx: 'success' }
                     ]},
-                    { text: "❌ Papel Higiênico", top: "40%", left: "60%", choices: [
-                        { text: "Limpar apenas com papel higiênico.", stats: [-10, 0, 0], next: 3, popup: "❌ MS -10. (Risco de infecção urinária.)", sfx: 'fail' }
+                    { text: "Apenas Papel", top: "40%", left: "70%", choices: [
+                        { text: "Usar apenas papel higiênico.", stats: [-10, 0, 0], coins: -2, bombs: 1, next: 3, popup: "❌ Insuficiente para higiene adequada.", sfx: 'fail' }
                     ]},
                 ]
             },
 
-            // MÓDULO 1: Ação 3: Troca (Opções)
+            // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 3
             { 
-                icon: "🗑️", title: "Ação 3: Troca", 
-                text: "CRIS: Devo usar meu absorvente novo e jogar o antigo no vaso? **Escolha a forma correta de trocar.**", 
+                icon: "🩲", title: "Tipo de Tecido", 
+                text: "Qual tipo de tecido é o mais recomendado para as calcinhas, especialmente no período menstrual?", 
                 background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
                 interactiveObjects: [
-                    { text: "✅ Descarte no Lixo", top: "50%", left: "30%", choices: [
-                        { text: "Trocar e descartar no lixo.", stats: [10, 0, 5], next: 4, popup: "✅ MS +10, PC +5. (Prevenção e higiene básica).", inventoryChange: { absorventes: -1 }, sfx: 'success' }
+                    { text: "Algodão", top: "40%", left: "30%", choices: [
+                        { text: "O algodão é um tecido natural, respirável e absorvente, que ajuda a prevenir a proliferação de fungos e bactérias.", stats: [10, 0, 10], coins: 2, next: 4, popup: "✅ Correto! Algodão é o melhor tecido.", sfx: 'success' }
                     ]},
-                    { text: "❌ Spray Perfumado", top: "50%", left: "70%", choices: [
-                        { text: "Usar spray íntimo perfumado.", stats: [-15, 0, 0], next: 4, popup: "❌ MS -15. Pop-up: 'O uso de perfume íntimo não é indicado, evita agentes químicos!'", inventoryChange: { absorventes: -1 }, sfx: 'fail' }
+                    { text: "Sintético", top: "40%", left: "70%", choices: [
+                        { text: "Tecido sintético é melhor.", stats: [-10, 0, 0], coins: -1, bombs: 1, next: 4, popup: "❌ Tecidos sintéticos podem causar irritações.", sfx: 'fail' }
                     ]},
                 ]
             },
 
-            // MÓDULO 2: NOITE SAUDÁVEL (Ação 1: O Autocuidado)
+            // MÓDULO 1: HIGIENE E CUIDADOS BÁSICOS - Pergunta 4
             { 
-                icon: "🌙", title: "MÓDULO 2: Noite Saudável", 
-                text: "CRIS: Estou com cólica. O que devo fazer para melhorar meu bem-estar antes de dormir? **Clique na escolha que prioriza o autocuidado.**", 
+                icon: "🚫", title: "Produtos Íntimos", 
+                text: "O uso de spray ou perfume íntimo é recomendado para a higiene íntima?", 
                 background: "linear-gradient(180deg, #2c3e50, #3498db)",
                 interactiveObjects: [
-                    { text: "✅ Hidratação/Nutrição", top: "45%", left: "35%", choices: [
-                        { text: "Beber água e comer algo nutritivo.", stats: [5, 0, 5], next: 5, popup: "✅ MS +5, PC +5. (Autocuidado: hidratação e boa alimentação).", sfx: 'success' }
+                    { text: "Não é recomendado", top: "40%", left: "30%", choices: [
+                        { text: "Não. Deve-se evitar produtos com cheiro e corantes que possam causar irritações e alergias.", stats: [10, 0, 10], coins: 2, next: 5, popup: "✅ Correto! Evite produtos químicos.", sfx: 'success' }
                     ]},
-                    { text: "❌ Refrigerante/Deitar", top: "45%", left: "65%", choices: [
-                        { text: "Tomar refrigerante e deitar.", stats: [-5, 0, 0], next: 5, popup: "❌ MS -5. (Ignorando o autocuidado).", sfx: 'fail' }
+                    { text: "É recomendado", top: "40%", left: "70%", choices: [
+                        { text: "Sim, é importante usar perfumes íntimos.", stats: [-15, 0, 0], coins: -3, bombs: 1, next: 5, popup: "❌ Produtos químicos podem causar irritações!", sfx: 'fail' }
                     ]},
                 ]
             },
 
-            // MÓDULO 2: Ação 2: Roupa Íntima
+            // MÓDULO 2: SAÚDE E MITOS - Pergunta 1
             { 
-                icon: "🩲", title: "Ação 2: Roupa Íntima", 
-                text: "CRIS: Qual a melhor opção para minha saúde íntima durante o sono? **Escolha a melhor opção para aeração.**", 
+                icon: "🦠", title: "MÓDULO 2: Saúde e Mitos", 
+                text: "A ausência de higiene adequada (como a troca tardia do absorvente) pode colaborar para o crescimento de qual fungo em ambiente úmido e quente?", 
                 background: "linear-gradient(135deg, #fceabb, #f8b500)",
                 interactiveObjects: [
-                    { text: "✅ Sem Calcinha", top: "50%", left: "20%", choices: [
-                        { text: "Dormir SEM calcinha.", stats: [20, 0, 0], next: 6, popup: "✅ MS +20. (A melhor opção para evitar umidade/calor e candidíase).", sfx: 'success' }
+                    { text: "Candidíase", top: "40%", left: "30%", choices: [
+                        { text: "Candidíase.", stats: [15, 0, 15], coins: 3, next: 6, popup: "✅ Correto! A candidíase cresce em ambientes úmidos.", sfx: 'success' }
                     ]},
-                    { text: "✅ Calcinha de Algodão", top: "50%", left: "50%", choices: [
-                        { text: "Dormir com calcinha de algodão limpa.", stats: [10, 0, 0], next: 6, popup: "✅ MS +10. (Boa opção, conforme o guia).", sfx: 'success' }
-                    ]},
-                    { text: "❌ Calcinha Sintética Usada", top: "50%", left: "80%", choices: [
-                        { text: "Usar calcinha de tecido sintético usada.", stats: [-15, 0, 0], next: 6, popup: "❌ MS -15. (Risco de candidíase.)", sfx: 'fail' }
+                    { text: "Gripe", top: "40%", left: "70%", choices: [
+                        { text: "Gripe.", stats: [0, 0, 0], coins: -1, bombs: 1, next: 6, popup: "❌ Incorreto. A gripe não está relacionada à higiene íntima.", sfx: 'fail' }
                     ]},
                 ]
             },
 
-            // MÓDULO 3: CONSCIENTIZAÇÃO E APOIO (Ação 1: Ajudar Ana)
+            // MÓDULO 2: SAÚDE E MITOS - Pergunta 2
             { 
-                icon: "🫂", title: "MÓDULO 3: Conscientização e Apoio", 
-                text: "Ana, uma colega, manchou a calça e está constrangida. Ela não tem absorvente. **Clique em Ana para ajudá-la.**", 
+                icon: "🤰", title: "Mitos sobre Menstruação", 
+                text: "A menstruação serve como um método de prevenção de gravidez ou de infecções sexualmente transmissíveis (IST)?", 
                 background: "linear-gradient(45deg, #4ecdc4, #556270)",
                 interactiveObjects: [
-                    { text: "Ana 😟", top: "40%", left: "70%", choices: [
-                        { text: "✅ Oferecer absorvente e orientação (UBS).", stats: [0, 20, 10], next: 7, popup: "✅ MCS +20, PC +10. (Incentiva o auxílio mútuo e o acesso a orientações.)", inventoryChange: { absorventes: -1 }, sfx: 'success' },
-                        { text: "❌ Dizer que é 'normal' e sugerir papel.", stats: [0, -10, 0], next: 7, popup: "❌ MCS -10. (Não é o ideal para a saúde).", sfx: 'fail' }
+                    { text: "Não previne", top: "40%", left: "30%", choices: [
+                        { text: "Não. Para prevenir gravidez é preciso usar método contraceptivo, e para IST, usar preservativos.", stats: [0, 0, 20], coins: 4, next: 7, popup: "✅ Excelente! Mito importante desmistificado.", sfx: 'success' }
+                    ]},
+                    { text: "Sim, previne", top: "40%", left: "70%", choices: [
+                        { text: "Sim, a menstruação previne gravidez e IST.", stats: [0, -10, 0], coins: -2, bombs: 1, next: 7, popup: "❌ Mito perigoso! Sempre use proteção.", sfx: 'fail' }
                     ]},
                 ]
             },
 
-            // MÓDULO 3: Ação 2: Diálogo Educativo
+            // MÓDULO 2: SAÚDE E MITOS - Pergunta 3
             { 
-                icon: "💬", title: "Ação 2: Diálogo Educativo", 
-                text: "CRIS: Ana, você sabia que a menstruação não previne gravidez? **Clique na resposta certa para educar.**", 
+                icon: "🏃‍♀️", title: "Exercícios e Menstruação", 
+                text: "É proibido fazer exercícios físicos durante o período menstrual?", 
                 background: "linear-gradient(45deg, #a8e6cf, #dcedc8)",
                 interactiveObjects: [
-                    { text: "✅ Sim, Camisinha!", top: "50%", left: "35%", choices: [
-                        { text: "Responder sobre DST/camisinha.", stats: [0, 0, 15], next: 8, popup: "✅ PC +15. (Fato essencial de saúde).", sfx: 'success' }
+                    { text: "Não há contraindicação", top: "40%", left: "30%", choices: [
+                        { text: "Não há contraindicação, inclusive a prática regular pode reduzir as cólicas.", stats: [0, 10, 10], coins: 2, next: 8, popup: "✅ Correto! Exercícios podem ajudar.", sfx: 'success' }
                     ]},
-                    { text: "❌ É complicado.", top: "50%", left: "65%", choices: [
-                        { text: "Dizer que é complicado.", stats: [0, 0, 0], next: 8, popup: "❌ PC 0. (Perde a oportunidade de educar).", sfx: 'fail' }
+                    { text: "É proibido", top: "40%", left: "70%", choices: [
+                        { text: "Sim, é proibido fazer exercícios.", stats: [0, -5, 0], coins: -1, bombs: 1, next: 8, popup: "❌ Mito! Exercícios são benéficos.", sfx: 'fail' }
                     ]},
                 ]
             },
 
-            // MÓDULO 4: ACESSO AO DIREITO (Ação 1: Geração da Autorização)
+            // MÓDULO 2: SAÚDE E MITOS - Pergunta 4
             { 
-                icon: "🏥", title: "MÓDULO 4: Acesso ao Direito", 
-                text: "Na farmácia, o atendente pede sua Autorização do Programa Dignidade Menstrual. **Clique na opção de acesso.**", 
+                icon: "🧻", title: "Materiais Inadequados", 
+                text: "Qual destes materiais é considerado impróprio para absorver o sangue, podendo resultar em doenças e infecções urogenitais?", 
                 background: "linear-gradient(180deg, #93a5cf, #e4efe9)",
                 interactiveObjects: [
-                    { text: "✅ App Meu SUS Digital", top: "40%", left: "35%", choices: [
-                        { text: "Abrir o app Meu SUS Digital.", stats: [5, 0, 10], next: 9, popup: "✅ PC +10. (Acesso correto ao benefício).", sfx: 'success' }
+                    { text: "Tecido sintético/papel", top: "40%", left: "30%", choices: [
+                        { text: "Pedaços de tecido sintético e/ou papel higiênico.", stats: [0, 15, 15], coins: 3, next: 9, popup: "✅ Correto! Esses materiais são inadequados.", sfx: 'success' }
                     ]},
-                    { text: "❌ Sem Documento", top: "40%", left: "65%", choices: [
-                        { text: "Dizer que não tem o documento.", stats: [-5, -5, 0], next: 9, popup: "Cenário de Apoio: Vá à UBS mais próxima para imprimir o documento!", sfx: 'fail' }
-                    ]},
-                ]
-            },
-            
-            // MÓDULO 4: Ação 2: Retirada
-            { 
-                icon: "🎁", title: "Ação 2: Retirada (Estoque Renovado)", 
-                text: "O atendente pergunta qual tipo prefere. **Qual sua resposta sobre a marca?**", 
-                background: "linear-gradient(45deg, #f6d365, #fda085)",
-                interactiveObjects: [
-                    { text: "✅ Aceitar o Disponível", top: "50%", left: "30%", choices: [
-                        { text: "Aceitar o que estiver disponível (desde que seja externo).", stats: [5, 0, 10], next: 10, popup: "✅ PC +10. (Conhecimento sobre a logística de distribuição).", inventoryChange: { absorventes: 40 }, sfx: 'success' }
-                    ]},
-                    { text: "❌ Insistir em Marca", top: "50%", left: "70%", choices: [
-                        { text: "Insistir em uma marca específica.", stats: [-5, -5, 0], next: 10, popup: "❌ Você não conseguiu retirar todos os absorventes hoje. Perde tempo.", sfx: 'fail' }
+                    { text: "Absorventes próprios", top: "40%", left: "70%", choices: [
+                        { text: "Absorventes próprios para menstruação.", stats: [0, -5, 0], coins: -1, bombs: 1, next: 9, popup: "❌ Absorventes próprios são seguros!", sfx: 'fail' }
                     ]},
                 ]
             },
 
-            // C10: FIM DO JOGO
+            // MÓDULO 3: ACESSO AO PROGRAMA - Pergunta 1
             { 
-                icon: "🎉", title: "FIM: Ciclo Completo!", 
-                text: "Parabéns! Você completou a jornada de Cris.", 
-                background: "linear-gradient(45deg, #ff9a9e, #fecfef)", 
-                interactiveObjects: [{
-                    text: "🏆 Ver Resultados", top: "50%", left: "50%", choices: [{
-                        text: "Ver Resultados", stats: [0, 0, 0], next: 'end', sfx: 'win'
-                    }]
-                }] 
+                icon: "📱", title: "MÓDULO 3: Acesso ao Programa", 
+                text: "Para retirar os absorventes na Farmácia Popular, qual documento essencial deve ser gerado pelo Meu SUS Digital, além do CPF e documento com foto?", 
+                background: "linear-gradient(45deg, #f6d365, #fda085)",
+                interactiveObjects: [
+                    { text: "Autorização do Programa", top: "40%", left: "30%", choices: [
+                        { text: "A 'Autorização do Programa Dignidade Menstrual'.", stats: [0, 0, 10], coins: 2, next: 10, popup: "✅ PC +10, +2 🪙! Correto! Documento liberado para retirada.", inventoryChange: { absorventes: 40 }, sfx: 'success' }
+                    ]},
+                    { text: "Receita médica", top: "40%", left: "70%", choices: [
+                        { text: "Uma receita médica.", stats: [0, -5, 0], coins: -1, bombs: 1, next: 10, popup: "❌ MCS -5, -1 🪙, +1 💣! Não precisa de receita médica!", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 3: ACESSO AO PROGRAMA - Pergunta 2
+            { 
+                icon: "📅", title: "Período de Retirada", 
+                text: "Qual é o período correto (em dias) que Cris tem direito a retirar um novo estoque de 40 absorventes?", 
+                background: "linear-gradient(45deg, #ff9a9e, #fecfef)",
+                interactiveObjects: [
+                    { text: "A cada 56 dias", top: "40%", left: "30%", choices: [
+                        { text: "A cada 56 dias (o que cobre dois ciclos menstruais).", stats: [0, 0, 15], coins: 3, next: 11, popup: "✅ PC +15, +3 🪙! Correto! Inventário atualizado.", inventoryChange: { absorventes: 40 }, sfx: 'success' }
+                    ]},
+                    { text: "Todo mês", top: "40%", left: "70%", choices: [
+                        { text: "Todo mês (30 dias).", stats: [0, 0, 0], coins: -1, bombs: 1, next: 11, popup: "❌ -1 🪙, +1 💣! Incorreto. O período é de 56 dias.", sfx: 'fail' }
+                    ]},
+                ]
+            },
+
+            // MÓDULO 3: ACESSO AO PROGRAMA - Pergunta 3
+            { 
+                icon: "⏰", title: "Logística do Programa", 
+                text: "Se Cris esquecer de ir à farmácia por um mês, ela pode retirar os absorventes referentes ao mês anterior?", 
+                background: "linear-gradient(135deg, #667eea, #764ba2)",
+                interactiveObjects: [
+                    { text: "Não pode", top: "40%", left: "30%", choices: [
+                        { text: "Não, pois não poderão ser feitas retiradas referentes a meses anteriores.", stats: [0, 0, 10], coins: 2, next: 'end', popup: "✅ PC +10, +2 🪙! Correto! Importante saber a logística do programa.", sfx: 'success' }
+                    ]},
+                    { text: "Pode retirar", top: "40%", left: "70%", choices: [
+                        { text: "Sim, pode retirar meses anteriores.", stats: [0, 0, 0], coins: -1, bombs: 1, next: 'end', popup: "❌ -1 🪙, +1 💣! Incorreto. Não é possível retirar meses anteriores.", sfx: 'fail' }
+                    ]},
+                ]
             }
         ];
 
@@ -644,6 +706,27 @@
                 particle.style.animationDelay = Math.random() * 15 + 's';
                 particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
                 container.appendChild(particle);
+            }
+        }
+
+        // Floating panties animation
+        function createFloatingPanties() {
+            const container = document.getElementById('particles');
+            const pantyEmojis = ['🩲', '👙', '🩱'];
+            
+            for (let i = 0; i < 8; i++) {
+                const panty = document.createElement('div');
+                panty.className = 'floating-panty';
+                panty.textContent = pantyEmojis[Math.floor(Math.random() * pantyEmojis.length)];
+                panty.style.left = Math.random() * 100 + '%';
+                panty.style.animationDelay = Math.random() * 12 + 's';
+                panty.style.animationDuration = (Math.random() * 8 + 12) + 's';
+                
+                // Random colors for variety
+                const colors = ['#ff9a9e', '#fad0c4', '#a8e6cf', '#dcedc8', '#ffecd2', '#fcb69f'];
+                panty.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+                
+                container.appendChild(panty);
             }
         }
 
@@ -694,39 +777,11 @@
             bgMusic.currentTime = 0;
         }
 
-        function updateStats(msChange = 0, mcsChange = 0, pcChange = 0, inventoryChange = {}) {
-            gameState.ms = Math.max(0, Math.min(100, gameState.ms + msChange));
-            gameState.mcs = Math.max(0, Math.min(100, gameState.mcs + mcsChange));
-            gameState.pc = Math.max(0, Math.min(100, gameState.pc + pcChange));
-            
-            for (const item in inventoryChange) {
-                if (gameState.inventory.hasOwnProperty(item)) {
-                    gameState.inventory[item] += inventoryChange[item];
-                }
-            }
-            
+        function updateStats() {
             updateDisplay();
-            
-            if (gameState.ms <= 0) { 
-                setCharacterEmotion('sad'); 
-                showPopup("🚨 MS ZERADO! Risco de infecção grave. Tente novamente!", 5000); 
-                playSound('fail'); 
-                setTimeout(() => resetGame(), 5000); 
-            } 
-            else if (gameState.mcs <= 0) { 
-                setCharacterEmotion('sad'); 
-                showPopup("😔 MCS ZERADO! Sofrer bullying/estigma afeta Cris. Tente novamente!", 5000); 
-                playSound('fail'); 
-                setTimeout(() => resetGame(), 5000); 
-            }
         }
 
         function updateDisplay() {
-            document.getElementById('ms').textContent = Math.max(0, Math.min(100, gameState.ms));
-            document.getElementById('mcs').textContent = Math.max(0, Math.min(100, gameState.mcs));
-            document.getElementById('pc').textContent = Math.max(0, Math.min(100, gameState.pc));
-            document.getElementById('absorventes').textContent = gameState.inventory.absorventes;
-            
             // Update progress bar
             const progress = (gameState.currentScenario / gameState.totalScenarios) * 100;
             document.getElementById('progress-fill').style.width = progress + '%';
@@ -788,8 +843,7 @@
                     }
 
                     if (choice.popup) showPopup(choice.popup);
-                    const inventoryChange = choice.inventoryChange || {};
-                    updateStats(choice.stats[0], choice.stats[1], choice.stats[2], inventoryChange);
+                    updateStats();
 
                     container.style.display = 'none'; 
                     moveCris(choice.next);
@@ -805,13 +859,22 @@
 
             if (!scenario.interactiveObjects) return;
 
-            scenario.interactiveObjects.forEach(obj => {
+            scenario.interactiveObjects.forEach((obj, index) => {
                 const objectDiv = document.createElement('div');
                 objectDiv.className = 'interactive-object';
                 objectDiv.innerHTML = obj.text;
                 objectDiv.style.top = obj.top;
                 objectDiv.style.left = obj.left;
                 objectDiv.style.opacity = 1;
+                
+                // Add different colors for each card
+                const colors = [
+                    'linear-gradient(135deg, #667eea, #764ba2)',
+                    'linear-gradient(135deg, #f093fb, #f5576c)',
+                    'linear-gradient(135deg, #4ecdc4, #44a08d)',
+                    'linear-gradient(135deg, #ffecd2, #fcb69f)'
+                ];
+                objectDiv.style.background = colors[index % colors.length];
 
                 objectDiv.addEventListener('click', () => {
                     playSound('click'); // Som de clique no objeto interativo
@@ -912,9 +975,8 @@
         function resetGame() {
             stopMusic(); 
             gameState = { 
-                ms: 100, mcs: 50, pc: 0, 
-                inventory: { absorventes: 40, agua: true, calcinhasLimpa: true }, 
-                currentScenario: 0, totalScenarios: 10 
+                currentScenario: 0, 
+                totalScenarios: 12
             };
             updateDisplay();
             setCrisExpression('normal'); // Volta para expressão neutra
@@ -945,11 +1007,7 @@
             card.style.transform = 'translateZ(50px) scale(1.1)';
             document.getElementById('scenario-icon').textContent = '🏆';
             document.getElementById('module-title').textContent = 'Jornada Completa!';
-            let message = "Parabéns! Cris completou sua jornada de autocuidado. ";
-            if (gameState.ms >= 80 && gameState.pc >= 50) { message += "Ela dominou os cuidados com a saúde íntima! 🌟"; } 
-            else if (gameState.ms >= 60) { message += "Ela aprendeu muito sobre autocuidado! 💝"; } 
-            else { message += "Ela ainda tem muito a aprender sobre saúde! 📚"; }
-            message += `<br> Saúde final: **${gameState.ms}**, Conhecimento: **${gameState.pc}**`;
+            let message = "Parabéns! Cris completou sua jornada de autocuidado e aprendeu muito sobre saúde menstrual! 🌟💝";
             document.getElementById('scenario-text').innerHTML = message;
             const choicesContainer = document.getElementById('choices-container');
             choicesContainer.style.display = 'flex';
@@ -961,29 +1019,15 @@
             showVictory();
         }
 
-        function showStats() {
-            const statsMessage = `
-                Estatísticas Finais da Cris:
-                ❤️ Saúde Menstrual (MS): ${gameState.ms}/100
-                🤝 Habilidades Sociais (MCS): ${gameState.mcs}/100
-                🧠 Conhecimento (PC): ${gameState.pc}/100
-                🎒 Absorventes Restantes: ${gameState.inventory.absorventes}
-                
-                Pontuação Total: ${gameState.ms + gameState.mcs + gameState.pc}
-            `;
-            
-            document.getElementById('scenario-text').textContent = statsMessage;
-            document.getElementById('choices-container').innerHTML = `
-                <button class="choice-btn positive" onclick="location.reload()">🔄 Jogar Novamente</button>
-            `;
-        }
+
 
         // Initialize game
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
+            createFloatingPanties();
             updateDisplay();
             muteButton.textContent = isMuted ? '🔇' : '🔊';
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98d97dcdf48ff1db',t:'MTc2MDMwMjQ1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e3bcb24611ddeb',t:'MTc2MDQwOTg4OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
