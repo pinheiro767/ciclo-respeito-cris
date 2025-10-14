@@ -385,6 +385,31 @@
             z-index: 2;
         }
         
+        .medal-animation {
+            position: fixed;
+            font-size: 3em;
+            z-index: 1000;
+            pointer-events: none;
+            animation: medalDrop 2s ease-out forwards;
+        }
+        
+        .bomb-animation {
+            position: fixed;
+            font-size: 3em;
+            z-index: 1000;
+            pointer-events: none;
+            animation: bombExplode 1.5s ease-out forwards;
+        }
+        
+        .cotton-candy {
+            position: absolute;
+            font-size: 2.5em;
+            opacity: 0.9;
+            animation: cottonCandyFall 4s ease-in-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
         @keyframes float {
             0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
@@ -409,6 +434,53 @@
             }
             100% { 
                 transform: translateY(-20px) rotate(360deg) scale(0.8); 
+                opacity: 0; 
+            }
+        }
+        
+        @keyframes medalDrop {
+            0% { 
+                transform: translateY(-100px) scale(0.5) rotate(0deg); 
+                opacity: 0; 
+            }
+            50% { 
+                transform: translateY(50px) scale(1.2) rotate(180deg); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(200px) scale(1) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+        
+        @keyframes bombExplode {
+            0% { 
+                transform: scale(0.5) rotate(0deg); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: scale(1.5) rotate(180deg); 
+                opacity: 0.8; 
+            }
+            100% { 
+                transform: scale(2) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+        
+        @keyframes cottonCandyFall {
+            0% { 
+                transform: translateY(-100px) rotate(0deg) scale(0.8); 
+                opacity: 0; 
+            }
+            20% { 
+                opacity: 1; 
+            }
+            80% { 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(100vh) rotate(720deg) scale(1.2); 
                 opacity: 0; 
             }
         }
@@ -730,6 +802,63 @@
             }
         }
 
+        // Medal animation for correct answers
+        function showMedal() {
+            const medals = ['🏅', '🥇', '⭐', '🌟'];
+            const medal = document.createElement('div');
+            medal.className = 'medal-animation';
+            medal.textContent = medals[Math.floor(Math.random() * medals.length)];
+            medal.style.left = Math.random() * 80 + 10 + '%';
+            medal.style.top = '20%';
+            document.body.appendChild(medal);
+            
+            setTimeout(() => {
+                if (medal.parentNode) {
+                    medal.parentNode.removeChild(medal);
+                }
+            }, 2000);
+        }
+
+        // Bomb animation for wrong answers
+        function showBomb() {
+            const bombs = ['💣', '💥', '🔥'];
+            const bomb = document.createElement('div');
+            bomb.className = 'bomb-animation';
+            bomb.textContent = bombs[Math.floor(Math.random() * bombs.length)];
+            bomb.style.left = Math.random() * 80 + 10 + '%';
+            bomb.style.top = '30%';
+            document.body.appendChild(bomb);
+            
+            setTimeout(() => {
+                if (bomb.parentNode) {
+                    bomb.parentNode.removeChild(bomb);
+                }
+            }, 1500);
+        }
+
+        // Cotton candy rain for victory
+        function createCottonCandyRain() {
+            const cottonCandyEmojis = ['🍭', '🧁', '🍰', '🎂', '🍬'];
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const candy = document.createElement('div');
+                    candy.className = 'cotton-candy';
+                    candy.textContent = cottonCandyEmojis[Math.floor(Math.random() * cottonCandyEmojis.length)];
+                    candy.style.left = Math.random() * 100 + '%';
+                    candy.style.animationDelay = Math.random() * 2 + 's';
+                    candy.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(candy);
+                    
+                    setTimeout(() => {
+                        if (candy.parentNode) {
+                            candy.parentNode.removeChild(candy);
+                        }
+                    }, 4000);
+                }, i * 200);
+            }
+        }
+
         // Audio functions
         function playSound(soundName) {
             if (isMuted) return;
@@ -834,10 +963,13 @@
 
                     if (choice.next === 'end' || choice.sfx === 'win') {
                         setCrisExpression('happy'); // Vitória
+                        showMedal(); // Medalha para vitória
                     } else if (choice.sfx === 'success' || isSuccess) {
                         setCrisExpression('happy'); // Sucesso
+                        showMedal(); // Medalha para acerto
                     } else if (choice.sfx === 'fail' || hasNegative) {
                         setCrisExpression('sad'); // Falha/Penalidade
+                        showBomb(); // Bomba para erro
                     } else {
                         setCrisExpression('normal'); // Neutro
                     }
@@ -1002,6 +1134,7 @@
             playSound('win'); // Som de vitória
             stopMusic(); // Para a música de fundo
             setCrisExpression('happy'); // Cris feliz na vitória
+            createCottonCandyRain(); // Chuva de algodão doce!
 
             const card = document.querySelector('.scenario-card');
             card.style.transform = 'translateZ(50px) scale(1.1)';
@@ -1029,5 +1162,5 @@
             muteButton.textContent = isMuted ? '🔇' : '🔊';
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e3bcb24611ddeb',t:'MTc2MDQwOTg4OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e3c891a32addeb',t:'MTc2MDQxMDM3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
