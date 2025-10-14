@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Tabuleiro da Cris - Dignidade Menstrual</title>
     <style>
-        /* -------------------------------------- */
-        /* REGRAS GERAIS E OTIMIZAÇÕES MOBILE */
-        /* -------------------------------------- */
-
         body {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,37 +13,19 @@
             background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
-            /* Usar 100% para o corpo (body) */
-            height: 100%; 
+            min-height: 100%;
             overflow-x: hidden;
         }
-
-        html { 
-            height: 100%; 
+        html { height: 100%; }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* Otimização para impedir o atraso de 300ms e seleção de texto */
-        * {
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent; /* Remove o destaque de toque */
-        }
-
-        button, #roll-button, .answer-option {
-            /* Essencial para interações de toque rápidas */
-            touch-action: manipulation; 
-            cursor: pointer;
-        }
-
-        /* OTIMIZAÇÃO IOS/SAFARI: min-height */
         #game-container {
             position: relative;
-            /* Usa 'dvh' (dynamic viewport height) se disponível, senão usa '100vh'. */
-            min-height: 100dvh; 
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -55,23 +33,6 @@
             justify-content: center;
             padding: 20px;
         }
-        
-        /* Fallback específico para iOS mais antigos */
-        @supports (-webkit-touch-callout: none) {
-            #game-container {
-                min-height: -webkit-fill-available;
-            }
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* -------------------------------------- */
-        /* COMPONENTES ESPECÍFICOS */
-        /* -------------------------------------- */
 
         #main-title {
             position: fixed;
@@ -90,15 +51,11 @@
             border: 1px solid rgba(255,255,255,0.3);
             box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             text-align: center;
-            /* Garante que o título não atrapalhe o layout do jogo em telas menores */
-            width: fit-content;
-            white-space: nowrap;
         }
 
         #board-container {
             position: relative;
-            /* Dimensão do tabuleiro responsiva com um máximo */
-            width: 90vmin; 
+            width: 90vw;
             max-width: 500px;
             height: auto;
             background: rgba(255, 255, 255, 0.95);
@@ -111,21 +68,7 @@
             gap: 8px;
             padding: 15px;
             backdrop-filter: blur(20px);
-            /* Mantém a proporção 5:4 */
-            aspect-ratio: 5 / 4; 
-            margin-top: 60px; /* Afasta do título fixo */
-            margin-bottom: 120px; /* Afasta do dado fixo */
-        }
-        
-        /* Usar 'vmin' para o tamanho do tabuleiro é crucial. 
-           Ele usa o menor valor entre a altura e a largura da tela, 
-           garantindo que o tabuleiro sempre caiba, mesmo em tablets na orientação paisagem. */
-        @media (orientation: landscape) and (max-height: 500px) {
-            #board-container {
-                width: 70vh; /* Prioriza a altura em paisagem se for um tablet/celular */
-                margin-top: 10px;
-                margin-bottom: 10px;
-            }
+            aspect-ratio: 5/4;
         }
 
         .board-cell {
@@ -137,8 +80,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            /* Usa viewport units para o tamanho da fonte */
-            font-size: 1.5vmin; 
+            font-size: 0.8em;
             font-weight: bold;
             color: #495057;
             cursor: pointer;
@@ -147,29 +89,46 @@
             padding: 8px;
             min-height: 80px;
             aspect-ratio: 1;
-            /* Garante que o texto não seja selecionável */
-            user-select: none; 
-        }
-        
-        /* Ajuste de tamanho de fonte para a casa inicial/final */
-        .cell-start, .cell-finish {
-            font-size: 1.2vmin !important;
         }
 
         .board-cell:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        
-        /* ... outros estilos de célula (cell-start, cell-finish, etc.) ... */
-        
+
+        .cell-start {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d) !important;
+            color: white;
+            font-size: 0.6em;
+        }
+
+        .cell-finish {
+            background: linear-gradient(135deg, #ffd700, #ffed4e) !important;
+            color: #333;
+            font-size: 0.6em;
+        }
+
+        .cell-question {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+            color: white;
+        }
+
+        .cell-bomb {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52) !important;
+            color: white;
+        }
+
+        .cell-safe {
+            background: linear-gradient(135deg, #a8e6cf, #88d8a3) !important;
+            color: #2d5016;
+        }
+
         .cris-player {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            /* Usa viewport units para o tamanho da Cris */
-            font-size: 4vmin; 
+            font-size: 2em;
             z-index: 10;
             transition: all 0.8s ease;
             filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
@@ -187,24 +146,256 @@
             gap: 15px;
         }
 
+        #dice-3d {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s ease;
+            cursor: pointer;
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 3px solid #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+            box-shadow: 
+                inset 0 0 15px rgba(255,255,255,0.3),
+                0 0 20px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .dice-face.front { 
+            transform: rotateY(0deg) translateZ(40px);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        }
+        .dice-face.back { 
+            transform: rotateY(180deg) translateZ(40px);
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+        .dice-face.right { 
+            transform: rotateY(90deg) translateZ(40px);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        .dice-face.left { 
+            transform: rotateY(-90deg) translateZ(40px);
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .dice-face.top { 
+            transform: rotateX(90deg) translateZ(40px);
+            background: linear-gradient(135deg, #a8e6cf, #88d8a3);
+            color: #2d5016;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .dice-face.bottom { 
+            transform: rotateX(-90deg) translateZ(40px);
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
         #roll-button {
-            /* ... outros estilos ... */
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* ... Estilos dos Modais (question-modal, notification) ... */
-        
-        .modal-content {
-            /* ... outros estilos ... */
-            max-width: 95%; /* Aumenta a largura máxima para se adaptar melhor a telas menores */
+        #roll-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
-        /* -------------------------------------- */
-        /* MEDIA QUERIES OTIMIZADAS */
-        /* -------------------------------------- */
+        #roll-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-        /* Mobile (Telas pequenas - iPhone SE, etc.) */
+        #question-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 90%;
+            width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .answer-option {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            margin: 8px;
+            border-radius: 15px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .answer-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .answer-correct {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d) !important;
+        }
+
+        .answer-incorrect {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52) !important;
+        }
+
+        #game-info {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 50;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .bomb-explosion {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5em;
+            z-index: 1000;
+            pointer-events: none;
+            animation: explode 1.5s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { 
+                transform: translate(-50%, -50%) scale(0.5) rotate(0deg); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.5) rotate(180deg); 
+                opacity: 0.8; 
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(2.5) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+
+        .victory-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            z-index: 1000;
+            pointer-events: none;
+            animation: victory 2s ease-out forwards;
+        }
+
+        @keyframes victory {
+            0% { 
+                transform: translate(-50%, -50%) scale(0) rotate(0deg); 
+                opacity: 0; 
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.2) rotate(180deg); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1) rotate(360deg); 
+                opacity: 1; 
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border: 2px solid;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        
+        .notification.positive {
+            border-color: #4ecdc4;
+            color: #2c3e50;
+        }
+        
+        .notification.negative {
+            border-color: #ff6b6b;
+            color: #2c3e50;
+        }
+
+        /* Mobile optimizations */
         @media (max-width: 480px) {
             #main-title {
                 font-size: 1.2em;
@@ -213,26 +404,21 @@
             }
 
             #board-container {
-                width: 95vmin;
+                width: 95vw;
                 max-width: 400px;
                 padding: 8px;
                 gap: 4px;
-                margin-top: 50px;
             }
 
             .board-cell {
-                font-size: 1.5vmin; /* Mantém a responsividade com vmin */
+                font-size: 0.6em;
                 border-radius: 8px;
                 padding: 4px;
                 min-height: 60px;
             }
-            
-            .cell-start, .cell-finish {
-                font-size: 1.2vmin !important;
-            }
 
             .cris-player {
-                font-size: 6vmin;
+                font-size: 1.5em;
             }
 
             #dice-3d {
@@ -246,17 +432,52 @@
                 font-size: 1.5em;
             }
 
-            /* Reajuste dos valores Z para o dado menor */
-            .dice-face.front { transform: rotateY(0deg) translateZ(30px); }
-            .dice-face.back { transform: rotateY(180deg) translateZ(30px); }
-            .dice-face.right { transform: rotateY(90deg) translateZ(30px); }
-            .dice-face.left { transform: rotateY(-90deg) translateZ(30px); }
-            .dice-face.top { transform: rotateX(90deg) translateZ(30px); }
-            .dice-face.bottom { transform: rotateX(-90deg) translateZ(30px); }
+            .dice-face.front { 
+                transform: rotateY(0deg) translateZ(30px);
+                background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            }
+            .dice-face.back { 
+                transform: rotateY(180deg) translateZ(30px);
+                background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            }
+            .dice-face.right { 
+                transform: rotateY(90deg) translateZ(30px);
+                background: linear-gradient(135deg, #667eea, #764ba2);
+            }
+            .dice-face.left { 
+                transform: rotateY(-90deg) translateZ(30px);
+                background: linear-gradient(135deg, #ffd700, #ffed4e);
+                color: #333;
+            }
+            .dice-face.top { 
+                transform: rotateX(90deg) translateZ(30px);
+                background: linear-gradient(135deg, #a8e6cf, #88d8a3);
+                color: #2d5016;
+            }
+            .dice-face.bottom { 
+                transform: rotateX(-90deg) translateZ(30px);
+                background: linear-gradient(135deg, #f093fb, #f5576c);
+            }
 
             #roll-button {
                 padding: 12px 25px;
                 font-size: 1em;
+            }
+
+            .modal-content {
+                padding: 20px;
+                width: 90%;
+            }
+
+            .question-text {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+
+            .answer-option {
+                padding: 12px 15px;
+                font-size: 0.9em;
+                margin: 5px;
             }
 
             #game-info {
@@ -267,23 +488,142 @@
             }
         }
 
-        /* Tablets (Orientação Paisagem) - Adicional para garantir que o tabuleiro caiba */
-        @media (min-width: 481px) and (orientation: landscape) {
+        @media (max-width: 375px) {
+            #main-title {
+                font-size: 1em;
+                padding: 5px 10px;
+            }
+
             #board-container {
-                /* Prioriza a altura da viewport */
-                width: 70vh; 
-                margin-top: 10px;
-                margin-bottom: 10px;
+                width: 98vw;
+                max-width: 350px;
+                padding: 6px;
+                gap: 3px;
             }
+
             .board-cell {
-                font-size: 1.8vmin;
+                font-size: 0.5em;
+                padding: 3px;
+                min-height: 50px;
             }
+
             .cris-player {
-                font-size: 4vmin;
+                font-size: 1.2em;
+            }
+
+            #dice-3d {
+                width: 50px;
+                height: 50px;
+            }
+
+            .dice-face {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
+
+            .dice-face.front { 
+                transform: rotateY(0deg) translateZ(25px);
+                background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            }
+            .dice-face.back { 
+                transform: rotateY(180deg) translateZ(25px);
+                background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            }
+            .dice-face.right { 
+                transform: rotateY(90deg) translateZ(25px);
+                background: linear-gradient(135deg, #667eea, #764ba2);
+            }
+            .dice-face.left { 
+                transform: rotateY(-90deg) translateZ(25px);
+                background: linear-gradient(135deg, #ffd700, #ffed4e);
+                color: #333;
+            }
+            .dice-face.top { 
+                transform: rotateX(90deg) translateZ(25px);
+                background: linear-gradient(135deg, #a8e6cf, #88d8a3);
+                color: #2d5016;
+            }
+            .dice-face.bottom { 
+                transform: rotateX(-90deg) translateZ(25px);
+                background: linear-gradient(135deg, #f093fb, #f5576c);
             }
         }
-        
-        /* ... Estilos para floating-underwear, animations, etc. (Mantidos) ... */
+
+        /* Touch optimizations */
+        * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            cursor: pointer;
+        }
+
+        /* iOS Safari specific fixes */
+        body {
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @supports (-webkit-touch-callout: none) {
+            #game-container {
+                min-height: -webkit-fill-available;
+            }
+        }
+
+        /* Calcinhas flutuantes animadas */
+        .floating-underwear {
+            position: fixed;
+            font-size: 2em;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.7;
+            animation: float 15s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .floating-underwear:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .floating-underwear:nth-child(2) { left: 20%; animation-delay: 2s; }
+        .floating-underwear:nth-child(3) { left: 30%; animation-delay: 4s; }
+        .floating-underwear:nth-child(4) { left: 40%; animation-delay: 6s; }
+        .floating-underwear:nth-child(5) { left: 50%; animation-delay: 8s; }
+        .floating-underwear:nth-child(6) { left: 60%; animation-delay: 10s; }
+        .floating-underwear:nth-child(7) { left: 70%; animation-delay: 12s; }
+        .floating-underwear:nth-child(8) { left: 80%; animation-delay: 14s; }
+        .floating-underwear:nth-child(9) { left: 90%; animation-delay: 16s; }
+        .floating-underwear:nth-child(10) { left: 15%; animation-delay: 18s; }
+
+        .floating-underwear.pink { color: #ff69b4; }
+        .floating-underwear.purple { color: #9370db; }
+        .floating-underwear.blue { color: #4169e1; }
+        .floating-underwear.green { color: #32cd32; }
+        .floating-underwear.orange { color: #ff8c00; }
     </style>
 </head>
 <body>
@@ -297,7 +637,8 @@
         </div>
 
         <div id="board-container">
-            </div>
+            <!-- Células do tabuleiro serão geradas pelo JavaScript -->
+        </div>
 
         <div id="dice-container">
             <div id="dice-3d">
@@ -321,6 +662,7 @@
 
     <div id="notification" class="notification"></div>
 
+    <!-- Calcinhas flutuantes -->
     <div class="floating-underwear pink">🩲</div>
     <div class="floating-underwear purple">🩲</div>
     <div class="floating-underwear blue">🩲</div>
@@ -333,7 +675,6 @@
     <div class="floating-underwear orange">🩲</div>
 
     <script>
-        // ... (Seu código JavaScript completo aqui) ...
         // Estado do jogo
         let gameState = {
             currentPosition: 1,
@@ -852,5 +1193,5 @@
             updateGameInfo();
         });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e77784b1df7e8c',t:'MTc2MDQ0ODk5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
