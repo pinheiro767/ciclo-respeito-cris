@@ -2,7 +2,12 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
     <title>Tabuleiro da Cris - Dignidade Menstrual</title>
     <style>
         body {
@@ -10,9 +15,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3, #54a0ff, #5f27cd);
+            background-size: 800% 800%;
+            animation: gradientShift 8s ease infinite;
             min-height: 100%;
             overflow-x: hidden;
         }
@@ -34,24 +39,7 @@
             padding: 20px;
         }
 
-        #main-title {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 200;
-            font-size: 1.8em;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-            backdrop-filter: blur(15px);
-            padding: 10px 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            text-align: center;
-        }
+
 
         #board-container {
             position: relative;
@@ -73,44 +61,105 @@
 
         .board-cell {
             position: relative;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border: 2px solid #dee2e6;
-            border-radius: 12px;
+            background: linear-gradient(135deg, #ff9ff3, #54a0ff, #5f27cd);
+            background-size: 300% 300%;
+            animation: cellPulse 4s ease-in-out infinite;
+            border: 3px solid #fff;
+            border-radius: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 0.8em;
+            font-size: 2em;
             font-weight: bold;
-            color: #495057;
+            color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             text-align: center;
             padding: 8px;
             min-height: 80px;
             aspect-ratio: 1;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        @keyframes cellPulse {
+            0%, 100% { 
+                background-position: 0% 50%;
+                transform: scale(1);
+            }
+            50% { 
+                background-position: 100% 50%;
+                transform: scale(1.02);
+            }
         }
 
         .board-cell:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+            border-color: #feca57;
         }
 
         .cell-start {
-            background: linear-gradient(135deg, #4ecdc4, #44a08d) !important;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d, #96ceb4) !important;
+            background-size: 400% 400%;
+            animation: rainbowPulse 3s ease-in-out infinite !important;
             color: white;
             font-size: 0.6em;
+            border: 4px solid #fff !important;
+            box-shadow: 0 0 30px rgba(78, 205, 196, 0.6) !important;
         }
 
         .cell-finish {
-            background: linear-gradient(135deg, #ffd700, #ffed4e) !important;
+            background: linear-gradient(135deg, #ffd700, #ffed4e, #feca57, #ff9ff3) !important;
+            background-size: 400% 400%;
+            animation: goldShimmer 2s ease-in-out infinite !important;
             color: #333;
             font-size: 0.6em;
+            border: 4px solid #fff !important;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.8) !important;
         }
 
         .cell-question {
-            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+            background: linear-gradient(135deg, #667eea, #764ba2, #5f27cd, #ff6b6b) !important;
+            background-size: 400% 400%;
+            animation: questionGlow 3.5s ease-in-out infinite !important;
             color: white;
+            border: 3px solid #fff !important;
+            box-shadow: 0 0 25px rgba(102, 126, 234, 0.5) !important;
+        }
+
+        @keyframes rainbowPulse {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 0 30px rgba(78, 205, 196, 0.6);
+            }
+            50% { 
+                background-position: 100% 50%;
+                box-shadow: 0 0 40px rgba(78, 205, 196, 0.9);
+            }
+        }
+
+        @keyframes goldShimmer {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+            }
+            50% { 
+                background-position: 100% 50%;
+                box-shadow: 0 0 60px rgba(255, 215, 0, 1);
+            }
+        }
+
+        @keyframes questionGlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 0 25px rgba(102, 126, 234, 0.5);
+            }
+            50% { 
+                background-position: 100% 50%;
+                box-shadow: 0 0 35px rgba(102, 126, 234, 0.8);
+            }
         }
 
         .cell-bomb {
@@ -130,8 +179,21 @@
             transform: translate(-50%, -50%);
             font-size: 2em;
             z-index: 10;
-            transition: all 0.8s ease;
-            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            filter: drop-shadow(3px 3px 8px rgba(0,0,0,0.4));
+            animation: crisBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes crisBounce {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+            25% { 
+                transform: translate(-50%, -55%) scale(1.1) rotate(-2deg);
+            }
+            75% { 
+                transform: translate(-50%, -45%) scale(1.05) rotate(2deg);
+            }
         }
 
         #dice-container {
@@ -175,53 +237,91 @@
 
         .dice-face.front { 
             transform: rotateY(0deg) translateZ(40px);
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52, #ff9ff3);
+            background-size: 200% 200%;
+            animation: diceGlow 2s ease-in-out infinite;
         }
         .dice-face.back { 
             transform: rotateY(180deg) translateZ(40px);
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            background: linear-gradient(135deg, #4ecdc4, #44a08d, #96ceb4);
+            background-size: 200% 200%;
+            animation: diceGlow 2.2s ease-in-out infinite;
         }
         .dice-face.right { 
             transform: rotateY(90deg) translateZ(40px);
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #667eea, #764ba2, #5f27cd);
+            background-size: 200% 200%;
+            animation: diceGlow 2.4s ease-in-out infinite;
         }
         .dice-face.left { 
             transform: rotateY(-90deg) translateZ(40px);
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            background: linear-gradient(135deg, #ffd700, #ffed4e, #feca57);
+            background-size: 200% 200%;
+            animation: diceGlow 2.6s ease-in-out infinite;
             color: #333;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         .dice-face.top { 
             transform: rotateX(90deg) translateZ(40px);
-            background: linear-gradient(135deg, #a8e6cf, #88d8a3);
+            background: linear-gradient(135deg, #a8e6cf, #88d8a3, #96ceb4);
+            background-size: 200% 200%;
+            animation: diceGlow 2.8s ease-in-out infinite;
             color: #2d5016;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
         .dice-face.bottom { 
             transform: rotateX(-90deg) translateZ(40px);
-            background: linear-gradient(135deg, #f093fb, #f5576c);
+            background: linear-gradient(135deg, #f093fb, #f5576c, #ff9ff3);
+            background-size: 200% 200%;
+            animation: diceGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes diceGlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: inset 0 0 15px rgba(255,255,255,0.3), 0 0 20px rgba(0,0,0,0.3);
+            }
+            50% { 
+                background-position: 100% 50%;
+                box-shadow: inset 0 0 25px rgba(255,255,255,0.5), 0 0 30px rgba(0,0,0,0.4);
+            }
         }
 
         #roll-button {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #667eea, #764ba2, #ff6b6b, #4ecdc4);
+            background-size: 300% 300%;
+            animation: buttonRainbow 3s ease-in-out infinite;
             color: white;
-            border: none;
+            border: 3px solid #fff;
             padding: 15px 30px;
-            border-radius: 25px;
+            border-radius: 30px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
             -webkit-appearance: none;
             appearance: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        @keyframes buttonRainbow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            }
+            50% { 
+                background-position: 100% 50%;
+                box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            }
         }
 
         #roll-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: #feca57;
         }
 
         #roll-button:disabled {
@@ -296,22 +396,43 @@
 
         #game-info {
             position: fixed;
-            top: 80px;
+            top: 20px;
             left: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.9));
+            backdrop-filter: blur(15px);
+            padding: 18px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
             z-index: 50;
+            animation: infoPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes infoPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            }
+            50% { 
+                transform: scale(1.02);
+                box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            }
         }
 
         .info-item {
             display: flex;
             align-items: center;
-            margin: 5px 0;
+            margin: 8px 0;
             font-weight: bold;
             color: #2c3e50;
+            font-size: 1.1em;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: scale(1.05);
+            color: #667eea;
         }
 
         .bomb-explosion {
@@ -401,11 +522,7 @@
 
         /* Mobile optimizations */
         @media (max-width: 480px) {
-            #main-title {
-                font-size: 1.2em;
-                padding: 8px 15px;
-                top: 5px;
-            }
+
 
             #board-container {
                 width: 95vw;
@@ -415,7 +532,7 @@
             }
 
             .board-cell {
-                font-size: 0.6em;
+                font-size: 1.5em;
                 border-radius: 8px;
                 padding: 4px;
                 min-height: 60px;
@@ -485,7 +602,7 @@
             }
 
             #game-info {
-                top: 60px;
+                top: 10px;
                 left: 10px;
                 padding: 10px;
                 font-size: 0.9em;
@@ -493,10 +610,7 @@
         }
 
         @media (max-width: 375px) {
-            #main-title {
-                font-size: 1em;
-                padding: 5px 10px;
-            }
+
 
             #board-container {
                 width: 98vw;
@@ -506,7 +620,7 @@
             }
 
             .board-cell {
-                font-size: 0.5em;
+                font-size: 1.2em;
                 padding: 3px;
                 min-height: 50px;
             }
@@ -573,58 +687,266 @@
         }
 
         /* iOS Safari specific fixes */
+        html {
+            height: 100%;
+            height: -webkit-fill-available;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        
         body {
             -webkit-overflow-scrolling: touch;
-            position: relative;
-            overflow-x: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            height: -webkit-fill-available;
+            overflow: hidden;
             -webkit-text-size-adjust: 100%;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            overscroll-behavior: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         @supports (-webkit-touch-callout: none) {
-            #game-container {
+            html, body {
+                height: 100vh;
+                height: -webkit-fill-available;
+                min-height: 100vh;
                 min-height: -webkit-fill-available;
             }
             
-            body {
+            #game-container {
+                height: 100vh;
                 height: -webkit-fill-available;
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+                max-height: 100vh;
+                max-height: -webkit-fill-available;
             }
         }
 
         /* iOS button fixes */
         button {
-            -webkit-appearance: none;
-            appearance: none;
-            border-radius: 0;
+            -webkit-appearance: none !important;
+            appearance: none !important;
+            border-radius: 30px !important;
+            -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            outline: none !important;
+            border: 3px solid #fff !important;
+            cursor: pointer !important;
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
+            -webkit-backface-visibility: hidden !important;
+            backface-visibility: hidden !important;
+            will-change: transform !important;
         }
 
         /* Prevent iOS zoom on input focus */
         input, select, textarea, button {
-            font-size: 16px;
+            font-size: 16px !important;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        /* iOS touch improvements */
+        .board-cell {
+            -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            touch-action: manipulation !important;
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
+            -webkit-backface-visibility: hidden !important;
+            backface-visibility: hidden !important;
+            will-change: transform !important;
+        }
+
+        #dice-3d {
+            -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            touch-action: manipulation !important;
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
+            -webkit-backface-visibility: hidden !important;
+            backface-visibility: hidden !important;
+            will-change: transform !important;
+        }
+
+        /* iOS viewport fixes */
+        @media screen and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 2) {
+            html, body {
+                -webkit-text-size-adjust: none;
+                position: fixed;
+                width: 100%;
+                height: 100vh;
+                height: -webkit-fill-available;
+                overflow: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            #game-container {
+                padding: 10px;
+                overflow: hidden;
+                height: 100vh;
+                height: -webkit-fill-available;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: none;
+            }
+            
+            #board-container {
+                width: 95vw;
+                max-width: 380px;
+            }
+        }
+
+        /* iPhone X/11/12/13/14 safe areas */
+        @supports (padding: max(0px)) {
+            #game-container {
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+                padding-top: max(20px, env(safe-area-inset-top));
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            }
+            
+            #dice-container {
+                bottom: max(20px, env(safe-area-inset-bottom));
+            }
+            
+            #game-info {
+                top: max(20px, env(safe-area-inset-top));
+                left: max(20px, env(safe-area-inset-left));
+            }
+        }
+
+        /* iOS specific touch feedback */
+        .ios-touch-feedback {
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* Prevent iOS bounce scroll */
+        #game-container {
+            overscroll-behavior-y: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* iOS modal fixes */
+        #question-modal {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
+        .modal-content {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
         }
 
         /* Calcinhas flutuantes animadas */
         .floating-underwear {
             position: fixed;
-            font-size: 2em;
+            font-size: 2.5em;
             z-index: 1;
             pointer-events: none;
-            opacity: 0.7;
-            animation: float 15s linear infinite;
+            opacity: 0.8;
+            animation: float 12s linear infinite;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
         }
 
         @keyframes float {
             0% {
-                transform: translateY(100vh) rotate(0deg);
+                transform: translateY(100vh) rotate(0deg) scale(0.8);
                 opacity: 0;
             }
             10% {
-                opacity: 0.7;
+                opacity: 0.8;
+                transform: translateY(90vh) rotate(36deg) scale(1);
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) scale(1.2);
+                opacity: 1;
             }
             90% {
-                opacity: 0.7;
+                opacity: 0.8;
+                transform: translateY(10vh) rotate(324deg) scale(0.9);
             }
             100% {
-                transform: translateY(-100px) rotate(360deg);
+                transform: translateY(-100px) rotate(360deg) scale(0.6);
+                opacity: 0;
+            }
+        }
+
+        /* Partículas de estrelas */
+        .star-particle {
+            position: fixed;
+            font-size: 1.5em;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.6;
+            animation: starTwinkle 8s linear infinite;
+            color: #feca57;
+        }
+
+        @keyframes starTwinkle {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+                transform: translateY(90vh) rotate(45deg) scale(1);
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) scale(1.5);
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.6;
+                transform: translateY(10vh) rotate(315deg) scale(0.8);
+            }
+            100% {
+                transform: translateY(-50px) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Corações flutuantes */
+        .heart-particle {
+            position: fixed;
+            font-size: 1.8em;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.7;
+            animation: heartFloat 10s linear infinite;
+            color: #ff9ff3;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.9;
+                transform: translateY(85vh) rotate(30deg) scale(1);
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) scale(1.3);
+                opacity: 1;
+            }
+            85% {
+                opacity: 0.7;
+                transform: translateY(15vh) rotate(330deg) scale(0.8);
+            }
+            100% {
+                transform: translateY(-80px) rotate(360deg) scale(0.3);
                 opacity: 0;
             }
         }
@@ -665,11 +987,88 @@
         .floating-coin {
             filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
         }
+
+        /* CSS específico para iOS */
+        .ios-device {
+            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
+        }
+
+        .ios-device #game-container {
+            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
+            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
+        }
+
+        /* Melhorar responsividade do toque */
+        @media (hover: none) and (pointer: coarse) {
+            .board-cell {
+                min-height: 70px;
+                font-size: 1.8em;
+            }
+            
+            #roll-button {
+                padding: 18px 35px;
+                font-size: 18px;
+                min-height: 60px;
+            }
+            
+            .answer-option {
+                padding: 18px 25px;
+                font-size: 18px;
+                min-height: 60px;
+            }
+            
+            #dice-3d {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .dice-face {
+                width: 90px;
+                height: 90px;
+                font-size: 2.2em;
+            }
+        }
+
+        /* Ajustes para iPhone em modo paisagem */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            #game-info {
+                font-size: 0.8em;
+                padding: 8px;
+            }
+            
+            #board-container {
+                max-width: 400px;
+                padding: 8px;
+            }
+            
+            .board-cell {
+                min-height: 50px;
+                font-size: 1.4em;
+            }
+            
+            #dice-container {
+                bottom: 10px;
+            }
+            
+            #dice-3d {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .dice-face {
+                width: 60px;
+                height: 60px;
+                font-size: 1.6em;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <h1 id="main-title">🎲 Tabuleiro da Cris - Dignidade Menstrual</h1>
+
         
         <div id="game-info">
             <div class="info-item">📍 Posição: <span id="current-position">1</span>/20</div>
@@ -691,7 +1090,7 @@
                 <div class="dice-face top">⚄</div>
                 <div class="dice-face bottom">⚅</div>
             </div>
-            <button id="roll-button" onclick="rollDice()">🎲 Rolar Dado</button>
+            <button id="roll-button">🎲 Rolar Dado</button>
         </div>
     </div>
 
@@ -715,6 +1114,30 @@
     <div class="floating-underwear blue">🩲</div>
     <div class="floating-underwear green">🩲</div>
     <div class="floating-underwear orange">🩲</div>
+
+    <!-- Partículas de estrelas -->
+    <div class="star-particle" style="left: 5%; animation-delay: 0s;">⭐</div>
+    <div class="star-particle" style="left: 15%; animation-delay: 1s;">✨</div>
+    <div class="star-particle" style="left: 25%; animation-delay: 2s;">⭐</div>
+    <div class="star-particle" style="left: 35%; animation-delay: 3s;">✨</div>
+    <div class="star-particle" style="left: 45%; animation-delay: 4s;">⭐</div>
+    <div class="star-particle" style="left: 55%; animation-delay: 5s;">✨</div>
+    <div class="star-particle" style="left: 65%; animation-delay: 6s;">⭐</div>
+    <div class="star-particle" style="left: 75%; animation-delay: 7s;">✨</div>
+    <div class="star-particle" style="left: 85%; animation-delay: 1.5s;">⭐</div>
+    <div class="star-particle" style="left: 95%; animation-delay: 2.5s;">✨</div>
+
+    <!-- Corações flutuantes -->
+    <div class="heart-particle" style="left: 8%; animation-delay: 0.5s;">💖</div>
+    <div class="heart-particle" style="left: 18%; animation-delay: 1.5s;">💕</div>
+    <div class="heart-particle" style="left: 28%; animation-delay: 2.5s;">💖</div>
+    <div class="heart-particle" style="left: 38%; animation-delay: 3.5s;">💕</div>
+    <div class="heart-particle" style="left: 48%; animation-delay: 4.5s;">💖</div>
+    <div class="heart-particle" style="left: 58%; animation-delay: 5.5s;">💕</div>
+    <div class="heart-particle" style="left: 68%; animation-delay: 6.5s;">💖</div>
+    <div class="heart-particle" style="left: 78%; animation-delay: 7.5s;">💕</div>
+    <div class="heart-particle" style="left: 88%; animation-delay: 1.8s;">💖</div>
+    <div class="heart-particle" style="left: 98%; animation-delay: 3.2s;">💕</div>
 
     <script>
         // Estado do jogo
@@ -884,8 +1307,8 @@
                 cell.className = 'board-cell';
                 cell.id = `cell-${i}`;
                 
-                // Emojis de emoções para cada casa
-                const emotions = ['😊', '😄', '🤗', '😌', '😍', '🥰', '😎', '🤩', '😋', '😇', '🙂', '😉', '😆', '🤔', '😏', '🥳', '😘', '🤭', '😁', '🤗'];
+                // Itens relacionados à higiene menstrual e dignidade
+                const hygieneItems = ['🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼'];
                 
                 if (i === 1) {
                     cell.classList.add('cell-start');
@@ -895,7 +1318,7 @@
                     cell.innerHTML = '🏆<br>FIM<br>🥳';
                 } else {
                     cell.classList.add('cell-question');
-                    cell.innerHTML = `❓<br>${emotions[i-1]}`;
+                    cell.innerHTML = `${hygieneItems[i-1]}`;
                 }
 
                 container.appendChild(cell);
@@ -1038,6 +1461,7 @@
             document.getElementById('roll-button').disabled = true;
 
             // Inicializar áudio no primeiro toque (iOS)
+            initAudioContext();
 
             playDiceRoll();
 
@@ -1134,7 +1558,36 @@
                 const button = document.createElement('button');
                 button.className = 'answer-option';
                 button.textContent = option;
-                button.onclick = () => handleAnswer(index, randomQuestion.correct, randomQuestion.explanation, randomQuestion.points);
+                button.type = 'button';
+                
+                // Função para lidar com a resposta
+                function handleAnswerClick(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleAnswer(index, randomQuestion.correct, randomQuestion.explanation, randomQuestion.points);
+                }
+                
+                // Adicionar eventos
+                button.addEventListener('click', handleAnswerClick);
+                button.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleAnswerClick(e);
+                }, { passive: false });
+                
+                // Feedback visual
+                button.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'translateY(1px) scale(0.98)';
+                    this.style.opacity = '0.8';
+                }, { passive: false });
+                
+                button.addEventListener('touchcancel', function(e) {
+                    e.preventDefault();
+                    this.style.transform = '';
+                    this.style.opacity = '';
+                }, { passive: false });
+                
                 optionsContainer.appendChild(button);
             });
 
@@ -1147,6 +1600,7 @@
             
             options.forEach((option, index) => {
                 option.disabled = true;
+                option.style.pointerEvents = 'none';
                 if (index === correctIndex) {
                     option.classList.add('answer-correct');
                 } else if (index === selectedIndex && index !== correctIndex) {
@@ -1207,22 +1661,103 @@
             document.getElementById('roll-button').disabled = true;
 
             if (victory) {
-                playVictorySound();
-                const victoryAnim = document.createElement('div');
-                victoryAnim.className = 'victory-animation';
-                victoryAnim.innerHTML = '🏆';
-                document.body.appendChild(victoryAnim);
+                const percentage = Math.round((gameState.knowledgePoints / (gameState.questionsAnswered * 10)) * 100);
+                
+                // Só ganha troféu se acertar 100% das perguntas
+                if (percentage === 100 && gameState.questionsAnswered > 0) {
+                    playVictorySound();
+                    const victoryAnim = document.createElement('div');
+                    victoryAnim.className = 'victory-animation';
+                    victoryAnim.innerHTML = '🏆';
+                    document.body.appendChild(victoryAnim);
 
-                setTimeout(() => {
-                    const percentage = Math.round((gameState.knowledgePoints / (gameState.questionsAnswered * 10)) * 100);
-                    showNotification(`🎉 Parabéns! Cris completou o jogo com ${gameState.knowledgePoints} PC, ${gameState.coins} moedas 🪙 e ${percentage}% de aproveitamento!`, 'positive');
                     setTimeout(() => {
-                        if (confirm('Jogar novamente?')) {
-                            resetGame();
-                        }
-                    }, 3000);
-                }, 2000);
+                        showNotification(`🏆 PERFEITO! Cris ganhou o troféu com 100% de acertos! ${gameState.knowledgePoints} PC e ${gameState.coins} moedas 🪙`, 'positive');
+                        setTimeout(() => {
+                            showRestartModal(true); // true = ganhou troféu
+                        }, 3000);
+                    }, 2000);
+                } else {
+                    // Não ganhou troféu
+                    playIncorrectSound();
+                    setTimeout(() => {
+                        showNotification(`😔 Cris chegou ao fim, mas precisa de 100% de acertos para ganhar o troféu! Teve ${percentage}% de aproveitamento.`, 'negative');
+                        setTimeout(() => {
+                            showRestartModal(false); // false = não ganhou troféu
+                        }, 3000);
+                    }, 1000);
+                }
             }
+        }
+
+        // Modal de reiniciar para iOS
+        function showRestartModal(wonTrophy = false) {
+            const modal = document.getElementById('question-modal');
+            const questionText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('answer-options');
+
+            if (wonTrophy) {
+                questionText.textContent = '🏆 PARABÉNS! Você ganhou o troféu! Deseja jogar novamente?';
+            } else {
+                questionText.textContent = '😔 Não foi dessa vez! Tente conseguir 100% de acertos para ganhar o troféu. Jogar novamente?';
+            }
+            optionsContainer.innerHTML = '';
+
+            const yesButton = document.createElement('button');
+            yesButton.className = 'answer-option';
+            yesButton.textContent = '✅ Sim, jogar novamente!';
+            yesButton.type = 'button';
+            
+            function handleYesClick(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                modal.style.display = 'none';
+                resetGame();
+            }
+            
+            yesButton.addEventListener('click', handleYesClick);
+            yesButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleYesClick(e);
+            }, { passive: false });
+
+            const noButton = document.createElement('button');
+            noButton.className = 'answer-option';
+            noButton.textContent = '❌ Não, obrigada!';
+            noButton.type = 'button';
+            
+            function handleNoClick(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                modal.style.display = 'none';
+            }
+            
+            noButton.addEventListener('click', handleNoClick);
+            noButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleNoClick(e);
+            }, { passive: false });
+
+            // Feedback visual para ambos os botões
+            [yesButton, noButton].forEach(button => {
+                button.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'translateY(1px) scale(0.98)';
+                    this.style.opacity = '0.8';
+                }, { passive: false });
+                
+                button.addEventListener('touchcancel', function(e) {
+                    e.preventDefault();
+                    this.style.transform = '';
+                    this.style.opacity = '';
+                }, { passive: false });
+            });
+
+            optionsContainer.appendChild(yesButton);
+            optionsContainer.appendChild(noButton);
+            modal.style.display = 'flex';
         }
 
         // Resetar jogo
@@ -1245,11 +1780,179 @@
             document.getElementById('question-modal').style.display = 'none';
         }
 
+        // Eventos touch para iOS
+        function addTouchEvents() {
+            const rollButton = document.getElementById('roll-button');
+            const dice = document.getElementById('dice-3d');
+            
+            // Função para rolar dado com feedback visual
+            function handleRollDice(element) {
+                if (gameState.isRolling || gameState.gameEnded) return;
+                
+                // Feedback visual
+                element.style.transform = 'translateY(2px) scale(0.95)';
+                element.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4)';
+                
+                setTimeout(() => {
+                    element.style.transform = '';
+                    element.style.boxShadow = '';
+                    rollDice();
+                }, 150);
+            }
+            
+            // Eventos para o botão de rolar
+            rollButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleRollDice(this);
+            });
+            
+            rollButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleRollDice(this);
+            }, { passive: false });
+            
+            // Eventos para o dado
+            dice.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleRollDice(this);
+            });
+            
+            dice.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleRollDice(this);
+            }, { passive: false });
+            
+            // Feedback visual para touch
+            [rollButton, dice].forEach(element => {
+                element.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(0.95)';
+                    this.style.opacity = '0.8';
+                }, { passive: false });
+                
+                element.addEventListener('touchcancel', function(e) {
+                    e.preventDefault();
+                    this.style.transform = '';
+                    this.style.opacity = '';
+                }, { passive: false });
+            });
+        }
+        
+        // Função para detectar iOS
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
+                   /Safari/.test(navigator.userAgent) && /Mobile/.test(navigator.userAgent) ||
+                   window.DeviceMotionEvent !== undefined;
+        }
+        
+        // Configurações específicas para iOS
+        function setupIOSOptimizations() {
+            // Aplicar otimizações para todos os dispositivos móveis
+            // Prevenir zoom duplo toque
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, { passive: false });
+            
+            // Prevenir scroll bounce
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+            
+            // Configurar viewport para iOS
+            const viewport = document.querySelector('meta[name=viewport]');
+            if (viewport) {
+                viewport.setAttribute('content', 
+                    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no'
+                );
+            }
+            
+            // Adicionar classe iOS ao body
+            document.body.classList.add('ios-device');
+            
+            // Configurar altura para iOS
+            function setIOSHeight() {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+                
+                // Forçar altura fixa no iOS
+                document.documentElement.style.height = window.innerHeight + 'px';
+                document.body.style.height = window.innerHeight + 'px';
+                
+                const gameContainer = document.getElementById('game-container');
+                if (gameContainer) {
+                    gameContainer.style.height = window.innerHeight + 'px';
+                }
+            }
+            
+            setIOSHeight();
+            window.addEventListener('resize', () => {
+                setTimeout(setIOSHeight, 100);
+            });
+            window.addEventListener('orientationchange', () => {
+                setTimeout(setIOSHeight, 500);
+            });
+            
+            // Prevenir gestos do iOS
+            document.addEventListener('gesturestart', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+            
+            document.addEventListener('gesturechange', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+            
+            document.addEventListener('gestureend', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+        }
+
         // Inicializar jogo
         document.addEventListener('DOMContentLoaded', () => {
+            // Configurar otimizações iOS primeiro
+            setupIOSOptimizations();
+            
             createBoard();
             updateGameInfo();
+            addTouchEvents();
+            
+            // Inicializar contexto de áudio no primeiro toque (iOS)
+            document.addEventListener('touchstart', function initAudio() {
+                initAudioContext();
+                document.removeEventListener('touchstart', initAudio);
+            }, { once: true });
+            
+            // Configurar eventos de orientação para iOS
+            if (isIOS()) {
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => {
+                        // Reajustar layout após mudança de orientação
+                        const gameContainer = document.getElementById('game-container');
+                        gameContainer.style.height = window.innerHeight + 'px';
+                    }, 500);
+                });
+            }
+            
+            // Prevenir comportamentos padrão do iOS
+            document.addEventListener('gesturestart', function(e) {
+                e.preventDefault();
+            });
+            
+            document.addEventListener('gesturechange', function(e) {
+                e.preventDefault();
+            });
+            
+            document.addEventListener('gestureend', function(e) {
+                e.preventDefault();
+            });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e79275c0730353',t:'MTc2MDQ1MDEwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e8c85386779d32',t:'MTc2MDQ2Mjc5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
