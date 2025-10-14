@@ -485,7 +485,135 @@
             }
         }
 
-        @media (max-width: 768px) {
+        /* Mobile-first responsive design */
+        @media (max-width: 480px) {
+            #main-title {
+                font-size: 1.4em;
+                padding: 8px 15px;
+                top: 10px;
+                max-width: 90%;
+                text-align: center;
+            }
+            
+            #game-container {
+                padding-top: 100px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            #scenario-container {
+                height: 35vh;
+                width: 100%;
+            }
+            
+            .interactive-object {
+                min-width: 120px;
+                padding: 15px 20px;
+                font-size: 14px;
+                border-radius: 15px;
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                margin: 10px;
+                display: inline-block;
+            }
+            
+            #interaction-area {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                position: absolute;
+                bottom: 20%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+            }
+            
+            .cris-character {
+                bottom: 2%;
+                font-size: 0.8em;
+            }
+            
+            .cris-face {
+                font-size: 3em;
+            }
+            
+            .choice-btn {
+                min-width: 280px;
+                font-size: 16px;
+                padding: 15px 20px;
+                margin: 5px 0;
+                border-radius: 12px;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            #choices-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                width: 100%;
+            }
+            
+            #story-panel {
+                padding: 15px;
+                margin-top: 15px;
+                border-radius: 20px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            #scenario-text {
+                font-size: 16px;
+                line-height: 1.5;
+                margin-bottom: 20px;
+                min-height: auto;
+            }
+            
+            #module-title {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
+            
+            #scenario-icon {
+                font-size: 2.5em;
+                margin-bottom: 10px;
+            }
+            
+            #mute-button {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.5em;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            .popup-message {
+                width: 90%;
+                max-width: 350px;
+                padding: 15px 20px;
+                font-size: 16px;
+                border-radius: 12px;
+            }
+            
+            .medal-animation, .bomb-animation {
+                font-size: 2.5em;
+            }
+            
+            .cotton-candy {
+                font-size: 2em;
+            }
+            
+            .floating-panty {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
             #main-title {
                 font-size: 1.8em;
                 padding: 10px 20px;
@@ -493,21 +621,35 @@
             }
             
             #game-container {
-                padding-top: 140px;
+                padding-top: 120px;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            #scenario-container {
+                height: 40vh;
+            }
+            
+            .interactive-object {
+                min-width: 160px;
+                padding: 18px 25px;
+                font-size: 16px;
             }
             
             .choice-btn {
-                min-width: 150px;
-                font-size: 14px;
-                padding: 12px 20px;
+                min-width: 200px;
+                font-size: 15px;
+                padding: 14px 22px;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
             }
             
             #story-panel {
                 padding: 20px;
             }
             
-            #story-text {
-                font-size: 16px;
+            #scenario-text {
+                font-size: 17px;
             }
             
             #mute-button {
@@ -516,7 +658,50 @@
                 width: 45px;
                 height: 45px;
                 font-size: 1.3em;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
             }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            #main-title {
+                font-size: 2.2em;
+            }
+            
+            #scenario-container {
+                height: 45vh;
+            }
+            
+            .interactive-object {
+                min-width: 180px;
+                padding: 20px 28px;
+                font-size: 17px;
+            }
+        }
+
+        /* Touch and mobile optimizations */
+        * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        button, .interactive-object {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        /* Prevent zoom on input focus */
+        input, select, textarea {
+            font-size: 16px;
+        }
+
+        /* Smooth scrolling for mobile */
+        html {
+            -webkit-overflow-scrolling: touch;
         }
     </style>
 </head>
@@ -1162,5 +1347,5 @@
             muteButton.textContent = isMuted ? '🔇' : '🔊';
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e3c891a32addeb',t:'MTc2MDQxMDM3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e71138a0e30353',t:'MTc2MDQ0NDgwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
