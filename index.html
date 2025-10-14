@@ -208,13 +208,15 @@
             border: none;
             padding: 15px 30px;
             border-radius: 25px;
-            font-size: 1.1em;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         #roll-button:hover {
@@ -268,13 +270,15 @@
             padding: 15px 20px;
             margin: 8px;
             border-radius: 15px;
-            font-size: 1em;
+            font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             width: 100%;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .answer-option:hover {
@@ -573,12 +577,29 @@
             -webkit-overflow-scrolling: touch;
             position: relative;
             overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
         }
 
         @supports (-webkit-touch-callout: none) {
             #game-container {
                 min-height: -webkit-fill-available;
             }
+            
+            body {
+                height: -webkit-fill-available;
+            }
+        }
+
+        /* iOS button fixes */
+        button {
+            -webkit-appearance: none;
+            appearance: none;
+            border-radius: 0;
+        }
+
+        /* Prevent iOS zoom on input focus */
+        input, select, textarea, button {
+            font-size: 16px;
         }
 
         /* Calcinhas flutuantes animadas */
@@ -889,24 +910,46 @@
             startCell.appendChild(cris);
         }
 
-        // Sistema de áudio
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // Sistema de áudio compatível com iOS
+        let audioContext = null;
+        
+        function initAudioContext() {
+            if (!audioContext) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Audio não suportado');
+                    return false;
+                }
+            }
+            
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            return true;
+        }
         
         function playSound(frequency, duration, type = 'sine') {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
+            if (!initAudioContext()) return;
             
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-            oscillator.type = type;
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + duration);
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.type = type;
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                // Falha silenciosa se áudio não funcionar
+            }
         }
 
         function playDiceRoll() {
@@ -994,10 +1037,7 @@
             gameState.isRolling = true;
             document.getElementById('roll-button').disabled = true;
 
-            // Inicializar contexto de áudio se necessário
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
+            // Inicializar áudio no primeiro toque (iOS)
 
             playDiceRoll();
 
@@ -1211,5 +1251,5 @@
             updateGameInfo();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e7821ff15e7e8c',t:'MTc2MDQ0OTQzMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e79275c0730353',t:'MTc2MDQ1MDEwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
