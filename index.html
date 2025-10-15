@@ -1611,34 +1611,86 @@
                 button.className = 'answer-option';
                 button.textContent = option;
                 button.type = 'button';
+                button.setAttribute('data-index', index);
+                
+                // Variável para controlar se já foi clicado
+                let isProcessing = false;
                 
                 // Função para lidar com a resposta
                 function handleAnswerClick(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleAnswer(index, randomQuestion.correct, randomQuestion.explanation, randomQuestion.points);
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    
+                    // Prevenir múltiplos cliques
+                    if (isProcessing) return;
+                    isProcessing = true;
+                    
+                    // Feedback visual imediato
+                    button.style.transform = 'scale(0.95)';
+                    button.style.opacity = '0.6';
+                    button.disabled = true;
+                    
+                    // Processar resposta após pequeno delay
+                    setTimeout(() => {
+                        handleAnswer(index, randomQuestion.correct, randomQuestion.explanation, randomQuestion.points);
+                    }, 100);
                 }
                 
-                // Adicionar eventos
-                button.addEventListener('click', handleAnswerClick);
+                // Sistema de eventos robusto
+                let touchStarted = false;
+                
+                // Touch events
+                button.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    touchStarted = true;
+                    this.style.transform = 'translateY(2px) scale(0.98)';
+                    this.style.opacity = '0.8';
+                    this.style.backgroundColor = '#5a67d8';
+                }, { passive: false });
+                
                 button.addEventListener('touchend', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleAnswerClick(e);
-                }, { passive: false });
-                
-                // Feedback visual
-                button.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    this.style.transform = 'translateY(1px) scale(0.98)';
-                    this.style.opacity = '0.8';
+                    
+                    if (touchStarted && !isProcessing) {
+                        touchStarted = false;
+                        handleAnswerClick(e);
+                    }
                 }, { passive: false });
                 
                 button.addEventListener('touchcancel', function(e) {
                     e.preventDefault();
-                    this.style.transform = '';
-                    this.style.opacity = '';
+                    touchStarted = false;
+                    if (!isProcessing) {
+                        this.style.transform = '';
+                        this.style.opacity = '';
+                        this.style.backgroundColor = '';
+                    }
                 }, { passive: false });
+                
+                // Click events (fallback)
+                button.addEventListener('click', function(e) {
+                    if (!touchStarted) {
+                        handleAnswerClick(e);
+                    }
+                }, { passive: false });
+                
+                // Mouse events (desktop)
+                button.addEventListener('mousedown', function(e) {
+                    if (!touchStarted) {
+                        this.style.transform = 'translateY(1px) scale(0.98)';
+                        this.style.opacity = '0.9';
+                    }
+                });
+                
+                button.addEventListener('mouseup', function(e) {
+                    if (!touchStarted && !isProcessing) {
+                        this.style.transform = '';
+                        this.style.opacity = '';
+                    }
+                });
                 
                 optionsContainer.appendChild(button);
             });
@@ -1650,9 +1702,12 @@
         function handleAnswer(selectedIndex, correctIndex, explanation, points) {
             const options = document.querySelectorAll('.answer-option');
             
+            // Desabilitar todos os botões imediatamente
             options.forEach((option, index) => {
                 option.disabled = true;
                 option.style.pointerEvents = 'none';
+                option.style.opacity = '0.7';
+                
                 if (index === correctIndex) {
                     option.classList.add('answer-correct');
                 } else if (index === selectedIndex && index !== correctIndex) {
@@ -1755,57 +1810,122 @@
             }
             optionsContainer.innerHTML = '';
 
+            // Botão SIM
             const yesButton = document.createElement('button');
             yesButton.className = 'answer-option';
             yesButton.textContent = '✅ Sim, jogar novamente!';
             yesButton.type = 'button';
             
+            let yesProcessing = false;
+            let yesTouchStarted = false;
+            
             function handleYesClick(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                modal.style.display = 'none';
-                resetGame();
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                if (yesProcessing) return;
+                yesProcessing = true;
+                
+                yesButton.style.opacity = '0.5';
+                yesButton.disabled = true;
+                
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    resetGame();
+                }, 100);
             }
             
-            yesButton.addEventListener('click', handleYesClick);
+            yesButton.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                yesTouchStarted = true;
+                this.style.transform = 'translateY(2px) scale(0.98)';
+                this.style.opacity = '0.8';
+                this.style.backgroundColor = '#4ecdc4';
+            }, { passive: false });
+            
             yesButton.addEventListener('touchend', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                handleYesClick(e);
+                if (yesTouchStarted && !yesProcessing) {
+                    yesTouchStarted = false;
+                    handleYesClick(e);
+                }
+            }, { passive: false });
+            
+            yesButton.addEventListener('touchcancel', function(e) {
+                e.preventDefault();
+                yesTouchStarted = false;
+                if (!yesProcessing) {
+                    this.style.transform = '';
+                    this.style.opacity = '';
+                    this.style.backgroundColor = '';
+                }
+            }, { passive: false });
+            
+            yesButton.addEventListener('click', function(e) {
+                if (!yesTouchStarted) {
+                    handleYesClick(e);
+                }
             }, { passive: false });
 
+            // Botão NÃO
             const noButton = document.createElement('button');
             noButton.className = 'answer-option';
             noButton.textContent = '❌ Não, obrigada!';
             noButton.type = 'button';
             
+            let noProcessing = false;
+            let noTouchStarted = false;
+            
             function handleNoClick(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                modal.style.display = 'none';
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                if (noProcessing) return;
+                noProcessing = true;
+                
+                noButton.style.opacity = '0.5';
+                noButton.disabled = true;
+                
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 100);
             }
             
-            noButton.addEventListener('click', handleNoClick);
+            noButton.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                noTouchStarted = true;
+                this.style.transform = 'translateY(2px) scale(0.98)';
+                this.style.opacity = '0.8';
+                this.style.backgroundColor = '#ff6b6b';
+            }, { passive: false });
+            
             noButton.addEventListener('touchend', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                handleNoClick(e);
+                if (noTouchStarted && !noProcessing) {
+                    noTouchStarted = false;
+                    handleNoClick(e);
+                }
             }, { passive: false });
-
-            // Feedback visual para ambos os botões
-            [yesButton, noButton].forEach(button => {
-                button.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    this.style.transform = 'translateY(1px) scale(0.98)';
-                    this.style.opacity = '0.8';
-                }, { passive: false });
-                
-                button.addEventListener('touchcancel', function(e) {
-                    e.preventDefault();
+            
+            noButton.addEventListener('touchcancel', function(e) {
+                e.preventDefault();
+                noTouchStarted = false;
+                if (!noProcessing) {
                     this.style.transform = '';
                     this.style.opacity = '';
-                }, { passive: false });
-            });
+                    this.style.backgroundColor = '';
+                }
+            }, { passive: false });
+            
+            noButton.addEventListener('click', function(e) {
+                if (!noTouchStarted) {
+                    handleNoClick(e);
+                }
+            }, { passive: false });
 
             optionsContainer.appendChild(yesButton);
             optionsContainer.appendChild(noButton);
@@ -2005,5 +2125,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f1143bb1d93472',t:'MTc2MDU0OTc5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f1217ec61902d8',t:'MTc2MDU1MDMzMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
