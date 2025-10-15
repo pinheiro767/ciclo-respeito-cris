@@ -1616,79 +1616,121 @@
                 // Variável para controlar se já foi clicado
                 let isProcessing = false;
                 
-                // Função para lidar com a resposta
-                function handleAnswerClick(e) {
-                    if (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
+                // Sistema de toque ultra-robusto
+                let buttonProcessing = false;
+                let touchActive = false;
+                let clickTimeout = null;
+                
+                // Função principal para processar resposta
+                function processAnswer() {
+                    if (buttonProcessing) return false;
+                    buttonProcessing = true;
                     
-                    // Prevenir múltiplos cliques
-                    if (isProcessing) return;
-                    isProcessing = true;
+                    // Desabilitar TODOS os botões imediatamente
+                    const allButtons = document.querySelectorAll('.answer-option');
+                    allButtons.forEach(btn => {
+                        btn.disabled = true;
+                        btn.style.pointerEvents = 'none';
+                        btn.style.opacity = '0.5';
+                    });
                     
-                    // Feedback visual imediato
-                    button.style.transform = 'scale(0.95)';
-                    button.style.opacity = '0.6';
-                    button.disabled = true;
+                    // Feedback visual específico para este botão
+                    button.style.transform = 'scale(0.9)';
+                    button.style.backgroundColor = '#4a5568';
                     
-                    // Processar resposta após pequeno delay
+                    // Processar resposta
                     setTimeout(() => {
                         handleAnswer(index, randomQuestion.correct, randomQuestion.explanation, randomQuestion.points);
-                    }, 100);
+                    }, 150);
+                    
+                    return true;
                 }
                 
-                // Sistema de eventos robusto
-                let touchStarted = false;
-                
-                // Touch events
+                // Touch Events - Sistema Primário
                 button.addEventListener('touchstart', function(e) {
                     e.preventDefault();
-                    touchStarted = true;
-                    this.style.transform = 'translateY(2px) scale(0.98)';
-                    this.style.opacity = '0.8';
+                    e.stopImmediatePropagation();
+                    
+                    if (buttonProcessing) return;
+                    
+                    touchActive = true;
+                    this.style.transform = 'translateY(3px) scale(0.96)';
+                    this.style.opacity = '0.7';
                     this.style.backgroundColor = '#5a67d8';
-                }, { passive: false });
+                    this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.4)';
+                    
+                    // Vibração tátil se disponível
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
+                }, { passive: false, capture: true });
                 
                 button.addEventListener('touchend', function(e) {
                     e.preventDefault();
-                    e.stopPropagation();
+                    e.stopImmediatePropagation();
                     
-                    if (touchStarted && !isProcessing) {
-                        touchStarted = false;
-                        handleAnswerClick(e);
-                    }
-                }, { passive: false });
+                    if (!touchActive || buttonProcessing) return;
+                    
+                    touchActive = false;
+                    
+                    // Resetar visual temporariamente
+                    this.style.transform = 'scale(1.02)';
+                    this.style.opacity = '1';
+                    this.style.backgroundColor = '#667eea';
+                    
+                    // Processar após delay mínimo
+                    setTimeout(() => {
+                        if (!buttonProcessing) {
+                            processAnswer();
+                        }
+                    }, 50);
+                }, { passive: false, capture: true });
                 
                 button.addEventListener('touchcancel', function(e) {
                     e.preventDefault();
-                    touchStarted = false;
-                    if (!isProcessing) {
+                    touchActive = false;
+                    
+                    if (!buttonProcessing) {
                         this.style.transform = '';
                         this.style.opacity = '';
                         this.style.backgroundColor = '';
+                        this.style.boxShadow = '';
                     }
-                }, { passive: false });
+                }, { passive: false, capture: true });
                 
-                // Click events (fallback)
+                // Click Events - Sistema Secundário (Desktop/Fallback)
                 button.addEventListener('click', function(e) {
-                    if (!touchStarted) {
-                        handleAnswerClick(e);
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    
+                    // Só processar click se não houve touch recente
+                    if (!touchActive && !buttonProcessing) {
+                        // Limpar timeout anterior
+                        if (clickTimeout) {
+                            clearTimeout(clickTimeout);
+                        }
+                        
+                        // Delay para evitar conflito com touch
+                        clickTimeout = setTimeout(() => {
+                            if (!buttonProcessing && !touchActive) {
+                                processAnswer();
+                            }
+                        }, 100);
                     }
-                }, { passive: false });
+                }, { passive: false, capture: true });
                 
-                // Mouse events (desktop)
-                button.addEventListener('mousedown', function(e) {
-                    if (!touchStarted) {
-                        this.style.transform = 'translateY(1px) scale(0.98)';
-                        this.style.opacity = '0.9';
+                // Mouse Events - Apenas para feedback visual
+                button.addEventListener('mouseenter', function(e) {
+                    if (!touchActive && !buttonProcessing) {
+                        this.style.transform = 'translateY(-1px) scale(1.02)';
+                        this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
                     }
                 });
                 
-                button.addEventListener('mouseup', function(e) {
-                    if (!touchStarted && !isProcessing) {
+                button.addEventListener('mouseleave', function(e) {
+                    if (!touchActive && !buttonProcessing) {
                         this.style.transform = '';
-                        this.style.opacity = '';
+                        this.style.boxShadow = '';
                     }
                 });
                 
@@ -2125,5 +2167,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f1217ec61902d8',t:'MTc2MDU1MDMzMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f126c5d6f63472',t:'MTc2MDU1MDU0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
