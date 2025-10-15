@@ -2,15 +2,19 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no, minimal-ui">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-title" content="Dignidade Menstrual">
+    <meta name="theme-color" content="#667eea">
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="320">
     <title>Tabuleiro da Cris - Dignidade Menstrual</title>
     <style>
-        /* INÍCIO DO CSS */
         body {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -39,6 +43,8 @@
             justify-content: center;
             padding: 20px;
         }
+
+
 
         #board-container {
             position: relative;
@@ -91,6 +97,12 @@
                 background-position: 100% 50%;
                 transform: scale(1.02);
             }
+        }
+
+        .board-cell:hover {
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+            border-color: #feca57;
         }
 
         .cell-start {
@@ -155,6 +167,16 @@
             }
         }
 
+        .cell-bomb {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52) !important;
+            color: white;
+        }
+
+        .cell-safe {
+            background: linear-gradient(135deg, #a8e6cf, #88d8a3) !important;
+            color: #2d5016;
+        }
+
         .cris-player {
             position: absolute;
             top: 50%;
@@ -191,90 +213,135 @@
             gap: 15px;
         }
 
-        #dice-3d {
-            width: 80px;
-            height: 80px;
+        #roulette-container {
+            width: 120px;
+            height: 120px;
             position: relative;
-            transform-style: preserve-3d;
-            transition: transform 1s ease;
             cursor: pointer;
-            /* CORREÇÃO: Força renderização por GPU */
-            transform: translateZ(0); 
-            -webkit-transform: translateZ(0);
+            animation: rouletteIdle 3s ease-in-out infinite;
         }
 
-        .dice-face {
+        @keyframes rouletteIdle {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+            }
+            50% { 
+                transform: scale(1.05) rotate(5deg);
+            }
+        }
+
+        #roulette-wheel {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: relative;
+            border: 4px solid #fff;
+            box-shadow: 0 0 30px rgba(0,0,0,0.4), inset 0 0 20px rgba(255,255,255,0.3);
+            transition: transform 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: conic-gradient(
+                #ff6b6b 0deg 60deg,
+                #4ecdc4 60deg 120deg,
+                #667eea 120deg 180deg,
+                #ffd700 180deg 240deg,
+                #a8e6cf 240deg 300deg,
+                #f093fb 300deg 360deg
+            );
+        }
+
+        #roulette-wheel.spinning {
+            transition: transform 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .roulette-section {
             position: absolute;
-            width: 80px;
-            height: 80px;
-            border: 3px solid #fff;
-            border-radius: 12px;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: bold;
             color: white;
-            box-shadow: 
-                inset 0 0 15px rgba(255,255,255,0.3),
-                0 0 20px rgba(0,0,0,0.3);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            /* CORREÇÃO: Garante visibilidade 3D e aceleração */
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            border-right: 2px solid rgba(255,255,255,0.3);
         }
 
-        .dice-face.front { 
-            transform: rotateY(0deg) translateZ(40px) translateZ(0);
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52, #ff9ff3);
-            background-size: 200% 200%;
-            animation: diceGlow 2s ease-in-out infinite;
+        .roulette-section:nth-child(1) {
+            transform: rotate(0deg);
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
         }
-        .dice-face.back { 
-            transform: rotateY(180deg) translateZ(40px) translateZ(0);
-            background: linear-gradient(135deg, #4ecdc4, #44a08d, #96ceb4);
-            background-size: 200% 200%;
-            animation: diceGlow 2.2s ease-in-out infinite;
+        .roulette-section:nth-child(2) {
+            transform: rotate(60deg);
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
-        .dice-face.right { 
-            transform: rotateY(90deg) translateZ(40px) translateZ(0);
-            background: linear-gradient(135deg, #667eea, #764ba2, #5f27cd);
-            background-size: 200% 200%;
-            animation: diceGlow 2.4s ease-in-out infinite;
+        .roulette-section:nth-child(3) {
+            transform: rotate(120deg);
+            background: linear-gradient(45deg, #667eea, #764ba2);
         }
-        .dice-face.left { 
-            transform: rotateY(-90deg) translateZ(40px) translateZ(0);
-            background: linear-gradient(135deg, #ffd700, #ffed4e, #feca57);
-            background-size: 200% 200%;
-            animation: diceGlow 2.6s ease-in-out infinite;
+        .roulette-section:nth-child(4) {
+            transform: rotate(180deg);
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
             color: #333;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
-        .dice-face.top { 
-            transform: rotateX(90deg) translateZ(40px) translateZ(0);
-            background: linear-gradient(135deg, #a8e6cf, #88d8a3, #96ceb4);
-            background-size: 200% 200%;
-            animation: diceGlow 2.8s ease-in-out infinite;
+        .roulette-section:nth-child(5) {
+            transform: rotate(240deg);
+            background: linear-gradient(45deg, #a8e6cf, #88d8a3);
             color: #2d5016;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
-        .dice-face.bottom { 
-            transform: rotateX(-90deg) translateZ(40px) translateZ(0);
-            background: linear-gradient(135deg, #f093fb, #f5576c, #ff9ff3);
-            background-size: 200% 200%;
-            animation: diceGlow 3s ease-in-out infinite;
+        .roulette-section:nth-child(6) {
+            transform: rotate(300deg);
+            background: linear-gradient(45deg, #f093fb, #f5576c);
         }
 
-        @keyframes diceGlow {
-            0%, 100% { 
-                background-position: 0% 50%;
-                box-shadow: inset 0 0 15px rgba(255,255,255,0.3), 0 0 20px rgba(0,0,0,0.3);
+        .roulette-pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 20px solid #fff;
+            z-index: 10;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .roulette-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            border-radius: 50%;
+            border: 3px solid #333;
+            z-index: 5;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .roulette-glow {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rouletteGlow 2s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes rouletteGlow {
+            0% { 
+                box-shadow: 0 0 20px rgba(255,255,255,0.3);
             }
-            50% { 
-                background-position: 100% 50%;
-                box-shadow: inset 0 0 25px rgba(255,255,255,0.5), 0 0 30px rgba(0,0,0,0.4);
+            100% { 
+                box-shadow: 0 0 40px rgba(255,255,255,0.6);
             }
         }
 
@@ -333,8 +400,6 @@
             justify-content: center;
             z-index: 1000;
             backdrop-filter: blur(10px);
-            /* CORREÇÃO TOUCH: Garante que o modal não role */
-            touch-action: none;
         }
 
         .modal-content {
@@ -356,44 +421,12 @@
             line-height: 1.4;
         }
 
-        #question-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        
-        #question-controls button {
-            flex-grow: 1;
-        }
-
-        #hint-button {
-            background: linear-gradient(135deg, #feca57, #ffd700) !important;
-            color: #333 !important;
-            border: 3px solid #fff !important;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        #hint-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            background: #ccc !important;
-            color: #666 !important;
-        }
-
         .answer-option {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
             padding: 15px 20px;
-            margin: 8px 0;
+            margin: 8px;
             border-radius: 15px;
             font-size: 16px;
             cursor: pointer;
@@ -404,7 +437,6 @@
             -webkit-tap-highlight-color: transparent;
             -webkit-appearance: none;
             appearance: none;
-            border: 3px solid #fff;
         }
 
         .answer-option:hover {
@@ -418,17 +450,6 @@
 
         .answer-incorrect {
             background: linear-gradient(135deg, #ff6b6b, #ee5a52) !important;
-        }
-
-        .hint-text {
-            background: #f0f8ff;
-            border-left: 5px solid #54a0ff;
-            padding: 15px;
-            margin-top: 15px;
-            border-radius: 8px;
-            text-align: left;
-            font-size: 0.9em;
-            color: #2c3e50;
         }
 
         #game-info {
@@ -467,6 +488,63 @@
             transition: all 0.3s ease;
         }
 
+        .info-item:hover {
+            transform: scale(1.05);
+            color: #667eea;
+        }
+
+        .bomb-explosion {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5em;
+            z-index: 1000;
+            pointer-events: none;
+            animation: explode 1.5s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { 
+                transform: translate(-50%, -50%) scale(0.5) rotate(0deg); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.5) rotate(180deg); 
+                opacity: 0.8; 
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(2.5) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+
+        .victory-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            z-index: 1000;
+            pointer-events: none;
+            animation: victory 2s ease-out forwards;
+        }
+
+        @keyframes victory {
+            0% { 
+                transform: translate(-50%, -50%) scale(0) rotate(0deg); 
+                opacity: 0; 
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.2) rotate(180deg); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1) rotate(360deg); 
+                opacity: 1; 
+            }
+        }
+
         .notification {
             position: fixed;
             top: 50%;
@@ -500,46 +578,75 @@
             color: #2c3e50;
         }
 
-        /* Otimizações Mobile */
+        /* Mobile optimizations */
         @media (max-width: 480px) {
+
+
             #board-container {
                 width: 95vw;
                 max-width: 400px;
                 padding: 8px;
                 gap: 4px;
             }
+
             .board-cell {
                 font-size: 1.5em;
                 border-radius: 8px;
                 padding: 4px;
                 min-height: 60px;
             }
-            #dice-3d {
-                width: 60px;
-                height: 60px;
-            }
-            .dice-face {
-                width: 60px;
-                height: 60px;
+
+            .cris-player {
                 font-size: 1.5em;
-                transform: translateZ(30px); /* Ajuste para o novo tamanho */
             }
-            .dice-face.front { transform: rotateY(0deg) translateZ(30px); }
-            .dice-face.back { transform: rotateY(180deg) translateZ(30px); }
-            .dice-face.right { transform: rotateY(90deg) translateZ(30px); }
-            .dice-face.left { transform: rotateY(-90deg) translateZ(30px); color: #333;}
-            .dice-face.top { transform: rotateX(90deg) translateZ(30px); color: #2d5016;}
-            .dice-face.bottom { transform: rotateX(-90deg) translateZ(30px); }
+
+            #roulette-container {
+                width: 90px;
+                height: 90px;
+            }
+
+            #roulette-wheel {
+                width: 90px;
+                height: 90px;
+            }
+
+            .roulette-section {
+                font-size: 1.4em;
+            }
+
+            .roulette-center {
+                width: 25px;
+                height: 25px;
+            }
+
+            .roulette-glow {
+                width: 100px;
+                height: 100px;
+                top: -5px;
+                left: -5px;
+            }
 
             #roll-button {
                 padding: 12px 25px;
                 font-size: 1em;
             }
+
+            .modal-content {
+                padding: 20px;
+                width: 90%;
+            }
+
+            .question-text {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+
             .answer-option {
                 padding: 12px 15px;
                 font-size: 0.9em;
-                margin: 5px 0;
+                margin: 5px;
             }
+
             #game-info {
                 top: 10px;
                 left: 10px;
@@ -547,36 +654,92 @@
                 font-size: 0.9em;
             }
         }
-        
-        /* CORREÇÃO GLOBAL: Impede o navegador de tentar dar zoom ou rolar ao tocar */
-        * {
+
+        @media (max-width: 375px) {
+
+
+            #board-container {
+                width: 98vw;
+                max-width: 350px;
+                padding: 6px;
+                gap: 3px;
+            }
+
+            .board-cell {
+                font-size: 1.2em;
+                padding: 3px;
+                min-height: 50px;
+            }
+
+            .cris-player {
+                font-size: 1.2em;
+            }
+
+            #roulette-container {
+                width: 70px;
+                height: 70px;
+            }
+
+            #roulette-wheel {
+                width: 70px;
+                height: 70px;
+            }
+
+            .roulette-section {
+                font-size: 1.1em;
+            }
+
+            .roulette-center {
+                width: 20px;
+                height: 20px;
+            }
+
+            .roulette-glow {
+                width: 80px;
+                height: 80px;
+                top: -5px;
+                left: -5px;
+            }
+        }
+
+        /* Touch optimizations */
+        button {
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
             touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
             -webkit-user-select: none;
-            -webkit-touch-callout: none;
             user-select: none;
         }
         
+        #roll-button, #dice-3d {
+            pointer-events: auto !important;
+            touch-action: manipulation !important;
+        }
+
         /* iOS Safari specific fixes */
-        /* ... CSS de iOS/Touch original ... */
         html {
             height: 100%;
             height: -webkit-fill-available;
             -webkit-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;
             text-size-adjust: 100%;
+            position: fixed;
+            width: 100%;
+            overflow: hidden;
         }
         
         body {
             -webkit-overflow-scrolling: touch;
-            position: fixed;
             width: 100%;
             height: 100%;
             height: -webkit-fill-available;
-            overflow: hidden;
-            overscroll-behavior: none;
+            -webkit-text-size-adjust: 100%;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            position: fixed;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         @supports (-webkit-touch-callout: none) {
@@ -597,6 +760,7 @@
             }
         }
 
+        /* iOS button fixes */
         button {
             -webkit-appearance: none !important;
             appearance: none !important;
@@ -612,9 +776,337 @@
             -webkit-backface-visibility: hidden !important;
             backface-visibility: hidden !important;
             will-change: transform !important;
+            min-height: 44px !important;
+            min-width: 44px !important;
+            touch-action: manipulation !important;
+            position: relative !important;
+            z-index: 10 !important;
         }
-        
-        /* FIM DO CSS */
+
+        /* Prevent iOS zoom on input focus */
+        input, select, textarea, button {
+            font-size: 16px !important;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        /* iOS touch improvements */
+        .board-cell {
+            -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            touch-action: manipulation !important;
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
+            -webkit-backface-visibility: hidden !important;
+            backface-visibility: hidden !important;
+            will-change: transform !important;
+        }
+
+        #dice-3d {
+            -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            touch-action: manipulation !important;
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
+            -webkit-backface-visibility: hidden !important;
+            backface-visibility: hidden !important;
+            will-change: transform !important;
+        }
+
+        /* iOS viewport fixes */
+        @media screen and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 2) {
+            html, body {
+                -webkit-text-size-adjust: none;
+                position: fixed;
+                width: 100%;
+                height: 100vh;
+                height: -webkit-fill-available;
+                overflow: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            #game-container {
+                padding: 10px;
+                overflow: hidden;
+                height: 100vh;
+                height: -webkit-fill-available;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: none;
+            }
+            
+            #board-container {
+                width: 95vw;
+                max-width: 380px;
+            }
+        }
+
+        /* iPhone X/11/12/13/14 safe areas */
+        @supports (padding: max(0px)) {
+            #game-container {
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+                padding-top: max(20px, env(safe-area-inset-top));
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            }
+            
+            #dice-container {
+                bottom: max(20px, env(safe-area-inset-bottom));
+            }
+            
+            #game-info {
+                top: max(20px, env(safe-area-inset-top));
+                left: max(20px, env(safe-area-inset-left));
+            }
+        }
+
+        /* iOS specific touch feedback */
+        .ios-touch-feedback {
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* Prevent iOS bounce scroll */
+        #game-container {
+            overscroll-behavior-y: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* iOS modal fixes */
+        #question-modal {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
+        .modal-content {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
+        /* Calcinhas flutuantes animadas */
+        .floating-underwear {
+            position: fixed;
+            font-size: 2.5em;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.8;
+            animation: float 12s linear infinite;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+                transform: translateY(90vh) rotate(36deg) scale(1);
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) scale(1.2);
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.8;
+                transform: translateY(10vh) rotate(324deg) scale(0.9);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg) scale(0.6);
+                opacity: 0;
+            }
+        }
+
+        /* Partículas de estrelas */
+        .star-particle {
+            position: fixed;
+            font-size: 1.5em;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.6;
+            animation: starTwinkle 8s linear infinite;
+            color: #feca57;
+        }
+
+        @keyframes starTwinkle {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+                transform: translateY(90vh) rotate(45deg) scale(1);
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) scale(1.5);
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.6;
+                transform: translateY(10vh) rotate(315deg) scale(0.8);
+            }
+            100% {
+                transform: translateY(-50px) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Corações flutuantes */
+        .heart-particle {
+            position: fixed;
+            font-size: 1.8em;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.7;
+            animation: heartFloat 10s linear infinite;
+            color: #ff9ff3;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.9;
+                transform: translateY(85vh) rotate(30deg) scale(1);
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) scale(1.3);
+                opacity: 1;
+            }
+            85% {
+                opacity: 0.7;
+                transform: translateY(15vh) rotate(330deg) scale(0.8);
+            }
+            100% {
+                transform: translateY(-80px) rotate(360deg) scale(0.3);
+                opacity: 0;
+            }
+        }
+
+        .floating-underwear:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .floating-underwear:nth-child(2) { left: 20%; animation-delay: 2s; }
+        .floating-underwear:nth-child(3) { left: 30%; animation-delay: 4s; }
+        .floating-underwear:nth-child(4) { left: 40%; animation-delay: 6s; }
+        .floating-underwear:nth-child(5) { left: 50%; animation-delay: 8s; }
+        .floating-underwear:nth-child(6) { left: 60%; animation-delay: 10s; }
+        .floating-underwear:nth-child(7) { left: 70%; animation-delay: 12s; }
+        .floating-underwear:nth-child(8) { left: 80%; animation-delay: 14s; }
+        .floating-underwear:nth-child(9) { left: 90%; animation-delay: 16s; }
+        .floating-underwear:nth-child(10) { left: 15%; animation-delay: 18s; }
+
+        .floating-underwear.pink { color: #ff69b4; }
+        .floating-underwear.purple { color: #9370db; }
+        .floating-underwear.blue { color: #4169e1; }
+        .floating-underwear.green { color: #32cd32; }
+        .floating-underwear.orange { color: #ff8c00; }
+
+        /* Animação de moedas */
+        @keyframes coinFloat {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-100px) scale(1.2) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-200px) scale(0.8) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .floating-coin {
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+
+        /* CSS específico para iOS */
+        .ios-device {
+            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
+        }
+
+        .ios-device #game-container {
+            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
+            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
+        }
+
+        /* Melhorar responsividade do toque */
+        @media (hover: none) and (pointer: coarse) {
+            .board-cell {
+                min-height: 70px;
+                font-size: 1.8em;
+            }
+            
+            #roll-button {
+                padding: 18px 35px;
+                font-size: 18px;
+                min-height: 60px;
+            }
+            
+            .answer-option {
+                padding: 18px 25px;
+                font-size: 18px;
+                min-height: 60px;
+            }
+            
+            #roulette-container {
+                width: 130px;
+                height: 130px;
+            }
+            
+            #roulette-wheel {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .roulette-section {
+                font-size: 2em;
+            }
+        }
+
+        /* Ajustes para iPhone em modo paisagem */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            #game-info {
+                font-size: 0.8em;
+                padding: 8px;
+            }
+            
+            #board-container {
+                max-width: 400px;
+                padding: 8px;
+            }
+            
+            .board-cell {
+                min-height: 50px;
+                font-size: 1.4em;
+            }
+            
+            #dice-container {
+                bottom: 10px;
+            }
+            
+            #roulette-container {
+                width: 80px;
+                height: 80px;
+            }
+            
+            #roulette-wheel {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .roulette-section {
+                font-size: 1.3em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -629,34 +1121,37 @@
         </div>
 
         <div id="board-container">
-            </div>
+            <!-- Células do tabuleiro serão geradas pelo JavaScript -->
+        </div>
 
         <div id="dice-container">
-            <div id="dice-3d">
-                <div class="dice-face front">⚀</div>
-                <div class="dice-face back">⚁</div>
-                <div class="dice-face right">⚂</div>
-                <div class="dice-face left">⚃</div>
-                <div class="dice-face top">⚄</div>
-                <div class="dice-face bottom">⚅</div>
+            <div id="roulette-container">
+                <div class="roulette-glow"></div>
+                <div class="roulette-pointer"></div>
+                <div id="roulette-wheel">
+                    <div class="roulette-section">1</div>
+                    <div class="roulette-section">2</div>
+                    <div class="roulette-section">3</div>
+                    <div class="roulette-section">4</div>
+                    <div class="roulette-section">5</div>
+                    <div class="roulette-section">6</div>
+                </div>
+                <div class="roulette-center"></div>
             </div>
-            <button id="roll-button">🎲 Rolar Dado</button>
+            <button id="roll-button">🎯 Girar Roleta</button>
         </div>
     </div>
 
     <div id="question-modal">
         <div class="modal-content">
             <div class="question-text" id="question-text"></div>
-            <div id="question-controls">
-                <button id="hint-button">💡 DICA (10 🪙)</button>
-            </div>
             <div id="answer-options"></div>
-            <div id="hint-display"></div> 
         </div>
     </div>
 
     <div id="notification" class="notification"></div>
 
+    <!-- Calcinhas flutuantes -->
     <div class="floating-underwear pink">🩲</div>
     <div class="floating-underwear purple">🩲</div>
     <div class="floating-underwear blue">🩲</div>
@@ -667,6 +1162,8 @@
     <div class="floating-underwear blue">🩲</div>
     <div class="floating-underwear green">🩲</div>
     <div class="floating-underwear orange">🩲</div>
+
+    <!-- Partículas de estrelas -->
     <div class="star-particle" style="left: 5%; animation-delay: 0s;">⭐</div>
     <div class="star-particle" style="left: 15%; animation-delay: 1s;">✨</div>
     <div class="star-particle" style="left: 25%; animation-delay: 2s;">⭐</div>
@@ -677,6 +1174,8 @@
     <div class="star-particle" style="left: 75%; animation-delay: 7s;">✨</div>
     <div class="star-particle" style="left: 85%; animation-delay: 1.5s;">⭐</div>
     <div class="star-particle" style="left: 95%; animation-delay: 2.5s;">✨</div>
+
+    <!-- Corações flutuantes -->
     <div class="heart-particle" style="left: 8%; animation-delay: 0.5s;">💖</div>
     <div class="heart-particle" style="left: 18%; animation-delay: 1.5s;">💕</div>
     <div class="heart-particle" style="left: 28%; animation-delay: 2.5s;">💖</div>
@@ -696,16 +1195,14 @@
             questionsAnswered: 0,
             coins: 0,
             isRolling: false,
-            gameEnded: false,
-            currentQuestion: null,
-            hintUsed: false
+            gameEnded: false
         };
 
         // Perguntas educativas sobre dignidade menstrual
         const questions = [
             // MÓDULO: HIGIENE E CUIDADOS BÁSICOS
             {
-                question: "Em média, de quanto em quanto tempo o absorvente deve ser trocado para evitar riscos à saúde?",
+                question: "Em média, de quanto em quanto tempo o absorvente deve ser trocado para evitar riscos à saúde, dependendo do fluxo?",
                 options: [
                     "Uma vez por dia",
                     "Aproximadamente seis horas",
@@ -713,19 +1210,19 @@
                     "Apenas quando necessário"
                 ],
                 correct: 1,
-                explanation: "✅ **DICA (6 horas):** O ideal é trocar o absorvente a cada 4 a 6 horas para evitar a proliferação de bactérias e odores. O fluxo intenso exige troca mais frequente.",
+                explanation: "✅ Correto! Aproximadamente seis horas, mas caso o fluxo seja muito intenso você pode aumentar a frequência conforme sua necessidade.",
                 points: 10
             },
             {
-                question: "Ao fazer a higiene íntima durante a menstruação, qual deve ser o maior cuidado?",
+                question: "Ao fazer a higiene íntima durante a menstruação, onde você deve focar a limpeza com água e sabonete neutro?",
                 options: [
+                    "Fazer duchas vaginais internas",
+                    "Apenas na área externa da região íntima",
                     "Usar perfumes íntimos",
-                    "Lavar a área externa com água e sabonete",
-                    "Fazer duchas vaginais",
-                    "Usar apenas papel higiênico"
+                    "Lavar apenas com papel higiênico"
                 ],
                 correct: 1,
-                explanation: "✅ **DICA (Lavar a área externa):** A vagina tem um sistema de autolimpeza. Deve-se lavar apenas a área externa com água e sabonete neutro para manter a flora vaginal saudável.",
+                explanation: "✅ Correto! Apenas na área externa da região íntima (não deve-se fazer ducha interna).",
                 points: 10
             },
             {
@@ -737,24 +1234,24 @@
                     "Poliéster"
                 ],
                 correct: 1,
-                explanation: "✅ **DICA (Algodão):** O algodão é um tecido natural, respirável e absorvente, que ajuda a prevenir a proliferação de fungos e bactérias.",
+                explanation: "✅ Correto! Algodão, por ser mais limpo e confortável (evitar o tecido sintético).",
                 points: 10
             },
             {
                 question: "O uso de spray ou perfume íntimo é recomendado para a higiene íntima?",
                 options: [
-                    "Sim, sempre",
+                    "Sim, sempre usar",
                     "Não, deve-se evitar produtos com cheiro",
                     "Apenas perfumes caros",
                     "Só durante a menstruação"
                 ],
                 correct: 1,
-                explanation: "✅ **DICA (Evitar cheiros):** Produtos perfumados podem causar alergias, irritações e desequilibrar o pH da vagina, que é naturalmente autolimpante.",
+                explanation: "✅ Correto! Não, pois deve-se evitar produtos com cheiro e corantes que podem causar irritações e alergias.",
                 points: 10
             },
             // MÓDULO: SAÚDE E MITOS
             {
-                question: "A ausência de higiene adequada pode colaborar para o crescimento de qual fungo em ambiente úmido e quente?",
+                question: "A ausência de higiene adequada (como a troca tardia do absorvente) pode colaborar com o crescimento de qual fungo em ambiente úmido e quente?",
                 options: [
                     "Candidíase",
                     "Gripe",
@@ -762,7 +1259,7 @@
                     "Pneumonia"
                 ],
                 correct: 0,
-                explanation: "✅ **DICA (Candidíase):** A umidade e o calor criados por um absorvente saturado por muito tempo são o ambiente perfeito para o crescimento do fungo *Candida albicans*.",
+                explanation: "✅ Correto! Candidíase pode crescer em ambientes úmidos e quentes com higiene inadequada.",
                 points: 10
             },
             {
@@ -770,40 +1267,40 @@
                 options: [
                     "Sim, previne gravidez",
                     "Sim, previne IST",
-                    "Não, é preciso usar métodos contraceptivos e preservativos",
+                    "Não, é preciso usar método contraceptivo e preservativo",
                     "Previne apenas IST"
                 ],
                 correct: 2,
-                explanation: "✅ **DICA (Contracepção/Preservativo):** A menstruação não oferece proteção. Apenas métodos contraceptivos (pílula, DIU, etc.) previnem gravidez, e para IST, usar preservativos.",
+                explanation: "✅ Correto! Não. É preciso usar método contraceptivo para gravidez e preservativo para IST.",
                 points: 10
             },
             {
                 question: "É proibido fazer exercícios físicos durante o período menstrual?",
                 options: [
                     "Sim, é totalmente proibido",
-                    "Não há contraindicação, pode até reduzir cólicas",
+                    "Não há contraindicação, pode ajudar a reduzir cólicas",
                     "Apenas exercícios leves",
                     "Só com autorização médica"
                 ],
                 correct: 1,
-                explanation: "✅ **DICA (Pode reduzir cólicas):** Não há contraindicação, inclusive a prática regular pode reduzir as cólicas. Exercícios liberam endorfina, um analgésico natural do corpo.",
+                explanation: "✅ Correto! Não há contraindicação, e a prática regular pode ajudar a reduzir as cólicas.",
                 points: 10
             },
             {
-                question: "Qual destes materiais é considerado impróprio para absorver o sangue, podendo resultar em doenças e infecções?",
+                question: "Qual destes materiais é considerado impróprio para absorver o sangue, podendo resultar em doenças e infecções urogenitais?",
                 options: [
                     "Absorvente descartável",
-                    "Pedaços de tecido sintético e papel higiênico",
+                    "Panos sujos ou papel higiênico",
                     "Coletor menstrual",
-                    "Absorvente de pano"
+                    "Absorvente de pano limpo"
                 ],
                 correct: 1,
-                explanation: "✅ **DICA (Materiais improvisados):** Pedaços de tecido sintético e papel higiênico podem causar infecções urogenitais por não serem absorventes adequados nem estéreis.",
+                explanation: "✅ Correto! Panos sujos ou papel higiênico podem causar infecções urogenitais.",
                 points: 10
             },
             // MÓDULO: ACESSO AO PROGRAMA
             {
-                question: "Para retirar os absorventes na Farmácia Popular, qual documento essencial deve ser gerado pelo Meu SUS Digital?",
+                question: "Para retirar os absorventes na Farmácia Popular, qual documento essencial deve ser gerado pelo Meu SUS Digital, além do CPF e documento com foto?",
                 options: [
                     "Receita médica",
                     "A Autorização do Programa Dignidade Menstrual",
@@ -811,7 +1308,7 @@
                     "Comprovante de renda"
                 ],
                 correct: 1,
-                explanation: "✅ **DICA (Autorização do Programa):** A 'Autorização do Programa Dignidade Menstrual' deve ser gerada pelo Meu SUS Digital e é essencial para a retirada.",
+                explanation: "✅ Correto! A 'Autorização do Programa Dignidade Menstrual' deve ser gerada pelo Meu SUS Digital.",
                 points: 10
             },
             {
@@ -823,19 +1320,19 @@
                     "15 dias"
                 ],
                 correct: 1,
-                explanation: "✅ **DICA (56 dias):** A cada 56 dias (o que cobre dois ciclos menstruais), é possível retirar um novo estoque de 40 absorventes.",
+                explanation: "✅ Correto! A cada 56 dias (para cobrir dois ciclos menstruais).",
                 points: 10
             },
             {
                 question: "Se Cris esquecer de ir à farmácia por um mês, ela pode retirar os absorventes referentes ao mês anterior?",
                 options: [
                     "Sim, sempre pode",
-                    "Não, não poderão ser feitas retiradas de meses anteriores",
+                    "Não, não podem ser feitas retiradas de meses anteriores",
                     "Só com justificativa médica",
                     "Apenas uma vez por ano"
                 ],
                 correct: 1,
-                explanation: "✅ **DICA (Retirada por ciclo):** Não poderão ser feitas retiradas referentes a meses anteriores, pois a retirada é baseada no ciclo de 56 dias, e não é cumulativa.",
+                explanation: "✅ Correto! Não, pois não podem ser feitas retiradas referentes a meses anteriores.",
                 points: 10
             }
         ];
@@ -858,6 +1355,7 @@
                 cell.className = 'board-cell';
                 cell.id = `cell-${i}`;
                 
+                // Itens relacionados à higiene menstrual e dignidade
                 const hygieneItems = ['🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼'];
                 
                 if (i === 1) {
@@ -874,6 +1372,7 @@
                 container.appendChild(cell);
             }
 
+            // Adicionar Cris na posição inicial
             const startCell = document.getElementById('cell-1');
             const cris = document.createElement('div');
             cris.className = 'cris-player';
@@ -882,7 +1381,7 @@
             startCell.appendChild(cris);
         }
 
-        // Sistema de áudio (mantido o código de áudio original)
+        // Sistema de áudio compatível com iOS
         let audioContext = null;
         
         function initAudioContext() {
@@ -890,12 +1389,13 @@
                 try {
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 } catch (e) {
+                    console.log('Audio não suportado');
                     return false;
                 }
             }
             
             if (audioContext.state === 'suspended') {
-                audioContext.resume().catch(e => console.error("Falha ao resumir AudioContext:", e));
+                audioContext.resume();
             }
             return true;
         }
@@ -918,10 +1418,13 @@
                 
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + duration);
-            } catch (e) {}
+            } catch (e) {
+                // Falha silenciosa se áudio não funcionar
+            }
         }
 
         function playDiceRoll() {
+            // Som de dado rolando
             for (let i = 0; i < 10; i++) {
                 setTimeout(() => {
                     playSound(200 + Math.random() * 300, 0.1, 'square');
@@ -938,6 +1441,7 @@
         }
 
         function playCorrectSound() {
+            // Melodia de acerto
             const notes = [523, 659, 784];
             notes.forEach((note, index) => {
                 setTimeout(() => playSound(note, 0.3, 'sine'), index * 150);
@@ -948,18 +1452,31 @@
             playSound(220, 0.5, 'sawtooth');
         }
 
+        function playBombSound() {
+            // Som de explosão
+            playSound(100, 0.8, 'sawtooth');
+            setTimeout(() => playSound(80, 0.6, 'square'), 200);
+        }
+
         function playVictorySound() {
+            // Fanfarra de vitória
             const melody = [523, 659, 784, 1047];
             melody.forEach((note, index) => {
                 setTimeout(() => playSound(note, 0.4, 'sine'), index * 200);
             });
         }
 
+        function playSafeSound() {
+            playSound(659, 0.4, 'triangle');
+        }
+
         function playCoinSound() {
+            // Som de moeda coletada
             playSound(800, 0.2, 'sine');
             setTimeout(() => playSound(1000, 0.15, 'sine'), 100);
         }
 
+        // Animação de moedas flutuantes
         function showCoinAnimation() {
             playCoinSound();
             
@@ -984,65 +1501,55 @@
             }
         }
 
-        // Rolar dado 3D (CORRIGIDO E OTIMIZADO)
+        // Girar roleta
         function rollDice() {
             if (gameState.isRolling || gameState.gameEnded) return;
 
             gameState.isRolling = true;
             document.getElementById('roll-button').disabled = true;
 
+            // Inicializar áudio no primeiro toque (iOS)
             initAudioContext();
 
             playDiceRoll();
 
-            const dice = document.getElementById('dice-3d');
+            const roulette = document.getElementById('roulette-wheel');
             const rollResult = Math.floor(Math.random() * 6) + 1;
 
-            showNotification(`🎲 Rolando...`, 'positive');
+            // Calcular rotação final
+            // Cada seção tem 60 graus (360/6)
+            // Seção 1: 0-60°, Seção 2: 60-120°, etc.
+            const sectionAngle = 60;
+            const baseRotation = (rollResult - 1) * sectionAngle;
+            const randomOffset = Math.random() * 40 - 20; // ±20 graus de variação
+            const finalAngle = baseRotation + randomOffset;
+            
+            // Adicionar várias voltas completas para efeito visual
+            const totalRotation = 1440 + finalAngle; // 4 voltas + posição final
 
-            // Rotações para animação de rolagem
-            const rotations = [
-                'rotateX(720deg) rotateY(720deg)',
-                'rotateX(630deg) rotateY(810deg)', 
-                'rotateX(810deg) rotateY(720deg)', 
-                'rotateX(720deg) rotateY(810deg)', 
-                'rotateX(720deg) rotateY(630deg)', 
-                'rotateX(630deg) rotateY(720deg)' 
-            ];
-            const finalRotationAnim = rotations[Math.floor(Math.random() * rotations.length)];
-            
-            // Aplica a rotação de animação
-            dice.style.transition = 'transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Curva de rolagem
-            dice.style.transform = finalRotationAnim;
-            
-            // Força a face correta a aparecer no final
+            // Aplicar rotação
+            roulette.classList.add('spinning');
+            roulette.style.transform = `rotate(${totalRotation}deg)`;
+
+            // Parar animação e mostrar resultado após 3 segundos
             setTimeout(() => {
-                const finalFaceRotation = [
-                    'rotateX(0deg) rotateY(0deg)',    // 1
-                    'rotateX(0deg) rotateY(180deg)',  // 2
-                    'rotateX(0deg) rotateY(90deg)',   // 3
-                    'rotateX(0deg) rotateY(-90deg)',  // 4
-                    'rotateX(-90deg) rotateY(0deg)',  // 5
-                    'rotateX(90deg) rotateY(0deg)'    // 6
-                ];
-                
-                dice.style.transition = 'transform 0.5s ease-out';
-                dice.style.transform = finalFaceRotation[rollResult - 1];
+                roulette.classList.remove('spinning');
                 
                 setTimeout(() => {
-                    showNotification(`Resultado: ${rollResult}! ➡️ Avançando ${rollResult} casas.`, 'positive'); 
                     moveCris(rollResult);
-                }, 500); 
-            }, 1500); 
+                }, 500);
+            }, 3000);
         }
 
-        // Mover Cris no tabuleiro (mantido o código original)
+        // Mover Cris no tabuleiro
         function moveCris(steps) {
             const newPosition = Math.min(gameState.currentPosition + steps, boardConfig.totalCells);
             const cris = document.getElementById('cris-player');
             
-            if (cris) cris.remove();
+            // Remover Cris da posição atual
+            cris.remove();
 
+            // Animar movimento
             let currentStep = gameState.currentPosition;
             const moveInterval = setInterval(() => {
                 if (currentStep >= newPosition) {
@@ -1056,27 +1563,31 @@
                 currentStep++;
                 const targetCell = document.getElementById(`cell-${currentStep}`);
                 if (targetCell) {
+                    // Remover Cris de qualquer célula anterior
                     const existingCris = document.getElementById('cris-player');
                     if (existingCris) existingCris.remove();
                     
+                    // Adicionar Cris na nova posição
                     const newCris = document.createElement('div');
                     newCris.className = 'cris-player';
                     newCris.id = 'cris-player';
                     newCris.innerHTML = '👧';
                     targetCell.appendChild(newCris);
                     
+                    // Som de movimento
                     playMoveSound();
                 }
             }, 400);
         }
 
-        // Verificar tipo de célula (mantido o código original)
+        // Verificar tipo de célula
         function checkCellType(position) {
             if (position === boardConfig.totalCells) {
                 endGame(true);
                 return;
             }
 
+            // Todas as casas (exceto início e fim) têm perguntas
             if (position > 1 && position < boardConfig.totalCells) {
                 playQuestionSound();
                 showQuestion();
@@ -1085,48 +1596,15 @@
             }
         }
 
-        // Mostrar pergunta (mantido o código original com correção de touch)
+        // Mostrar pergunta
         function showQuestion() {
-            gameState.hintUsed = false;
-            
             const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
-            gameState.currentQuestion = randomQuestion;
-            
             const modal = document.getElementById('question-modal');
             const questionText = document.getElementById('question-text');
             const optionsContainer = document.getElementById('answer-options');
-            const hintButton = document.getElementById('hint-button');
-            const hintDisplay = document.getElementById('hint-display');
 
             questionText.textContent = randomQuestion.question;
             optionsContainer.innerHTML = '';
-            hintDisplay.innerHTML = '';
-
-            // Configura o botão de dica
-            hintButton.disabled = gameState.coins < 10;
-            hintButton.textContent = `💡 DICA (10 🪙)`;
-            hintButton.style.display = 'block';
-
-            // Remove o antigo e adiciona o novo listener para o botão de dica
-            const oldHintButton = hintButton.cloneNode(true);
-            hintButton.parentNode.replaceChild(oldHintButton, hintButton);
-            const newHintButton = document.getElementById('hint-button');
-            
-            const handleHintClick = (e) => {
-                e.preventDefault(); // CORRIGIDO: garante que o toque não faça nada indesejado
-                handleHint(randomQuestion);
-            };
-            
-            newHintButton.addEventListener('click', handleHintClick);
-            newHintButton.addEventListener('touchend', handleHintClick, { passive: false }); // CORREÇÃO TOUCH
-            newHintButton.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                this.style.transform = 'scale(0.95)';
-            }, { passive: false });
-            newHintButton.addEventListener('touchcancel', function(e) {
-                this.style.transform = '';
-            });
-
 
             randomQuestion.options.forEach((option, index) => {
                 const button = document.createElement('button');
@@ -1134,65 +1612,43 @@
                 button.textContent = option;
                 button.type = 'button';
                 
-                // Função única para lidar com a resposta (simplificada)
+                // Função para lidar com a resposta
                 function handleAnswerClick(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleAnswer(index, randomQuestion.correct, randomQuestion.explanation, randomQuestion.points, gameState.hintUsed);
+                    handleAnswer(index, randomQuestion.correct, randomQuestion.explanation, randomQuestion.points);
                 }
                 
-                // Adicionar eventos (click e touchend com passive: false)
+                // Adicionar eventos
                 button.addEventListener('click', handleAnswerClick);
-                button.addEventListener('touchend', handleAnswerClick, { passive: false }); // CORREÇÃO TOUCH
+                button.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleAnswerClick(e);
+                }, { passive: false });
                 
-                // Feedback visual para touch
+                // Feedback visual
                 button.addEventListener('touchstart', function(e) {
                     e.preventDefault();
                     this.style.transform = 'translateY(1px) scale(0.98)';
                     this.style.opacity = '0.8';
-                }, { passive: false }); // CORREÇÃO TOUCH
+                }, { passive: false });
                 
                 button.addEventListener('touchcancel', function(e) {
+                    e.preventDefault();
                     this.style.transform = '';
                     this.style.opacity = '';
-                });
+                }, { passive: false });
                 
                 optionsContainer.appendChild(button);
             });
 
             modal.style.display = 'flex';
         }
-        
-        // Função para comprar e mostrar a dica (mantido o código original)
-        function handleHint(question) {
-            if (gameState.coins < 10) {
-                showNotification("Moedas insuficientes! Você precisa de 10 🪙 para comprar uma dica.", 'negative');
-                return;
-            }
 
-            if (gameState.hintUsed) {
-                return;
-            }
-
-            gameState.coins -= 10;
-            gameState.hintUsed = true;
-            updateGameInfo();
-            showNotification("Dica comprada! -10 🪙", 'negative');
-
-            const hintDisplay = document.getElementById('hint-display');
-            hintDisplay.innerHTML = `<div class="hint-text">${question.explanation}</div>`;
-            
-            document.getElementById('hint-button').disabled = true;
-            document.getElementById('hint-button').textContent = `DICA (Usada)`;
-            
-            playSound(150, 0.4, 'sawtooth');
-        }
-
-        // Lidar com resposta (mantido o código original)
-        function handleAnswer(selectedIndex, correctIndex, explanation, points, hintUsed) {
+        // Lidar com resposta
+        function handleAnswer(selectedIndex, correctIndex, explanation, points) {
             const options = document.querySelectorAll('.answer-option');
-            const hintButton = document.getElementById('hint-button');
-            const hintDisplay = document.getElementById('hint-display');
             
             options.forEach((option, index) => {
                 option.disabled = true;
@@ -1204,42 +1660,35 @@
                 }
             });
 
-            hintButton.disabled = true;
-
             if (selectedIndex === correctIndex) {
-                const score = hintUsed ? 5 : 10; 
-                gameState.knowledgePoints += score;
-                gameState.coins += 5;
+                gameState.knowledgePoints += points;
+                gameState.coins += 5; // Ganha 5 moedas por acerto
                 playCorrectSound();
                 showCoinAnimation();
-                
-                const notificationText = hintUsed 
-                    ? `✅ Acertou com a DICA! +${score} PC! +5 🪙`
-                    : `🎉 Acertou! +${score} PC! +5 🪙`;
-                showNotification(notificationText, 'positive');
+                showNotification(`${explanation} +${points} PC! +5 🪙`, 'positive');
             } else {
                 playIncorrectSound();
-                showNotification('❌ Resposta incorreta! Estude mais sobre dignidade menstrual. (-0 PC)', 'negative');
-                hintDisplay.innerHTML = `<div class="hint-text">**RESPOSTA CORRETA:** ${explanation}</div>`;
+                showNotification('❌ Resposta incorreta! Estude mais sobre dignidade menstrual.', 'negative');
             }
 
             gameState.questionsAnswered++;
-            gameState.currentQuestion = null;
 
             setTimeout(() => {
                 document.getElementById('question-modal').style.display = 'none';
                 updateGameInfo();
                 enableRolling();
-            }, 3000 + (hintDisplay.innerHTML ? 1000 : 0));
+            }, 3000);
         }
 
-        // Habilitar rolagem novamente (mantido o código original)
+        // Função de bomba removida - agora todas as casas têm perguntas
+
+        // Habilitar rolagem novamente
         function enableRolling() {
             gameState.isRolling = false;
             document.getElementById('roll-button').disabled = false;
         }
 
-        // Mostrar notificação (mantido o código original)
+        // Mostrar notificação
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
@@ -1250,31 +1699,23 @@
             }, 3000);
         }
 
-        // Atualizar informações do jogo (mantido o código original)
+        // Atualizar informações do jogo
         function updateGameInfo() {
             document.getElementById('current-position').textContent = gameState.currentPosition;
             document.getElementById('knowledge-points').textContent = gameState.knowledgePoints;
             document.getElementById('coins').textContent = gameState.coins;
             document.getElementById('questions-answered').textContent = gameState.questionsAnswered;
-            
-            const hintButton = document.getElementById('hint-button');
-            if(hintButton) {
-                hintButton.disabled = gameState.coins < 10 || gameState.hintUsed;
-                if (!gameState.hintUsed) {
-                    hintButton.textContent = `💡 DICA (10 🪙)`;
-                }
-            }
         }
 
-        // Finalizar jogo (mantido o código original)
+        // Finalizar jogo
         function endGame(victory) {
             gameState.gameEnded = true;
             document.getElementById('roll-button').disabled = true;
 
             if (victory) {
-                const maxPoints = gameState.questionsAnswered * 10; 
-                const percentage = maxPoints > 0 ? Math.round((gameState.knowledgePoints / maxPoints) * 100) : 0;
+                const percentage = Math.round((gameState.knowledgePoints / (gameState.questionsAnswered * 10)) * 100);
                 
+                // Só ganha troféu se acertar 100% das perguntas
                 if (percentage === 100 && gameState.questionsAnswered > 0) {
                     playVictorySound();
                     const victoryAnim = document.createElement('div');
@@ -1285,36 +1726,32 @@
                     setTimeout(() => {
                         showNotification(`🏆 PERFEITO! Cris ganhou o troféu com 100% de acertos! ${gameState.knowledgePoints} PC e ${gameState.coins} moedas 🪙`, 'positive');
                         setTimeout(() => {
-                            showRestartModal(true);
+                            showRestartModal(true); // true = ganhou troféu
                         }, 3000);
                     }, 2000);
                 } else {
+                    // Não ganhou troféu
                     playIncorrectSound();
                     setTimeout(() => {
-                        showNotification(`😔 Cris chegou ao fim. Acertos: ${percentage}%! Pontuação: ${gameState.knowledgePoints} PC. Tente novamente para o 🏆!`, 'negative');
+                        showNotification(`😔 Cris chegou ao fim, mas precisa de 100% de acertos para ganhar o troféu! Teve ${percentage}% de aproveitamento.`, 'negative');
                         setTimeout(() => {
-                            showRestartModal(false);
+                            showRestartModal(false); // false = não ganhou troféu
                         }, 3000);
                     }, 1000);
                 }
             }
         }
 
-        // Modal de reiniciar (mantido o código original com correção de touch)
+        // Modal de reiniciar para iOS
         function showRestartModal(wonTrophy = false) {
             const modal = document.getElementById('question-modal');
             const questionText = document.getElementById('question-text');
             const optionsContainer = document.getElementById('answer-options');
-            const hintDisplay = document.getElementById('hint-display');
-            const hintButton = document.getElementById('hint-button');
-
-            hintDisplay.innerHTML = '';
-            hintButton.style.display = 'none';
 
             if (wonTrophy) {
                 questionText.textContent = '🏆 PARABÉNS! Você ganhou o troféu! Deseja jogar novamente?';
             } else {
-                questionText.textContent = '😔 Não foi dessa vez! Tente conseguir a pontuação máxima para o troféu. Jogar novamente?';
+                questionText.textContent = '😔 Não foi dessa vez! Tente conseguir 100% de acertos para ganhar o troféu. Jogar novamente?';
             }
             optionsContainer.innerHTML = '';
 
@@ -1331,9 +1768,11 @@
             }
             
             yesButton.addEventListener('click', handleYesClick);
-            yesButton.addEventListener('touchend', handleYesClick, { passive: false }); // CORREÇÃO TOUCH
-            yesButton.addEventListener('touchstart', function(e) {e.preventDefault(); this.style.transform = 'translateY(1px) scale(0.98)';}, { passive: false });
-            yesButton.addEventListener('touchcancel', function(e) {this.style.transform = '';});
+            yesButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleYesClick(e);
+            }, { passive: false });
 
             const noButton = document.createElement('button');
             noButton.className = 'answer-option';
@@ -1347,16 +1786,33 @@
             }
             
             noButton.addEventListener('click', handleNoClick);
-            noButton.addEventListener('touchend', handleNoClick, { passive: false }); // CORREÇÃO TOUCH
-            noButton.addEventListener('touchstart', function(e) {e.preventDefault(); this.style.transform = 'translateY(1px) scale(0.98)';}, { passive: false });
-            noButton.addEventListener('touchcancel', function(e) {this.style.transform = '';});
+            noButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleNoClick(e);
+            }, { passive: false });
+
+            // Feedback visual para ambos os botões
+            [yesButton, noButton].forEach(button => {
+                button.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'translateY(1px) scale(0.98)';
+                    this.style.opacity = '0.8';
+                }, { passive: false });
+                
+                button.addEventListener('touchcancel', function(e) {
+                    e.preventDefault();
+                    this.style.transform = '';
+                    this.style.opacity = '';
+                }, { passive: false });
+            });
 
             optionsContainer.appendChild(yesButton);
             optionsContainer.appendChild(noButton);
             modal.style.display = 'flex';
         }
 
-        // Resetar jogo (mantido o código original)
+        // Resetar jogo
         function resetGame() {
             gameState = {
                 currentPosition: 1,
@@ -1364,54 +1820,79 @@
                 questionsAnswered: 0,
                 coins: 0,
                 isRolling: false,
-                gameEnded: false,
-                currentQuestion: null,
-                hintUsed: false
+                gameEnded: false
             };
 
+            // Limpar animações
             document.querySelectorAll('.bomb-explosion, .victory-animation').forEach(el => el.remove());
             
             createBoard();
             updateGameInfo();
             document.getElementById('roll-button').disabled = false;
             document.getElementById('question-modal').style.display = 'none';
-            document.getElementById('hint-button').style.display = 'block';
         }
 
-        // Eventos touch para iOS/Mobile (CORRIGIDO)
+        // Sistema de eventos otimizado para iOS
         function addTouchEvents() {
             const rollButton = document.getElementById('roll-button');
-            const dice = document.getElementById('dice-3d');
+            const roulette = document.getElementById('roulette-container');
             
-            function handleRollDice(element, e) {
-                if (e) e.preventDefault(); // CORREÇÃO: Previne o default
-                if (gameState.isRolling || gameState.gameEnded) return;
+            // Função principal para girar roleta
+            function handleRollDice(e) {
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
                 
-                // Feedback visual de pressão
-                element.style.transform = 'scale(0.95)';
-                element.style.opacity = '0.8';
-
-                setTimeout(() => {
-                    element.style.transform = '';
-                    element.style.opacity = '';
-                    rollDice();
-                }, 150);
+                if (gameState.isRolling || gameState.gameEnded) {
+                    return false;
+                }
+                
+                rollDice();
+                return false;
             }
             
-            // Eventos para o botão de rolar
-            rollButton.addEventListener('click', handleRollDice.bind(null, rollButton));
-            rollButton.addEventListener('touchend', handleRollDice.bind(null, rollButton), { passive: false }); // CORREÇÃO TOUCH
-            rollButton.addEventListener('touchstart', function(e) { e.preventDefault(); this.style.transform = 'scale(0.95)'; this.style.opacity = '0.8'; }, { passive: false });
-            rollButton.addEventListener('touchcancel', function(e) { this.style.transform = ''; this.style.opacity = ''; });
-
-            // Eventos para o dado
-            dice.addEventListener('click', handleRollDice.bind(null, dice));
-            dice.addEventListener('touchend', handleRollDice.bind(null, dice), { passive: false }); // CORREÇÃO TOUCH
-            dice.addEventListener('touchstart', function(e) { e.preventDefault(); this.style.transform = 'scale(0.95)'; this.style.opacity = '0.8'; }, { passive: false });
-            dice.addEventListener('touchcancel', function(e) { this.style.transform = ''; this.style.opacity = ''; });
+            // Sistema de eventos unificado
+            function addUniversalEvents(element) {
+                // Remover eventos existentes
+                element.onclick = null;
+                element.ontouchstart = null;
+                element.ontouchend = null;
+                
+                // Adicionar eventos otimizados
+                element.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(0.95)';
+                    this.style.opacity = '0.8';
+                }, { passive: false });
+                
+                element.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.style.transform = '';
+                    this.style.opacity = '';
+                    setTimeout(() => handleRollDice(e), 50);
+                }, { passive: false });
+                
+                element.addEventListener('click', handleRollDice, { passive: false });
+                
+                // Fallback para outros dispositivos
+                element.addEventListener('mousedown', function(e) {
+                    this.style.transform = 'scale(0.95)';
+                }, { passive: true });
+                
+                element.addEventListener('mouseup', function(e) {
+                    this.style.transform = '';
+                    handleRollDice(e);
+                }, { passive: false });
+            }
+            
+            // Aplicar eventos aos elementos
+            if (rollButton) addUniversalEvents(rollButton);
+            if (roulette) addUniversalEvents(roulette);
         }
         
-        // Função para detectar iOS (mantido o código original)
+        // Função para detectar iOS
         function isIOS() {
             return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
@@ -1419,73 +1900,110 @@
                    window.DeviceMotionEvent !== undefined;
         }
         
-        // Configurações específicas para iOS (mantido o código original)
+        // Configurações avançadas para iOS
         function setupIOSOptimizations() {
-            let lastTouchEnd = 0;
-            document.addEventListener('touchend', function (event) {
-                const now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    // event.preventDefault(); // Desativado globalmente pelo CSS touch-action: manipulation
-                }
-                lastTouchEnd = now;
-            }, { passive: false });
+            // Detectar iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
             
-            const viewport = document.querySelector('meta[name=viewport]');
-            if (viewport) {
-                viewport.setAttribute('content', 
-                    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no'
-                );
+            if (isIOS) {
+                document.body.classList.add('ios-device');
             }
             
-            document.body.classList.add('ios-device');
-            
+            // Configurar altura dinâmica para iOS
             function setIOSHeight() {
                 const vh = window.innerHeight * 0.01;
                 document.documentElement.style.setProperty('--vh', `${vh}px`);
                 
-                document.documentElement.style.height = window.innerHeight + 'px';
-                document.body.style.height = window.innerHeight + 'px';
-                
                 const gameContainer = document.getElementById('game-container');
                 if (gameContainer) {
                     gameContainer.style.height = window.innerHeight + 'px';
+                    gameContainer.style.minHeight = window.innerHeight + 'px';
+                    gameContainer.style.maxHeight = window.innerHeight + 'px';
                 }
+                
+                // Forçar reflow
+                document.body.style.height = window.innerHeight + 'px';
             }
             
+            // Configurar eventos de redimensionamento
             setIOSHeight();
+            
+            let resizeTimer;
             window.addEventListener('resize', () => {
-                setTimeout(setIOSHeight, 100);
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(setIOSHeight, 100);
             });
+            
             window.addEventListener('orientationchange', () => {
                 setTimeout(setIOSHeight, 500);
             });
             
+            // Prevenir zoom no iOS
             document.addEventListener('gesturestart', function(e) {
                 e.preventDefault();
-            }, { passive: false });
+            });
             
             document.addEventListener('gesturechange', function(e) {
                 e.preventDefault();
-            }, { passive: false });
+            });
             
             document.addEventListener('gestureend', function(e) {
                 e.preventDefault();
+            });
+            
+            // Prevenir scroll bounce
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
             }, { passive: false });
+            
+            // Otimizar performance
+            if (isIOS) {
+                document.body.style.webkitTransform = 'translateZ(0)';
+                document.body.style.webkitBackfaceVisibility = 'hidden';
+                document.body.style.webkitPerspective = '1000';
+            }
         }
 
-        // Inicializar jogo
-        document.addEventListener('DOMContentLoaded', () => {
+        // Inicialização otimizada do jogo
+        function initializeGame() {
+            // Configurar otimizações iOS primeiro
             setupIOSOptimizations();
             
+            // Criar elementos do jogo
             createBoard();
             updateGameInfo();
-            addTouchEvents();
             
-            document.addEventListener('touchstart', function initAudio() {
-                initAudioContext();
-                document.removeEventListener('touchstart', initAudio);
-            }, { once: true });
+            // Configurar eventos após elementos estarem prontos
+            setTimeout(() => {
+                addTouchEvents();
+                
+                // Inicializar contexto de áudio no primeiro toque
+                const initAudio = function() {
+                    initAudioContext();
+                    document.removeEventListener('touchstart', initAudio);
+                    document.removeEventListener('click', initAudio);
+                };
+                
+                document.addEventListener('touchstart', initAudio, { once: true });
+                document.addEventListener('click', initAudio, { once: true });
+                
+            }, 200);
+        }
+        
+        // Múltiplos pontos de entrada para garantir inicialização
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeGame);
+        } else {
+            initializeGame();
+        }
+        
+        // Fallback adicional
+        window.addEventListener('load', () => {
+            if (!document.getElementById('cris-player')) {
+                initializeGame();
+            }
         });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f1143bb1d93472',t:'MTc2MDU0OTc5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
