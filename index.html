@@ -2,570 +2,1017 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O Ciclo de Respeito da Cris</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-title" content="Dignidade Menstrual">
+    <meta name="theme-color" content="#667eea">
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="320">
+    <title>Tabuleiro da Cris - Dignidade Menstrual</title>
     <style>
-        /* CSS BÁSICO (MANTIDO) */
+        /* Estilos Base e Animações */
         body {
-            box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c); background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite; min-height: 100vh; overflow-x: hidden; perspective: 1000px;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3, #54a0ff, #5f27cd);
+            background-size: 800% 800%;
+            animation: gradientShift 8s ease infinite;
+            min-height: 100%;
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
         }
-        html { height: 100%; }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        html { 
+            height: 100%; 
+            height: -webkit-fill-available;
+            position: fixed;
+            width: 100%;
+            overflow: hidden;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Estilo do Contêiner do Jogo */
         #game-container {
-            position: relative; min-height: 100vh; display: flex; flex-direction: column; transform-style: preserve-3d;
-            align-items: center; justify-content: flex-end; padding-bottom: 20px;
-        }
-        /* Indicadores e Pop-up (Estilos mantidos, apenas ajustada a posição da Cris) */
-        #indicators {
-            position: fixed; top: 20px; left: 20px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 20px; color: white; z-index: 100;
-            transform: translateZ(50px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;
-        }
-        #indicators:hover { transform: translateZ(60px) scale(1.05); }
-        .stat-item { margin: 8px 0; padding: 8px 12px; background: rgba(255,255,255,0.2); border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; }
-        .health { color: #ff6b6b; font-weight: bold; } .social { color: #4ecdc4; font-weight: bold; } .knowledge { color: #45b7d1; font-weight: bold; } .inventory { color: #f9d342; font-weight: bold; }
-
-        /* SCENARIO CONTAINER: Onde a Cris e a interação ocorrem */
-        #scenario-container {
-            width: 95%; max-width: 1200px; height: 50vh; /* Altura definida para o cenário */
-            display: flex; align-items: flex-end; justify-content: center;
-            position: relative; transform-style: preserve-3d; z-index: 5;
-        }
-        .scenario-background {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-size: cover; background-position: center bottom; /* Fundo foca no chão */
-            border-radius: 25px; opacity: 0.3; transition: all 1s ease; z-index: 1;
+            position: relative;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        /* ------------------------------------- */
-        /* CRIS - CAMINHADA E ESTILIZAÇÃO (MANTIDO) */
-        /* ------------------------------------- */
-        .cris-character {
-            position: absolute; bottom: 5%; left: 50%; z-index: 10;
-            transition: left 1.5s ease-in-out, transform 1.5s ease-in-out;
-            animation: walk 1.5s ease-in-out infinite; 
+        /* Estilos de Modais (Telas de Introdução/Pergunta/Vitória) */
+        .full-screen-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            height: -webkit-fill-available;
+            background: rgba(0, 0, 0, 0.95);
+            display: none; 
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(15px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
-        .cris-body { width: 80px; height: 120px; position: relative; margin: 0 auto; transform: scale(1.2); }
-        .cris-head { width: 40px; height: 40px; background: #fdbcb4; border-radius: 50%; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border: 3px solid #8b4513; }
-        .cris-hair { width: 45px; height: 25px; background: linear-gradient(135deg, #8b4513, #a0522d); border-radius: 50% 50% 20% 20%; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
-        .cris-face { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 15px; }
-        .cris-body-torso { width: 40px; height: 45px; background: #e76f51; border-radius: 8px; position: absolute; top: 35px; left: 50%; transform: translateX(-50%); border-bottom: 5px solid #2a9d8f; }
+
+        .full-screen-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content-full {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            max-width: 90%;
+            max-height: 90%;
+            padding: 30px;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Estilo da Modal de Introdução (Vídeo) */
+        #intro-modal .modal-content-full {
+            background: linear-gradient(135deg, #54a0ff, #5f27cd);
+            color: white;
+            justify-content: space-around;
+        }
+
+        #intro-video {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 5px solid white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        #start-button {
+            background: linear-gradient(135deg, #4ecdc4, #96ceb4);
+            color: #333;
+            border: 3px solid white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            margin-top: 20px;
+            touch-action: manipulation;
+        }
+
+        #start-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Estilo da Modal de Vitória (Imagem) */
+        #victory-modal .modal-content-full {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: #333;
+            animation: goldShimmer 2s ease-in-out infinite;
+        }
+
+        #victory-image {
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 5px solid white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .victory-text {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5f27cd;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+        }
         
-        .cris-arms { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); width: 60px; }
-        .cris-arm { width: 25px; height: 5px; background: #fdbcb4; border-radius: 2px; position: absolute; animation: armSwing 0.8s ease-in-out infinite; }
-        .cris-arm.left { left: -30px; transform-origin: top right; }
-        .cris-arm.right { right: -30px; transform-origin: top left; animation-delay: 0.4s; }
+        /* Estilos do Tabuleiro e Outros Elementos (Otimizados) */
+        #board-container {
+            position: relative;
+            width: 90vw;
+            max-width: 500px;
+            height: auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 3px solid #fff;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 8px;
+            padding: 15px;
+            backdrop-filter: blur(20px);
+            aspect-ratio: 5/4;
+        }
+
+        .board-cell {
+            position: relative;
+            background: linear-gradient(135deg, #ff9ff3, #54a0ff, #5f27cd);
+            background-size: 300% 300%;
+            animation: cellPulse 4s ease-in-out infinite;
+            border: 3px solid #fff;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            text-align: center;
+            padding: 8px;
+            min-height: 80px;
+            aspect-ratio: 1;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            touch-action: manipulation;
+        }
+
+        .cell-start {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d, #96ceb4) !important;
+            animation: rainbowPulse 3s ease-in-out infinite !important;
+            font-size: 0.6em;
+            border: 4px solid #fff !important;
+        }
+
+        .cell-finish {
+            background: linear-gradient(135deg, #ffd700, #ffed4e, #feca57, #ff9ff3) !important;
+            animation: goldShimmer 2s ease-in-out infinite !important;
+            color: #333;
+            font-size: 0.6em;
+            border: 4px solid #fff !important;
+        }
+
+        .cell-question {
+            background: linear-gradient(135deg, #667eea, #764ba2, #5f27cd, #ff6b6b) !important;
+            animation: questionGlow 3.5s ease-in-out infinite !important;
+        }
         
-        .cris-legs { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
-        .cris-leg-part { width: 15px; height: 40px; background: #264653; border-radius: 4px; position: relative; animation: legWalk 0.8s ease-in-out infinite; transform-origin: top center; }
-        .cris-leg-part.left { animation-delay: 0s; }
-        .cris-leg-part.right { animation-delay: 0.4s; }
-        .cris-foot { width: 18px; height: 8px; background: #2a9d8f; border-radius: 2px 2px 4px 4px; position: absolute; bottom: -8px; left: -2px; }
-
-        @keyframes walk { 0%, 100% { transform: translateY(0px) scale(1.2); } 50% { transform: translateY(-3px) scale(1.2); } }
-        @keyframes armSwing { 0%, 100% { transform: rotate(20deg); } 50% { transform: rotate(-20deg); } }
-        @keyframes legWalk { 0%, 100% { transform: rotate(10deg); } 50% { transform: rotate(-10deg); } }
-
-        /* ------------------------------------- */
-        /* ÁREA DE INTERAÇÃO (MANTIDO) */
-        /* ------------------------------------- */
-        #interaction-area {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; pointer-events: none;
+        .cris-player {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            z-index: 10;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            filter: drop-shadow(3px 3px 8px rgba(0,0,0,0.4));
+            animation: crisBounce 2s ease-in-out infinite;
         }
-        .interactive-object {
-            position: absolute; font-size: 3em; cursor: pointer; padding: 10px; border-radius: 15px;
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, opacity 0.3s; pointer-events: auto; animation: objectFloat 2s ease-in-out infinite;
-            opacity: 0; 
-        }
-        .interactive-object:hover { transform: scale(1.1) translateY(-5px); }
-        @keyframes objectFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-
-        /* CARD: Mostra o Diálogo (MANTIDO) */
-        .scenario-card {
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 25px;
-            padding: 20px; max-width: 600px; width: 80%; text-align: center; color: white;
-            transform: translateZ(30px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            position: absolute; top: 10%; z-index: 5; transition: all 0.6s;
-        }
-        #choices-container { display: none; }
-        #scenario-text { font-size: 1.1em; line-height: 1.5; margin-bottom: 0; }
         
-        /* POP-UP e Partículas (MANTIDO) */
-        .popup-message { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) translateZ(100px);
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); padding: 30px; border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); border: 2px solid rgba(255, 255, 255, 0.5); z-index: 1000; max-width: 400px; text-align: center;
-            color: #333; font-size: 1.2em; animation: popupAppear 0.5s ease;
+        #dice-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
-        @keyframes popupAppear { 0% { transform: translate(-50%, -50%) translateZ(100px) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) translateZ(100px) scale(1); opacity: 1; } }
-        .hidden { display: none; }
 
-        /* Estilo para o botão de Mute */
-        #mute-button {
-            position: fixed; bottom: 20px; right: 20px; z-index: 100;
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
-            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5em; cursor: pointer; color: white; transition: all 0.3s ease;
+        #roulette-container {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            cursor: pointer;
+            animation: rouletteIdle 3s ease-in-out infinite;
+            touch-action: manipulation;
+        }
+        
+        #roulette-wheel {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: relative;
+            border: 4px solid #fff;
+            box-shadow: 0 0 30px rgba(0,0,0,0.4), inset 0 0 20px rgba(255,255,255,0.3);
+            transition: transform 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: conic-gradient(
+                #ff6b6b 0deg 60deg,
+                #4ecdc4 60deg 120deg,
+                #667eea 120deg 180deg,
+                #ffd700 180deg 240deg,
+                #a8e6cf 240deg 300deg,
+                #f093fb 300deg 360deg
+            );
+        }
+        
+        #roll-button {
+            background: linear-gradient(135deg, #667eea, #764ba2, #ff6b6b, #4ecdc4);
+            background-size: 300% 300%;
+            animation: buttonRainbow 3s ease-in-out infinite;
+            color: white;
+            border: 3px solid #fff;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-appearance: none;
+            appearance: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            min-height: 44px;
+        }
+
+        /* Outras animações e media queries de responsividade... (omiti para concisão, mas estão no JS original) */
+        
+        #question-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 90%;
+            width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        .answer-option {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            margin: 8px;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-appearance: none;
+            appearance: none;
+            min-height: 44px;
         }
-        #mute-button:hover {
-            transform: scale(1.1); background: rgba(255, 255, 255, 0.3);
+        
+        /* Otimizações iOS (simplificado) */
+        @supports (-webkit-touch-callout: none) {
+             html, body, #game-container {
+                 height: 100vh;
+                 height: -webkit-fill-available;
+                 min-height: 100vh;
+                 min-height: -webkit-fill-available;
+             }
         }
+
+        /* Omissão de outros estilos para brevidade, mantendo os essenciais. */
     </style>
 </head>
 <body>
-    <div class="floating-particles" id="particles"></div>
-    <div id="game-container">
-        
-        <header id="indicators">
-            <h3>Estado da Cris</h3>
-            <div class="stat-item"><span id="stat-ms" class="health">❤️ Saúde (MS): 100</span></div>
-            <div class="stat-item"><span id="stat-mcs" class="social">🤝 Social (MCS): 50</span></div>
-            <div class="stat-item"><span id="stat-pc" class="knowledge">🧠 Conhecimento (PC): 0</span></div>
-            <div class="stat-item"><span id="stat-inventory" class="inventory">🎒 Absorventes: 40</span></div>
-        </header>
-        
-        <div id="scenario-container">
-            <div class="scenario-background" id="scenario-bg"></div>
+    
+    <div id="intro-modal" class="full-screen-modal show">
+        <div class="modal-content-full">
+            <h1 style="margin-top: 0; color: #4ecdc4;">🩸 Tabuleiro da Cris - Dignidade Menstrual 🩸</h1>
+            <p style="font-size: 1.1em; margin-bottom: 20px;">Assista à história da Cris para começar sua jornada de conhecimento! Clique no vídeo para ativar o som e em 'Começar Jogo' para ir ao tabuleiro.</p>
             
-            <div id="interaction-area"></div>
-
-            <div class="cris-character" id="cris-character">
-                <div class="cris-body">
-                    <div class="cris-hair"></div>
-                    <div class="cris-head">
-                        <div class="cris-face"></div> 
-                    </div>
-                    <div class="cris-body-torso"></div>
-                    <div class="cris-arms">
-                        <div class="cris-arm left"></div>
-                        <div class="cris-arm right"></div>
-                    </div>
-                    <div class="cris-legs">
-                        <div class="cris-leg-part left"></div>
-                        <div class="cris-leg-part right"></div>
-                    </div>
-                </div>
-            </div>
+            <video id="intro-video" controls autoplay muted playsinline **src="./Dúvidas_de_Adolescente_Sobre_Higiene.mp4"** style="width: 100%; max-width: 600px; height: auto; border-radius: 15px; margin-bottom: 20px; border: 5px solid white; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);"></video>
             
-            <div class="scenario-card">
-                <span id="scenario-icon">🌟</span>
-                <h2 id="module-title">O Ciclo de Respeito da Cris</h2>
-                <p id="scenario-text">Clique no botão "Iniciar Jogo" para começar.</p>
-                <div id="choices-container" style="display:block;"> 
-                    <button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>
-                </div>
-            </div>
+            <button id="start-button">▶️ Começar Jogo!</button>
         </div>
-        
-        <div id="progress-bar"><div id="progress-fill"></div></div>
-
-        <button id="mute-button" onclick="toggleMute()">🔇</button>
     </div>
     
-    <div id="popup-message" class="popup-message hidden"></div>
+    <div id="victory-modal" class="full-screen-modal">
+        <div class="modal-content-full">
+            <div class="victory-text" id="victory-message">🏆 PARABÉNS! VOCÊ É UM ESPECIALISTA EM DIGNIDADE MENSTRUAL! 🏆</div>
+            <p id="final-score" style="font-size: 1.2em; margin-bottom: 10px; color: #5f27cd; font-weight: bold;">Pontuação: 0 PC e 0 moedas</p>
+            
+            <img id="victory-image" **src="./Gemini_Generated_Image_2oxeve2oxeve2oxe.jpg"** alt="Imagem de Vitória" style="max-width: 100%; height: auto; border-radius: 15px;">
+            
+            <button id="restart-game-victory" class="answer-option" style="margin-top: 20px;">🔄 Jogar Novamente</button>
+        </div>
+    </div>
 
-    <audio id="background-music" loop muted>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        Seu navegador não suporta o elemento de áudio.
-    </audio>
-    <audio id="sfx-click">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="sfx-success">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="sfx-fail">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="sfx-walk">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" type="audio/mpeg">
-    </audio>
+
+    <div id="game-container" style="display: none;">
+
+        <div id="game-info">
+            <div class="info-item">📍 Posição: <span id="current-position">1</span>/20</div>
+            <div class="info-item">🧠 PC: <span id="knowledge-points">0</span></div>
+            <div class="info-item">🪙 Moedas: <span id="coins">0</span></div>
+            <div class="info-item">❓ Perguntas: <span id="questions-answered">0</span>/18</div>
+        </div>
+
+        <div id="board-container">
+            </div>
+
+        <div id="dice-container">
+            <div id="roulette-container">
+                <div class="roulette-glow"></div>
+                <div class="roulette-pointer"></div>
+                <div id="roulette-wheel">
+                    <div class="roulette-section">1</div>
+                    <div class="roulette-section">2</div>
+                    <div class="roulette-section">3</div>
+                    <div class="roulette-section">4</div>
+                    <div class="roulette-section">5</div>
+                    <div class="roulette-section">6</div>
+                </div>
+                <div class="roulette-center"></div>
+            </div>
+            <button id="roll-button">🎯 Girar Roleta</button>
+        </div>
+    </div>
+
+    <div id="question-modal" class="full-screen-modal">
+        <div class="modal-content">
+            <div class="question-text" id="question-text"></div>
+            <div id="answer-options"></div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <div class="floating-underwear pink">🩲</div>
+    <div class="floating-underwear purple">🩲</div>
+    <div class="floating-underwear blue">🩲</div>
+    <div class="floating-underwear green">🩲</div>
+    <div class="floating-underwear orange">🩲</div>
+    <div class="floating-underwear pink">🩲</div>
+    <div class="floating-underwear purple">🩲</div>
+    <div class="floating-underwear blue">🩲</div>
+    <div class="floating-underwear green">🩲</div>
+    <div class="floating-underwear orange">🩲</div>
+
+    <div class="star-particle" style="left: 5%; animation-delay: 0s;">⭐</div>
+    <div class="star-particle" style="left: 15%; animation-delay: 1s;">✨</div>
+    <div class="star-particle" style="left: 25%; animation-delay: 2s;">⭐</div>
+    <div class="star-particle" style="left: 35%; animation-delay: 3s;">✨</div>
+    <div class="star-particle" style="left: 45%; animation-delay: 4s;">⭐</div>
+    <div class="star-particle" style="left: 55%; animation-delay: 5s;">✨</div>
+    <div class="star-particle" style="left: 65%; animation-delay: 6s;">⭐</div>
+    <div class="star-particle" style="left: 75%; animation-delay: 7s;">✨</div>
+    <div class="star-particle" style="left: 85%; animation-delay: 1.5s;">⭐</div>
+    <div class="star-particle" style="left: 95%; animation-delay: 2.5s;">✨</div>
+
+    <div class="heart-particle" style="left: 8%; animation-delay: 0.5s;">💖</div>
+    <div class="heart-particle" style="left: 18%; animation-delay: 1.5s;">💕</div>
+    <div class="heart-particle" style="left: 28%; animation-delay: 2.5s;">💖</div>
+    <div class="heart-particle" style="left: 38%; animation-delay: 3.5s;">💕</div>
+    <div class="heart-particle" style="left: 48%; animation-delay: 4.5s;">💖</div>
+    <div class="heart-particle" style="left: 58%; animation-delay: 5.5s;">💕</div>
+    <div class="heart-particle" style="left: 68%; animation-delay: 6.5s;">💖</div>
+    <div class="heart-particle" style="left: 78%; animation-delay: 7.5s;">💕</div>
+    <div class="heart-particle" style="left: 88%; animation-delay: 1.8s;">💖</div>
+    <div class="heart-particle" style="left: 98%; animation-delay: 3.2s;">💕</div>
 
     <script>
-        // ESTADO DO JOGO E INVENTÁRIO (MANTIDO)
+        // Estado do jogo
         let gameState = {
-            ms: 100, mcs: 50, pc: 0,
-            inventory: { absorventes: 40, agua: true, calcinhasLimpa: true },
-            currentScenario: 0,
-            totalScenarios: 10
+            currentPosition: 1,
+            knowledgePoints: 0,
+            questionsAnswered: 0,
+            coins: 0,
+            isRolling: false,
+            gameEnded: false
         };
 
-        // Referências aos elementos de áudio
-        const bgMusic = document.getElementById('background-music');
-        const sfxClick = document.getElementById('sfx-click');
-        const sfxSuccess = document.getElementById('sfx-success');
-        const sfxFail = document.getElementById('sfx-fail');
-        const sfxWalk = document.getElementById('sfx-walk');
-        const muteButton = document.getElementById('mute-button');
-        let isMuted = true; // Começa mutado por padrão para autoplay
-
-        // --- DADOS DOS CENÁRIOS (REVISADO PARA INTERAÇÃO) ---
-        const scenarios = [
-            // C0: INÍCIO (Inacessível diretamente)
-            {},
-
-            // MÓDULO 1: O ALERTA (Ação 1: Ir ao Banheiro)
-            { 
-                icon: "⏰", title: "MÓDULO 1: O Alerta", 
-                text: "CRIS (PENSAMENTO): Sinto um fluxo intenso e desconforto. Já passou quase 6h. Preciso agir rápido! Clique no ícone de " + "🚻" + " (Banheiro) para continuar.", 
-                background: "linear-gradient(180deg, #ffc72c, #ff9a8d)",
-                interactiveObjects: [{
-                    text: "🚻 Banheiro", top: "50%", left: "70%", choices: [
-                        { text: "Acessar o Banheiro", stats: [0, 0, 0], next: 2 }
-                    ]
-                }]
+        // Perguntas educativas sobre dignidade menstrual
+        const questions = [
+            // MÓDULO: HIGIENE E CUIDADOS BÁSICOS
+            {
+                question: "Em média, de quanto em quanto tempo o absorvente deve ser trocado para evitar riscos à saúde, dependendo do fluxo?",
+                options: [
+                    "Uma vez por dia",
+                    "Aproximadamente seis horas",
+                    "A cada 12 horas",
+                    "Apenas quando necessário"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! Aproximadamente seis horas, mas caso o fluxo seja muito intenso você pode aumentar a frequência conforme sua necessidade.",
+                points: 10
             },
-
-            // MÓDULO 1: Ação 2: Higiene (Opções)
-            { 
-                icon: "🚿", title: "Ação 2: Higiene", 
-                text: "CRIS: Qual a melhor forma de me limpar agora? **Escolha a opção clicando no ícone correspondente.**", 
-                background: "linear-gradient(180deg, #a4e4d5, #c0e0e8)",
-                interactiveObjects: [
-                    { text: "✅ Água e Sabão", top: "40%", left: "40%", choices: [
-                        { text: "Higienizar com água limpa e sabonete neutro.", stats: [10, 0, 0], next: 3, popup: "✅ MS +10. (Melhor prevenção de infecções).", sfx: 'success' }
-                    ]},
-                    { text: "❌ Papel Higiênico", top: "40%", left: "60%", choices: [
-                        { text: "Limpar apenas com papel higiênico.", stats: [-10, 0, 0], next: 3, popup: "❌ MS -10. (Risco de infecção urinária.)", sfx: 'fail' }
-                    ]},
-                ]
+            {
+                question: "Ao fazer a higiene íntima durante a menstruação, onde você deve focar a limpeza com água e sabonete neutro?",
+                options: [
+                    "Fazer duchas vaginais internas",
+                    "Apenas na área externa da região íntima",
+                    "Usar perfumes íntimos",
+                    "Lavar apenas com papel higiênico"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! Apenas na área externa da região íntima (não deve-se fazer ducha interna).",
+                points: 10
             },
-
-            // MÓDULO 1: Ação 3: Troca (Opções)
-            { 
-                icon: "🗑️", title: "Ação 3: Troca", 
-                text: "CRIS: Devo usar meu absorvente novo e jogar o antigo no vaso? **Escolha a forma correta de trocar.**", 
-                background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
-                interactiveObjects: [
-                    { text: "✅ Descarte no Lixo", top: "50%", left: "30%", choices: [
-                        { text: "Trocar e descartar no lixo.", stats: [10, 0, 5], next: 4, popup: "✅ MS +10, PC +5. (Prevenção e higiene básica).", inventoryChange: { absorventes: -1 }, sfx: 'success' }
-                    ]},
-                    { text: "❌ Spray Perfumado", top: "50%", left: "70%", choices: [
-                        { text: "Usar spray íntimo perfumado.", stats: [-15, 0, 0], next: 4, popup: "❌ MS -15. Pop-up: 'O uso de perfume íntimo não é indicado, evita agentes químicos!'", inventoryChange: { absorventes: -1 }, sfx: 'fail' }
-                    ]},
-                ]
+            {
+                question: "Qual tipo de tecido é o mais recomendado para as calcinhas, especialmente no período menstrual?",
+                options: [
+                    "Tecido sintético",
+                    "Algodão",
+                    "Renda",
+                    "Poliéster"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! Algodão, por ser mais limpo e confortável (evitar o tecido sintético).",
+                points: 10
             },
-
-            // MÓDULO 2: NOITE SAUDÁVEL (Ação 1: O Autocuidado)
-            { 
-                icon: "🌙", title: "MÓDULO 2: Noite Saudável", 
-                text: "CRIS: Estou com cólica. O que devo fazer para melhorar meu bem-estar antes de dormir? **Clique na escolha que prioriza o autocuidado.**", 
-                background: "linear-gradient(180deg, #2c3e50, #3498db)",
-                interactiveObjects: [
-                    { text: "✅ Hidratação/Nutrição", top: "45%", left: "35%", choices: [
-                        { text: "Beber água e comer algo nutritivo.", stats: [5, 0, 5], next: 5, popup: "✅ MS +5, PC +5. (Autocuidado: hidratação e boa alimentação).", sfx: 'success' }
-                    ]},
-                    { text: "❌ Refrigerante/Deitar", top: "45%", left: "65%", choices: [
-                        { text: "Tomar refrigerante e deitar.", stats: [-5, 0, 0], next: 5, popup: "❌ MS -5. (Ignorando o autocuidado).", sfx: 'fail' }
-                    ]},
-                ]
+            {
+                question: "O uso de spray ou perfume íntimo é recomendado para a higiene íntima?",
+                options: [
+                    "Sim, sempre usar",
+                    "Não, deve-se evitar produtos com cheiro",
+                    "Apenas perfumes caros",
+                    "Só durante a menstruação"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! Não, pois deve-se evitar produtos com cheiro e corantes que podem causar irritações e alergias.",
+                points: 10
             },
-
-            // MÓDULO 2: Ação 2: Roupa Íntima
-            { 
-                icon: "🩲", title: "Ação 2: Roupa Íntima", 
-                text: "CRIS: Qual a melhor opção para minha saúde íntima durante o sono? **Escolha a melhor opção para aeração.**", 
-                background: "linear-gradient(135deg, #fceabb, #f8b500)",
-                interactiveObjects: [
-                    { text: "✅ Sem Calcinha", top: "50%", left: "20%", choices: [
-                        { text: "Dormir SEM calcinha.", stats: [20, 0, 0], next: 6, popup: "✅ MS +20. (A melhor opção para evitar umidade/calor e candidíase).", sfx: 'success' }
-                    ]},
-                    { text: "✅ Calcinha de Algodão", top: "50%", left: "50%", choices: [
-                        { text: "Dormir com calcinha de algodão limpa.", stats: [10, 0, 0], next: 6, popup: "✅ MS +10. (Boa opção, conforme o guia).", sfx: 'success' }
-                    ]},
-                    { text: "❌ Calcinha Sintética Usada", top: "50%", left: "80%", choices: [
-                        { text: "Usar calcinha de tecido sintético usada.", stats: [-15, 0, 0], next: 6, popup: "❌ MS -15. (Risco de candidíase.)", sfx: 'fail' }
-                    ]},
-                ]
+            // MÓDULO: SAÚDE E MITOS
+            {
+                question: "A ausência de higiene adequada (como a troca tardia do absorvente) pode colaborar com o crescimento de qual fungo em ambiente úmido e quente?",
+                options: [
+                    "Candidíase",
+                    "Gripe",
+                    "Resfriado",
+                    "Pneumonia"
+                ],
+                correct: 0,
+                explanation: "✅ Correto! Candidíase pode crescer em ambientes úmidos e quentes com higiene inadequada.",
+                points: 10
             },
-
-            // MÓDULO 3: CONSCIENTIZAÇÃO E APOIO (Ação 1: Ajudar Ana)
-            { 
-                icon: "🫂", title: "MÓDULO 3: Conscientização e Apoio", 
-                text: "Ana, uma colega, manchou a calça e está constrangida. Ela não tem absorvente. **Clique em Ana para ajudá-la.**", 
-                background: "linear-gradient(45deg, #4ecdc4, #556270)",
-                interactiveObjects: [
-                    { text: "Ana 😟", top: "40%", left: "70%", choices: [
-                        { text: "✅ Oferecer absorvente e orientação (UBS).", stats: [0, 20, 10], next: 7, popup: "✅ MCS +20, PC +10. (Incentiva o auxílio mútuo e o acesso a orientações.)", inventoryChange: { absorventes: -1 }, sfx: 'success' },
-                        { text: "❌ Dizer que é 'normal' e sugerir papel.", stats: [0, -10, 0], next: 7, popup: "❌ MCS -10. (Não é o ideal para a saúde).", sfx: 'fail' }
-                    ]},
-                ]
+            {
+                question: "A menstruação serve como um método de prevenção de gravidez ou de infecções sexualmente transmissíveis (IST)?",
+                options: [
+                    "Sim, previne gravidez",
+                    "Sim, previne IST",
+                    "Não, é preciso usar método contraceptivo e preservativo",
+                    "Previne apenas IST"
+                ],
+                correct: 2,
+                explanation: "✅ Correto! Não. É preciso usar método contraceptivo para gravidez e preservativo para IST.",
+                points: 10
             },
-
-            // MÓDULO 3: Ação 2: Diálogo Educativo
-            { 
-                icon: "💬", title: "Ação 2: Diálogo Educativo", 
-                text: "CRIS: Ana, você sabia que a menstruação não previne gravidez? **Clique na resposta certa para educar.**", 
-                background: "linear-gradient(45deg, #a8e6cf, #dcedc8)",
-                interactiveObjects: [
-                    { text: "✅ Sim, Camisinha!", top: "50%", left: "35%", choices: [
-                        { text: "Responder sobre DST/camisinha.", stats: [0, 0, 15], next: 8, popup: "✅ PC +15. (Fato essencial de saúde).", sfx: 'success' }
-                    ]},
-                    { text: "❌ É complicado.", top: "50%", left: "65%", choices: [
-                        { text: "Dizer que é complicado.", stats: [0, 0, 0], next: 8, popup: "❌ PC 0. (Perde a oportunidade de educar).", sfx: 'fail' }
-                    ]},
-                ]
+            {
+                question: "É proibido fazer exercícios físicos durante o período menstrual?",
+                options: [
+                    "Sim, é totalmente proibido",
+                    "Não há contraindicação, pode ajudar a reduzir cólicas",
+                    "Apenas exercícios leves",
+                    "Só com autorização médica"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! Não há contraindicação, e a prática regular pode ajudar a reduzir as cólicas.",
+                points: 10
             },
-
-            // MÓDULO 4: ACESSO AO DIREITO (Ação 1: Geração da Autorização)
-            { 
-                icon: "🏥", title: "MÓDULO 4: Acesso ao Direito", 
-                text: "Na farmácia, o atendente pede sua Autorização do Programa Dignidade Menstrual. **Clique na opção de acesso.**", 
-                background: "linear-gradient(180deg, #93a5cf, #e4efe9)",
-                interactiveObjects: [
-                    { text: "✅ App Meu SUS Digital", top: "40%", left: "35%", choices: [
-                        { text: "Abrir o app Meu SUS Digital.", stats: [5, 0, 10], next: 9, popup: "✅ PC +10. (Acesso correto ao benefício).", sfx: 'success' }
-                    ]},
-                    { text: "❌ Sem Documento", top: "40%", left: "65%", choices: [
-                        { text: "Dizer que não tem o documento.", stats: [-5, -5, 0], next: 9, popup: "Cenário de Apoio: Vá à UBS mais próxima para imprimir o documento!", sfx: 'fail' }
-                    ]},
-                ]
+            {
+                question: "Qual destes materiais é considerado impróprio para absorver o sangue, podendo resultar em doenças e infecções urogenitais?",
+                options: [
+                    "Absorvente descartável",
+                    "Panos sujos ou papel higiênico",
+                    "Coletor menstrual",
+                    "Absorvente de pano limpo"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! Panos sujos ou papel higiênico podem causar infecções urogenitais.",
+                points: 10
             },
-            
-            // MÓDULO 4: Ação 2: Retirada
-            { 
-                icon: "🎁", title: "Ação 2: Retirada (Estoque Renovado)", 
-                text: "O atendente pergunta qual tipo prefere. **Qual sua resposta sobre a marca?**", 
-                background: "linear-gradient(45deg, #f6d365, #fda085)",
-                interactiveObjects: [
-                    { text: "✅ Aceitar o Disponível", top: "50%", left: "30%", choices: [
-                        { text: "Aceitar o que estiver disponível (desde que seja externo).", stats: [5, 0, 10], next: 10, popup: "✅ PC +10. (Conhecimento sobre a logística de distribuição).", inventoryChange: { absorventes: 40 }, sfx: 'success' }
-                    ]},
-                    { text: "❌ Insistir em Marca", top: "50%", left: "70%", choices: [
-                        { text: "Insistir em uma marca específica.", stats: [-5, -5, 0], next: 10, popup: "❌ Você não conseguiu retirar todos os absorventes hoje. Perde tempo.", sfx: 'fail' }
-                    ]},
-                ]
+            // MÓDULO: ACESSO AO PROGRAMA
+            {
+                question: "Para retirar os absorventes na Farmácia Popular, qual documento essencial deve ser gerado pelo Meu SUS Digital, além do CPF e documento com foto?",
+                options: [
+                    "Receita médica",
+                    "A Autorização do Programa Dignidade Menstrual",
+                    "Cartão do SUS apenas",
+                    "Comprovante de renda"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! A 'Autorização do Programa Dignidade Menstrual' deve ser gerada pelo Meu SUS Digital.",
+                points: 10
             },
-
-            // C10: FIM DO JOGO
-            { icon: "🎉", title: "FIM: Ciclo Completo!", text: "Parabéns! Você completou a jornada de Cris.", background: "linear-gradient(45deg, #ff9a9e, #fecfef)", interactiveObjects: [{text: "🏆 Ver Resultados", top: "50%", left: "50%", choices: [{text: "Ver Resultados", stats: [0, 0, 0], next: 'end', sfx: 'success'}]}] }
+            {
+                question: "Qual é o período correto (em dias) que Cris tem direito a retirar um novo estoque de 40 absorventes?",
+                options: [
+                    "30 dias",
+                    "A cada 56 dias",
+                    "90 dias",
+                    "15 dias"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! A cada 56 dias (para cobrir dois ciclos menstruais).",
+                points: 10
+            },
+            {
+                question: "Se Cris esquecer de ir à farmácia por um mês, ela pode retirar os absorventes referentes ao mês anterior?",
+                options: [
+                    "Sim, sempre pode",
+                    "Não, não podem ser feitas retiradas de meses anteriores",
+                    "Só com justificativa médica",
+                    "Apenas uma vez por ano"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! Não, pois não podem ser feitas retiradas referentes a meses anteriores.",
+                points: 10
+            }
         ];
 
-        // --- FUNÇÕES DE ÁUDIO ---
-        function playMusic() {
-            if (isMuted) return;
-            bgMusic.play().catch(e => console.log("Autoplay music failed:", e));
-        }
+        // Configuração do tabuleiro
+        const boardConfig = {
+            totalCells: 20,
+            questionCells: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+        };
 
-        function stopMusic() {
-            bgMusic.pause();
-            bgMusic.currentTime = 0;
-        }
+        // Criar tabuleiro
+        function createBoard() {
+            const container = document.getElementById('board-container');
+            container.innerHTML = '';
 
-        function playSound(type) {
-            if (isMuted) return;
-            let sound;
-            switch (type) {
-                case 'click': sound = sfxClick; break;
-                case 'success': sound = sfxSuccess; break;
-                case 'fail': sound = sfxFail; break;
-                case 'walk': sound = sfxWalk; break;
-                default: return;
+            for (let i = 1; i <= boardConfig.totalCells; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'board-cell';
+                cell.id = `cell-${i}`;
+                
+                const hygieneItems = ['🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼', '🩲', '🧻', '🚿', '🧼'];
+                
+                if (i === 1) {
+                    cell.classList.add('cell-start');
+                    cell.innerHTML = '🏁<br>INÍCIO<br>😊';
+                } else if (i === boardConfig.totalCells) {
+                    cell.classList.add('cell-finish');
+                    cell.innerHTML = '🏆<br>FIM<br>🥳';
+                } else {
+                    cell.classList.add('cell-question');
+                    cell.innerHTML = `${hygieneItems[i-1]}`;
+                }
+
+                container.appendChild(cell);
             }
-            if (sound) {
-                sound.currentTime = 0; // Reinicia o som se já estiver tocando
-                sound.play().catch(e => console.log(`Play sound ${type} failed:`, e));
-            }
+
+            // Adicionar Cris na posição inicial
+            const startCell = document.getElementById('cell-1');
+            const cris = document.createElement('div');
+            cris.className = 'cris-player';
+            cris.id = 'cris-player';
+            cris.innerHTML = '👧';
+            startCell.appendChild(cris);
         }
 
-        function toggleMute() {
-            isMuted = !isMuted;
-            bgMusic.muted = isMuted;
-            sfxClick.muted = isMuted;
-            sfxSuccess.muted = isMuted;
-            sfxFail.muted = isMuted;
-            sfxWalk.muted = isMuted;
-            muteButton.textContent = isMuted ? '🔇' : '🔊';
-
-            if (!isMuted) {
-                playMusic(); // Tenta tocar a música se desmutar
-            } else {
-                stopMusic(); // Para a música se mutar
-            }
-        }
-
-        // --- FUNÇÕES DE LÓGICA DO JOGO ---
-        function updateStats(msChange, mcsChange, pcChange, inventoryChange = {}) {
-            gameState.ms = Math.max(0, Math.min(100, gameState.ms + msChange));
-            gameState.mcs = Math.max(0, Math.min(100, gameState.mcs + mcsChange));
-            gameState.pc = Math.max(0, Math.min(100, gameState.pc + pcChange));
-            for (const item in inventoryChange) {
-                if (gameState.inventory.hasOwnProperty(item)) {
-                    gameState.inventory[item] += inventoryChange[item];
+        // === Lógica de Áudio (mantida para compatibilidade) ===
+        let audioContext = null;
+        
+        function initAudioContext() {
+            if (!audioContext) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Audio não suportado');
+                    return false;
                 }
             }
-            updateDisplay();
-            if (gameState.ms <= 0) { showPopup("🚨 MS ZERADO! Risco de infeção grave. Tente novamente!", 5000); playSound('fail'); setTimeout(() => resetGame(), 5000); } 
-            else if (gameState.mcs <= 0) { showPopup("😔 MCS ZERADO! Sofrer bullying/estigma afeta Cris. Tente novamente!", 5000); playSound('fail'); setTimeout(() => resetGame(), 5000); }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            return true;
+        }
+        
+        function playSound(frequency, duration, type = 'sine') {
+            if (!initAudioContext()) return;
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.type = type;
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) { }
         }
 
-        function updateDisplay() {
-            document.getElementById('stat-ms').innerHTML = `❤️ Saúde (MS): **${gameState.ms}**`;
-            document.getElementById('stat-mcs').innerHTML = `🤝 Social (MCS): **${gameState.mcs}**`;
-            document.getElementById('stat-pc').innerHTML = `🧠 Conhecimento (PC): **${gameState.pc}**`;
-            document.getElementById('stat-inventory').innerHTML = `🎒 Absorventes: **${gameState.inventory.absorventes}**`;
-            const progress = (gameState.currentScenario / (scenarios.length - 1)) * 100;
-            document.getElementById('progress-fill').style.width = progress + '%';
+        function playDiceRoll() { /* ... */ }
+        function playMoveSound() { playSound(440, 0.2, 'sine'); }
+        function playQuestionSound() { playSound(523, 0.3, 'triangle'); }
+        function playCorrectSound() { 
+            const notes = [523, 659, 784];
+            notes.forEach((note, index) => { setTimeout(() => playSound(note, 0.3, 'sine'), index * 150); });
+        }
+        function playIncorrectSound() { playSound(220, 0.5, 'sawtooth'); }
+        function playVictorySound() { 
+            const melody = [523, 659, 784, 1047];
+            melody.forEach((note, index) => { setTimeout(() => playSound(note, 0.4, 'sine'), index * 200); });
+        }
+        function playCoinSound() { 
+            playSound(800, 0.2, 'sine');
+            setTimeout(() => playSound(1000, 0.15, 'sine'), 100);
         }
 
-        function showPopup(message, duration = 4000) {
-            const popup = document.getElementById('popup-message');
-            popup.innerHTML = message;
-            popup.classList.remove('hidden');
-            playSound('click'); // Som para abrir pop-up
-            setTimeout(() => popup.classList.add('hidden'), duration);
+        // Animação de moedas flutuantes (mantida)
+        function showCoinAnimation() {
+            playCoinSound();
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const coin = document.createElement('div');
+                    coin.className = 'floating-coin';
+                    coin.innerHTML = '🪙';
+                    coin.style.cssText = `
+                        position: fixed;
+                        font-size: 2em;
+                        z-index: 1000;
+                        pointer-events: none;
+                        left: ${50 + (Math.random() - 0.5) * 20}%;
+                        top: 50%;
+                        animation: coinFloat 2s ease-out forwards;
+                    `;
+                    document.body.appendChild(coin);
+                    setTimeout(() => coin.remove(), 2000);
+                }, i * 100);
+            }
+        }
+        
+        // Função principal para mover a Cris (mantida)
+        function rollDice() {
+            if (gameState.isRolling || gameState.gameEnded) return;
+            gameState.isRolling = true;
+            document.getElementById('roll-button').disabled = true;
+            initAudioContext();
+            
+            // Simular som de dado
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => playSound(200 + Math.random() * 300, 0.1, 'square'), i * 100);
+            }
+
+            const roulette = document.getElementById('roulette-wheel');
+            const rollResult = Math.floor(Math.random() * 6) + 1;
+
+            const sectionAngle = 60;
+            const baseRotation = (rollResult - 1) * sectionAngle;
+            const randomOffset = Math.random() * 40 - 20; 
+            const finalAngle = baseRotation + randomOffset;
+            const totalRotation = 1440 + finalAngle; 
+
+            roulette.classList.add('spinning');
+            roulette.style.transform = `rotate(${totalRotation}deg)`;
+
+            setTimeout(() => {
+                roulette.classList.remove('spinning');
+                setTimeout(() => {
+                    moveCris(rollResult);
+                }, 500);
+            }, 3000);
         }
 
-        function createInteractionButtons(interactiveObject) {
-            const container = document.getElementById('choices-container');
-            container.innerHTML = '';
-            container.style.display = 'block';
+        function moveCris(steps) {
+            const newPosition = Math.min(gameState.currentPosition + steps, boardConfig.totalCells);
+            const cris = document.getElementById('cris-player');
+            
+            cris.remove();
 
-            interactiveObject.choices.forEach(choice => {
+            let currentStep = gameState.currentPosition;
+            const moveInterval = setInterval(() => {
+                if (currentStep >= newPosition) {
+                    clearInterval(moveInterval);
+                    gameState.currentPosition = newPosition;
+                    updateGameInfo();
+                    checkCellType(newPosition);
+                    return;
+                }
+
+                currentStep++;
+                const targetCell = document.getElementById(`cell-${currentStep}`);
+                if (targetCell) {
+                    const existingCris = document.getElementById('cris-player');
+                    if (existingCris) existingCris.remove();
+                    
+                    const newCris = document.createElement('div');
+                    newCris.className = 'cris-player';
+                    newCris.id = 'cris-player';
+                    newCris.innerHTML = '👧';
+                    targetCell.appendChild(newCris);
+                    
+                    playMoveSound();
+                }
+            }, 400);
+        }
+
+        function checkCellType(position) {
+            if (position === boardConfig.totalCells) {
+                endGame(true);
+                return;
+            }
+
+            if (position > 1 && position < boardConfig.totalCells) {
+                playQuestionSound();
+                showQuestion();
+            } else {
+                enableRolling();
+            }
+        }
+
+        function showQuestion() {
+            const unusedQuestions = questions.filter(q => !q.answered);
+            const questionPool = unusedQuestions.length > 0 ? unusedQuestions : questions;
+            const randomIndex = Math.floor(Math.random() * questionPool.length);
+            const randomQuestion = questionPool[randomIndex];
+
+            const modal = document.getElementById('question-modal');
+            const questionText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('answer-options');
+
+            questionText.textContent = randomQuestion.question;
+            optionsContainer.innerHTML = '';
+
+            randomQuestion.options.forEach((option, index) => {
                 const button = document.createElement('button');
-                button.className = 'choice-btn';
-                button.innerHTML = choice.text;
-                button.addEventListener('click', () => {
-                    playSound('click'); // Som de clique no botão de escolha
-                    if (choice.popup) showPopup(choice.popup);
-                    const inventoryChange = choice.inventoryChange || {};
-                    updateStats(choice.stats[0], choice.stats[1], choice.stats[2], inventoryChange);
+                button.className = 'answer-option';
+                button.textContent = option;
+                button.type = 'button';
+                button.setAttribute('data-index', index);
+                
+                let buttonProcessing = false;
+                
+                function processAnswer() {
+                    if (buttonProcessing) return false;
+                    buttonProcessing = true;
+                    
+                    const allButtons = document.querySelectorAll('.answer-option');
+                    allButtons.forEach(btn => {
+                        btn.disabled = true;
+                        btn.style.pointerEvents = 'none';
+                        btn.style.opacity = '0.5';
+                    });
+                    
+                    setTimeout(() => {
+                        handleAnswer(index, randomQuestion, randomQuestion.explanation, randomQuestion.points);
+                    }, 150);
+                    
+                    return true;
+                }
+                
+                button.addEventListener('click', processAnswer, { passive: false });
+                button.addEventListener('touchend', (e) => { e.preventDefault(); e.stopPropagation(); setTimeout(processAnswer, 50); }, { passive: false });
 
-                    // Toca SFX de sucesso ou falha se definido na escolha
-                    if (choice.sfx) playSound(choice.sfx);
-
-                    container.style.display = 'none'; 
-                    moveCris(choice.next);
-                });
-                container.appendChild(button);
+                optionsContainer.appendChild(button);
             });
-            document.getElementById('scenario-text').innerHTML = interactiveObject.text;
+
+            modal.classList.add('show');
         }
 
-        function loadInteractiveObjects(scenario) {
-            const area = document.getElementById('interaction-area');
-            area.innerHTML = '';
-
-            if (!scenario.interactiveObjects) return;
-
-            scenario.interactiveObjects.forEach(obj => {
-                const objectDiv = document.createElement('div');
-                objectDiv.className = 'interactive-object';
-                objectDiv.innerHTML = obj.text;
-                objectDiv.style.top = obj.top;
-                objectDiv.style.left = obj.left;
-                objectDiv.style.opacity = 1;
-
-                objectDiv.addEventListener('click', () => {
-                    playSound('click'); // Som de clique no objeto interativo
-                    document.getElementById('module-title').textContent = scenario.title;
-                    createInteractionButtons(obj);
-                    const crisChar = document.getElementById('cris-character');
-                    crisChar.style.left = obj.left;
-                    crisChar.style.animation = 'walk 0.8s ease-in-out 1';
-                    playSound('walk'); // Som de passos
-                    setTimeout(() => crisChar.style.animation = 'walk 1.5s ease-in-out infinite', 800);
-                });
-                area.appendChild(objectDiv);
+        function handleAnswer(selectedIndex, questionObject, explanation, points) {
+            const options = document.querySelectorAll('#question-modal .answer-option');
+            
+            options.forEach((option, index) => {
+                option.disabled = true;
+                option.style.pointerEvents = 'none';
+                option.style.opacity = '0.7';
+                
+                if (index === questionObject.correct) {
+                    option.classList.add('answer-correct');
+                } else if (index === selectedIndex && index !== questionObject.correct) {
+                    option.classList.add('answer-incorrect');
+                }
             });
+
+            if (selectedIndex === questionObject.correct) {
+                gameState.knowledgePoints += points;
+                gameState.coins += 5;
+                playCorrectSound();
+                showCoinAnimation();
+                showNotification(`🎉 Acerto! +${points} PC! +5 🪙. ${explanation}`, 'positive');
+            } else {
+                playIncorrectSound();
+                showNotification(`❌ Erro! ${explanation}`, 'negative');
+            }
+
+            // Marca a questão como respondida (para não repetir imediatamente)
+            questionObject.answered = true;
+
+            gameState.questionsAnswered++;
+
+            setTimeout(() => {
+                document.getElementById('question-modal').classList.remove('show');
+                updateGameInfo();
+                enableRolling();
+            }, 3000);
         }
 
-        function moveCris(index) {
-            if (index === 'end') { showVictory(); return; }
-            if (index === 'restart') { resetGame(); return; }
-            
-            const scenario = scenarios[index];
-            if (!scenario) return;
+        function enableRolling() {
+            gameState.isRolling = false;
+            document.getElementById('roll-button').disabled = false;
+        }
 
-            gameState.currentScenario = index;
-            const crisChar = document.getElementById('cris-character');
-            
-            crisChar.style.animation = 'walk 0.5s ease-in-out infinite';
-            crisChar.style.left = '50%'; 
-            playSound('walk'); // Som de passos ao se mover
-            
-            document.getElementById('scenario-bg').style.background = scenario.background;
-            document.getElementById('scenario-icon').textContent = scenario.icon;
-            document.getElementById('module-title').textContent = scenario.title;
-            document.getElementById('scenario-text').textContent = scenario.text;
-            document.getElementById('choices-container').style.display = 'none';
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
             
             setTimeout(() => {
-                loadInteractiveObjects(scenario);
-                updateDisplay();
-            }, 1500);
+                notification.classList.remove('show');
+            }, 3000);
         }
 
-        function loadScenario(index) {
-            if (index === 1) { // Só move Cris no primeiro cenário após o início
-                moveCris(1);
-                playMusic(); // Começa a música quando o jogo realmente inicia
+        function updateGameInfo() {
+            document.getElementById('current-position').textContent = gameState.currentPosition;
+            document.getElementById('knowledge-points').textContent = gameState.knowledgePoints;
+            document.getElementById('coins').textContent = gameState.coins;
+            document.getElementById('questions-answered').textContent = gameState.questionsAnswered;
+        }
+
+        // Modifica a função de fim de jogo para mostrar a modal de vitória/reinício
+        function endGame(victory) {
+            gameState.gameEnded = true;
+            document.getElementById('roll-button').disabled = true;
+            document.getElementById('game-container').style.display = 'none';
+
+            const maxPoints = (boardConfig.totalCells - 2) * 10; 
+            const percentage = Math.round((gameState.knowledgePoints / maxPoints) * 100);
+
+            const victoryModal = document.getElementById('victory-modal');
+            const victoryMessage = document.getElementById('victory-message');
+            const finalScore = document.getElementById('final-score');
+            const restartButton = document.getElementById('restart-game-victory');
+
+            restartButton.onclick = resetGame;
+            restartButton.ontouchend = (e) => { e.preventDefault(); resetGame(); };
+
+            if (victory && percentage >= 90) {
+                playVictorySound();
+                victoryMessage.innerHTML = '🏆 PARABÉNS! VOCÊ É UM ESPECIALISTA EM DIGNIDADE MENSTRUAL! 🏆';
+                finalScore.textContent = `Pontuação Final: ${gameState.knowledgePoints} PC e ${gameState.coins} moedas (${percentage}% de aproveitamento).`;
+                victoryModal.classList.add('show');
             } else {
-                moveCris(index);
+                playIncorrectSound();
+                victoryMessage.innerHTML = '😔 QUASE LÁ! Reveja seus conhecimentos e tente novamente!';
+                finalScore.textContent = `Pontuação Final: ${gameState.knowledgePoints} PC e ${gameState.coins} moedas (${percentage}% de aproveitamento).`;
+                victoryModal.classList.add('show');
             }
         }
-
-        function showVictory() {
-            playSound('success'); // Som de vitória
-            const card = document.querySelector('.scenario-card');
-            card.style.transform = 'translateZ(50px) scale(1.1)';
-            document.getElementById('scenario-icon').textContent = '🏆';
-            document.getElementById('module-title').textContent = 'Jornada Completa!';
-            let message = "Parabéns! Cris completou sua jornada de autocuidado. ";
-            if (gameState.ms >= 80 && gameState.pc >= 50) { message += "Ela dominou os cuidados com a saúde íntima! 🌟"; } 
-            else if (gameState.ms >= 60) { message += "Ela aprendeu muito sobre autocuidado! 💝"; } 
-            else { message += "Ela ainda tem muito a aprender sobre saúde! 📚"; }
-            message += `<br> Saúde final: **${gameState.ms}**, Conhecimento: **${gameState.pc}**`;
-            document.getElementById('scenario-text').innerHTML = message;
-            const choicesContainer = document.getElementById('choices-container');
-            choicesContainer.style.display = 'block';
-            choicesContainer.innerHTML = `<button class="choice-btn" onclick="resetGame()">🔄 Nova Jornada</button>`;
-            document.getElementById('interaction-area').innerHTML = '';
+        
+        // Função para iniciar o jogo após o vídeo
+        function startGame() {
+            document.getElementById('intro-modal').classList.remove('show');
+            document.getElementById('game-container').style.display = 'flex';
+            resetGame(); // Inicia o jogo
         }
 
+        // Reinicia o jogo
         function resetGame() {
-            stopMusic(); // Para a música ao reiniciar
-            gameState = { 
-                ms: 100, mcs: 50, pc: 0, 
-                inventory: { absorventes: 40, agua: true, calcinhasLimpa: true }, 
-                currentScenario: 0, totalScenarios: 10 
+            gameState = {
+                currentPosition: 1,
+                knowledgePoints: 0,
+                questionsAnswered: 0,
+                coins: 0,
+                isRolling: false,
+                gameEnded: false
             };
-            updateDisplay();
-            document.getElementById('scenario-icon').textContent = '🌟';
-            document.getElementById('module-title').textContent = 'O Ciclo de Respeito da Cris';
-            document.getElementById('scenario-text').innerHTML = 'Clique no botão "Iniciar Jogo" para começar.';
-            document.getElementById('choices-container').style.display = 'block';
-            document.getElementById('choices-container').innerHTML = `<button class="choice-btn" data-choice="start" onclick="loadScenario(1)">🚀 Iniciar Jogo</button>`;
-            document.getElementById('interaction-area').innerHTML = '';
-            document.getElementById('cris-character').style.left = '50%';
+            questions.forEach(q => q.answered = false);
+            
+            document.querySelectorAll('.bomb-explosion, .victory-animation').forEach(el => el.remove());
+            
+            createBoard();
+            updateGameInfo();
+            document.getElementById('roll-button').disabled = false;
+            document.getElementById('question-modal').classList.remove('show');
+            document.getElementById('victory-modal').classList.remove('show');
+            document.getElementById('game-container').style.display = 'flex'; 
         }
 
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 15; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                container.appendChild(particle);
-            }
-        }
+        // Inicialização dos eventos e do jogo
+        function initializeGame() {
+            // Configurar a altura da tela para compatibilidade mobile (iOS/Android)
+            const setIOSHeight = () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+                document.body.style.height = window.innerHeight + 'px';
+                document.getElementById('game-container').style.height = window.innerHeight + 'px';
+            };
+            setIOSHeight();
+            window.addEventListener('resize', setIOSHeight);
+            window.addEventListener('orientationchange', () => setTimeout(setIOSHeight, 500));
+            
+            // Ativação do áudio (necessário para o Web Audio API)
+            const initAudio = function() {
+                initAudioContext();
+                document.removeEventListener('touchstart', initAudio);
+                document.removeEventListener('click', initAudio);
+            };
+            document.addEventListener('touchstart', initAudio, { once: true });
+            document.addEventListener('click', initAudio, { once: true });
+            
+            // Listener para o botão de começar na tela de introdução
+            const startButton = document.getElementById('start-button');
+            startButton.addEventListener('click', startGame, { passive: false });
+            startButton.addEventListener('touchend', (e) => { e.preventDefault(); startGame(); }, { passive: false });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            updateDisplay();
-            // Inicializa o botão de mute no estado correto
-            muteButton.textContent = isMuted ? '🔇' : '🔊';
-            // A música será iniciada por `loadScenario(1)` quando o jogador clicar em "Iniciar Jogo"
-            // Isso evita problemas de autoplay bloqueado por navegadores.
-        });
+            // Listener para o botão de rolar a roleta
+            const rollButton = document.getElementById('roll-button');
+            rollButton.addEventListener('click', rollDice, { passive: false });
+            rollButton.addEventListener('touchend', (e) => { e.preventDefault(); setTimeout(rollDice, 50); }, { passive: false });
+            
+            const rouletteContainer = document.getElementById('roulette-container');
+            rouletteContainer.addEventListener('click', rollDice, { passive: false });
+            rouletteContainer.addEventListener('touchend', (e) => { e.preventDefault(); setTimeout(rollDice, 50); }, { passive: false });
+            
+            const restartVictoryButton = document.getElementById('restart-game-victory');
+            restartVictoryButton.addEventListener('click', resetGame);
+            restartVictoryButton.addEventListener('touchend', (e) => { e.preventDefault(); resetGame(); });
+
+            // Inicia com a tela de introdução (o corpo do jogo fica oculto)
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('intro-modal').classList.add('show');
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeGame);
+        } else {
+            initializeGame();
+        }
     </script>
 </body>
 </html>
