@@ -130,28 +130,19 @@
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
         }
 
-        /* Estilo da Modal de Vitória (Imagem) */
+        /* Estilo da Modal de Vitória (Apenas Texto e Pontuação) */
         #victory-modal .modal-content-full {
             background: linear-gradient(135deg, #feca57, #ff9ff3);
             color: #333;
             animation: goldShimmer 2s ease-in-out infinite;
         }
-
-        #victory-image {
-            width: 100%;
-            max-width: 450px;
-            height: auto;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border: 5px solid white;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
+        
         .victory-text {
             font-size: 2em;
             font-weight: bold;
             color: #5f27cd;
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px; /* Mais espaço sem a imagem */
         }
         
         /* Estilos do Tabuleiro e Outros Elementos */
@@ -389,9 +380,7 @@
     <div id="victory-modal" class="full-screen-modal">
         <div class="modal-content-full">
             <div class="victory-text" id="victory-message">🏆 PARABÉNS! VOCÊ É UM ESPECIALISTA EM DIGNIDADE MENSTRUAL! 🏆</div>
-            <p id="final-score" style="font-size: 1.2em; margin-bottom: 10px; color: #5f27cd; font-weight: bold;">Pontuação: 0 PC e 0 moedas</p>
-            
-            <img id="victory-image" src="./Gemini_Generated_Image_2oxeve2oxeve2oxe.jpg" alt="Imagem de Vitória" style="max-width: 100%; height: auto; border-radius: 15px;">
+            <p id="final-score" style="font-size: 1.2em; margin-bottom: 30px; color: #5f27cd; font-weight: bold;">Pontuação: 0 PC e 0 moedas</p>
             
             <button id="restart-game-victory" class="answer-option" style="margin-top: 20px;">🔄 Jogar Novamente</button>
         </div>
