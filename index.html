@@ -14,8 +14,9 @@
   <meta name="HandheldFriendly" content="true">
   <meta name="MobileOptimized" content="320">
   <title>Tabuleiro da Cris - Dignidade Menstrual</title>
-  <script src="/_sdk/element_sdk.js"></script>
+  
   <style>
+        /* O CSS foi mantido o mesmo pois está excelente e responsivo */
         body {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -770,121 +771,87 @@
         }
     </style>
   <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
  </head>
- <body><!-- Modal de Introdução -->
-  <div id="intro-modal" class="full-screen-modal show">
-   <div class="modal-content-full">
-    <h1 style="margin-top: 0; color: #4ecdc4;">🩸 Tabuleiro da Cris - Dignidade Menstrual 🩸</h1>
-    <p style="font-size: 1.1em; margin-bottom: 20px;">Assista à história da Cris para começar sua jornada de conhecimento! Clique no vídeo para ativar o som e em 'Começar Jogo' para ir ao tabuleiro.</p>
-    <video id="intro-video" controls autoplay muted playsinline src="./duvidas_de_adolescente_sobre_higiene.mp4" poster="./gemini_generated_image_2oxeve2oxeve2oxe.jpg" style="width: 100%; max-width: 600px; height: auto; border-radius: 15px; margin-bottom: 20px; border: 5px solid white; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);"></video><button id="start-button">▶️ Começar Jogo!</button>
-   </div>
-  </div>
-  <div id="game-container"><!-- Header do jogo -->
-   <div class="game-header">
-    <h1 style="margin: 0; color: #333;">🌸 Tabuleiro da Dignidade Menstrual</h1>
-    <div class="score-display">
-     <div class="score-item"><span>🧠</span> <span id="knowledge-points">0</span>
-     </div>
-     <div class="score-item"><span>🏆</span> <span id="questions-answered">0</span>
-     </div>
-     <div class="score-item"><span>🪙</span> <span id="coins">0</span>
-     </div>
+ <body>
+    <div id="intro-modal" class="full-screen-modal show">
+        <div class="modal-content-full">
+            <h1 style="margin-top: 0; color: #4ecdc4;">🩸 Tabuleiro da Cris - Dignidade Menstrual 🩸</h1>
+            <p style="font-size: 1.1em; margin-bottom: 20px;">Assista à história da Cris para começar sua jornada de conhecimento! Clique no vídeo para ativar o som e em 'Começar Jogo' para ir ao tabuleiro.</p>
+            <video id="intro-video" controls autoplay muted playsinline src="./duvidas_de_adolescente_sobre_higiene.mp4" poster="./gemini_generated_image_2oxeve2oxeve2oxe.jpg" style="width: 100%; max-width: 600px; height: auto; border-radius: 15px; margin-bottom: 20px; border: 5px solid white; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);"></video>
+            <button id="start-button">▶️ Começar Jogo!</button>
+        </div>
     </div>
-   </div><!-- Tabuleiro -->
-   <div class="board-container">
-    <div class="board" id="game-board"><!-- As casas serão geradas dinamicamente -->
+    
+    <div id="game-container">
+        <div class="game-header">
+            <h1 style="margin: 0; color: #333;">🌸 Tabuleiro da Dignidade Menstrual</h1>
+            <div class="score-display">
+                <div class="score-item"><span>🧠</span> <span id="knowledge-points">0</span></div>
+                <div class="score-item"><span>🏆</span> <span id="questions-answered">0</span></div>
+                <div class="score-item"><span>🪙</span> <span id="coins">0</span></div>
+            </div>
+        </div>
+        
+        <div class="board-container">
+            <div class="board" id="game-board"></div>
+        </div>
+        
+        <div class="dice-container">
+            <div class="roulette-container">
+                <div class="roulette-pointer"></div>
+                <div class="roulette" id="roulette" onclick="spinRoulette()">
+                    <div class="roulette-numbers">
+                        <div class="roulette-number">1</div>
+                        <div class="roulette-number">2</div>
+                        <div class="roulette-number">3</div>
+                        <div class="roulette-number">4</div>
+                        <div class="roulette-number">5</div>
+                        <div class="roulette-number">6</div>
+                    </div>
+                    <div class="roulette-center">🎯</div>
+                </div>
+            </div>
+            <button class="roll-button" id="roll-button" onclick="spinRoulette()">Girar Roleta</button>
+        </div>
     </div>
-   </div><!-- Roleta -->
-   <div class="dice-container">
-    <div class="roulette-container">
-     <div class="roulette-pointer"></div>
-     <div class="roulette" id="roulette" onclick="spinRoulette()">
-      <div class="roulette-numbers">
-       <div class="roulette-number">
-        1
-       </div>
-       <div class="roulette-number">
-        2
-       </div>
-       <div class="roulette-number">
-        3
-       </div>
-       <div class="roulette-number">
-        4
-       </div>
-       <div class="roulette-number">
-        5
-       </div>
-       <div class="roulette-number">
-        6
-       </div>
-      </div>
-      <div class="roulette-center">
-       🎯
-      </div>
-     </div>
-    </div><button class="roll-button" id="roll-button" onclick="spinRoulette()">Girar Roleta</button>
-   </div>
-  </div><!-- Modal de Pergunta -->
-  <div class="modal" id="question-modal">
-   <div class="modal-content">
-    <div class="question-text" id="question-text"></div>
-    <div class="options" id="question-options"></div>
-    <div class="explanation" id="explanation" style="display: none;"></div><button class="continue-button" id="continue-button" onclick="closeQuestionModal()" style="display: none;">Continuar</button>
-   </div>
-  </div><!-- Modal de Vitória -->
-  <div id="victory-modal" class="full-screen-modal">
-   <div class="modal-content-full">
-    <div class="victory-text" id="victory-message">
-     🏆 PARABÉNS! VOCÊ É UM ESPECIALISTA EM DIGNIDADE MENSTRUAL! 🏆
+    
+    <div class="modal" id="question-modal">
+        <div class="modal-content">
+            <div class="question-text" id="question-text"></div>
+            <div class="options" id="question-options"></div>
+            <div class="explanation" id="explanation" style="display: none;"></div>
+            <button class="continue-button" id="continue-button" onclick="closeQuestionModal()" style="display: none;">Continuar</button>
+        </div>
     </div>
-    <p id="final-score" style="font-size: 1.2em; margin-bottom: 20px; color: #5f27cd; font-weight: bold;">Pontuação: 0 PC e 0 moedas</p><img id="victory-image" src="./gemini_generated_image_2oxeve2oxeve2oxe.jpg" alt="Imagem de Vitória" style="max-width: 100%; height: auto; border-radius: 15px; margin-bottom: 20px;" onerror="this.src=''; this.alt='Imagem de vitória não disponível'; this.style.display='none';"> <button id="restart-game-victory" class="answer-option" style="margin-top: 10px;">🔄 Jogar Novamente</button>
-   </div>
-  </div><!-- Partículas de coração -->
-  <div class="heart-particle" style="left: 8%; animation-delay: 0.5s;">
-   💕
-  </div>
-  <div class="heart-particle" style="left: 18%; animation-delay: 1.5s;">
-   💖
-  </div>
-  <div class="heart-particle" style="left: 28%; animation-delay: 2.5s;">
-   💕
-  </div>
-  <div class="heart-particle" style="left: 38%; animation-delay: 3.5s;">
-   💕
-  </div>
-  <div class="heart-particle" style="left: 48%; animation-delay: 4.5s;">
-   💖
-  </div>
-  <div class="heart-particle" style="left: 58%; animation-delay: 5.5s;">
-   💕
-  </div>
-  <div class="heart-particle" style="left: 68%; animation-delay: 6.5s;">
-   💖
-  </div>
-  <div class="heart-particle" style="left: 78%; animation-delay: 7.5s;">
-   💕
-  </div>
-  <div class="heart-particle" style="left: 88%; animation-delay: 1.8s;">
-   💖
-  </div>
-  <div class="heart-particle" style="left: 98%; animation-delay: 3.2s;">
-   💕
-  </div><!-- Elementos de áudio -->
-  <audio id="audio-bgm" loop preload="auto" muted><source src="./audio/bgm.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="audio-dice" preload="auto"><source src="./audio/dice_roll.ogg" type="audio/ogg">
-  </audio>
-  <audio id="audio-move" preload="auto"><source src="./audio/mover.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="audio-correct" preload="auto"><source src="./audio/ganhar.wav" type="audio/wav">
-  </audio>
-  <audio id="audio-incorrect" preload="auto"><source src="./audio/erro.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="audio-coin" preload="auto"><source src="./audio/moeda.wav" type="audio/wav">
-  </audio>
+    
+    <div id="victory-modal" class="full-screen-modal">
+        <div class="modal-content-full">
+            <div class="victory-text" id="victory-message">🏆 PARABÉNS! VOCÊ É UM ESPECIALISTA EM DIGNIDADE MENSTRUAL! 🏆</div>
+            <p id="final-score" style="font-size: 1.2em; margin-bottom: 20px; color: #5f27cd; font-weight: bold;">Pontuação: 0 PC e 0 moedas</p>
+            <img id="victory-image" src="./gemini_generated_image_2oxeve2oxeve2oxe.jpg" alt="Imagem de Vitória" style="max-width: 100%; height: auto; border-radius: 15px; margin-bottom: 20px;" onerror="this.src=''; this.alt='Imagem de vitória não disponível'; this.style.display='none';"> 
+            <button id="restart-game-victory" class="answer-option" style="margin-top: 10px;">🔄 Jogar Novamente</button>
+        </div>
+    </div>
+    
+    <div class="heart-particle" style="left: 8%; animation-delay: 0.5s;">💕</div>
+    <div class="heart-particle" style="left: 18%; animation-delay: 1.5s;">💖</div>
+    <div class="heart-particle" style="left: 28%; animation-delay: 2.5s;">💕</div>
+    <div class="heart-particle" style="left: 38%; animation-delay: 3.5s;">💕</div>
+    <div class="heart-particle" style="left: 48%; animation-delay: 4.5s;">💖</div>
+    <div class="heart-particle" style="left: 58%; animation-delay: 5.5s;">💕</div>
+    <div class="heart-particle" style="left: 68%; animation-delay: 6.5s;">💖</div>
+    <div class="heart-particle" style="left: 78%; animation-delay: 7.5s;">💕</div>
+    <div class="heart-particle" style="left: 88%; animation-delay: 1.8s;">💖</div>
+    <div class="heart-particle" style="left: 98%; animation-delay: 3.2s;">💕</div>
+
+    <audio id="audio-bgm" loop preload="auto" muted><source src="./audio/bgm.mp3" type="audio/mpeg"></audio>
+    <audio id="audio-dice" preload="auto"><source src="./audio/dice_roll.ogg" type="audio/ogg"></audio>
+    <audio id="audio-move" preload="auto"><source src="./audio/mover.mp3" type="audio/mpeg"></audio>
+    <audio id="audio-correct" preload="auto"><source src="./audio/ganhar.wav" type="audio/wav"></audio>
+    <audio id="audio-incorrect" preload="auto"><source src="./audio/erro.mp3" type="audio/mpeg"></audio>
+    <audio id="audio-coin" preload="auto"><source src="./audio/moeda.wav" type="audio/wav"></audio>
+  
   <script>
         // VARIÁVEIS GLOBAIS DE ÁUDIO
         const diceSound = document.getElementById('audio-dice');
@@ -963,9 +930,8 @@
         document.addEventListener('click', initAudio, { once: true });
 
         // --- O RESTO DO SEU CÓDIGO JS VEM ABAIXO DESTE PONTO --- 
-        // (Ou seja, as funções de jogo, como moveCris, rollDice, etc., permanecem as mesmas)
-
-        // Configuração padrão
+        
+        // Configuração padrão (mantida, mas com a parte do SDK removida)
         const defaultConfig = {
             board_title: "🌸 Tabuleiro da Dignidade Menstrual",
             primary_color: "#4ecdc4",
@@ -985,7 +951,7 @@
             gameEnded: false
         };
 
-        // Perguntas educativas sobre dignidade menstrual
+        // Perguntas educativas sobre dignidade menstrual (Mantidas)
         const questions = [
             // Cenário 1: A Troca Necessária
             {
@@ -1217,66 +1183,7 @@
             createBoard();
             updateDisplay();
             
-            // Inicializar SDK se disponível
-            if (window.elementSdk) {
-                window.elementSdk.init({
-                    defaultConfig,
-                    render: async (config) => {
-                        document.querySelector('.game-header h1').textContent = config.board_title || defaultConfig.board_title;
-                        document.documentElement.style.setProperty('--primary-color', config.primary_color || defaultConfig.primary_color);
-                        document.documentElement.style.setProperty('--secondary-color', config.secondary_color || defaultConfig.secondary_color);
-                        document.documentElement.style.setProperty('--accent-color', config.accent_color || defaultConfig.accent_color);
-                        
-                        const customFont = config.font_family || defaultConfig.font_family;
-                        const baseSize = config.font_size || defaultConfig.font_size;
-                        document.body.style.fontFamily = `${customFont}, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`;
-                        document.body.style.fontSize = `${baseSize}px`;
-                    },
-                    mapToCapabilities: (config) => ({
-                        recolorables: [
-                            {
-                                get: () => config.primary_color || defaultConfig.primary_color,
-                                set: (value) => {
-                                    config.primary_color = value;
-                                    window.elementSdk.setConfig({ primary_color: value });
-                                }
-                            },
-                            {
-                                get: () => config.secondary_color || defaultConfig.secondary_color,
-                                set: (value) => {
-                                    config.secondary_color = value;
-                                    window.elementSdk.setConfig({ secondary_color: value });
-                                }
-                            },
-                            {
-                                get: () => config.accent_color || defaultConfig.accent_color,
-                                set: (value) => {
-                                    config.accent_color = value;
-                                    window.elementSdk.setConfig({ accent_color: value });
-                                }
-                            }
-                        ],
-                        borderables: [],
-                        fontEditable: {
-                            get: () => config.font_family || defaultConfig.font_family,
-                            set: (value) => {
-                                config.font_family = value;
-                                window.elementSdk.setConfig({ font_family: value });
-                            }
-                        },
-                        fontSizeable: {
-                            get: () => config.font_size || defaultConfig.font_size,
-                            set: (value) => {
-                                config.font_size = value;
-                                window.elementSdk.setConfig({ font_size: value });
-                            }
-                        }
-                    }),
-                    mapToEditPanelValues: (config) => new Map([
-                        ["board_title", config.board_title || defaultConfig.board_title]
-                    ])
-                });
-            }
+            // Lógica de SDK REMOVIDA
         }
 
         // Criar o tabuleiro
@@ -1592,15 +1499,18 @@
             updateDisplay();
         }
 
-        // Atualizar display
-        function updateDisplay() {
-            document.getElementById('knowledge-points').textContent = gameState.knowledgePoints;
-            document.getElementById('questions-answered').textContent = gameState.questionsAnswered;
-            document.getElementById('coins').textContent = gameState.coins;
-        }
-
         // Função para começar o jogo
         function startGame() {
+            // Tenta dar play no BGM sem o mute (pode falhar)
+            const bgm = document.getElementById('audio-bgm');
+            if (bgm) {
+                bgm.muted = false;
+                bgm.play().catch(e => {
+                    console.log("BGM full playback failed, keeping mute on or continuing without it.", e);
+                    bgm.muted = true; // Volta o mute se falhar
+                    bgm.play().catch(f => console.log("BGM muted playback failed.", f)); // Tenta de novo mutado
+                });
+            }
             document.getElementById('intro-modal').classList.remove('show');
         }
 
@@ -1615,7 +1525,5 @@
             document.getElementById('restart-game-victory').addEventListener('click', restartGame);
         });
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98fd0ddf22ae01ac',t:'MTc2MDY3NTM1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    </body>
 </html>
-
-
