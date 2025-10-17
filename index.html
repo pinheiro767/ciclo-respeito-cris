@@ -154,7 +154,7 @@
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
         }
         
-        /* Estilos do Tabuleiro e Outros Elementos (Otimizados) */
+        /* Estilos do Tabuleiro e Outros Elementos */
         #board-container {
             position: relative;
             width: 90vw;
@@ -289,8 +289,6 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             min-height: 44px;
         }
-
-        /* Outras animações e media queries de responsividade... (omiti para concisão, mas estão no JS original) */
         
         #question-modal {
             position: fixed;
@@ -337,6 +335,33 @@
             min-height: 44px;
         }
         
+        .answer-correct {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d) !important;
+        }
+
+        .answer-incorrect {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52) !important;
+        }
+        
+        #game-info {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.9));
+            backdrop-filter: blur(15px);
+            padding: 18px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            z-index: 50;
+        }
+        
+        .floating-underwear, .star-particle, .heart-particle {
+            position: fixed;
+            z-index: 1;
+            pointer-events: none;
+        }
+
         /* Otimizações iOS (simplificado) */
         @supports (-webkit-touch-callout: none) {
              html, body, #game-container {
@@ -346,8 +371,6 @@
                  min-height: -webkit-fill-available;
              }
         }
-
-        /* Omissão de outros estilos para brevidade, mantendo os essenciais. */
     </style>
 </head>
 <body>
@@ -357,7 +380,7 @@
             <h1 style="margin-top: 0; color: #4ecdc4;">🩸 Tabuleiro da Cris - Dignidade Menstrual 🩸</h1>
             <p style="font-size: 1.1em; margin-bottom: 20px;">Assista à história da Cris para começar sua jornada de conhecimento! Clique no vídeo para ativar o som e em 'Começar Jogo' para ir ao tabuleiro.</p>
             
-            <video id="intro-video" controls autoplay muted playsinline **src="./Dúvidas_de_Adolescente_Sobre_Higiene.mp4"** style="width: 100%; max-width: 600px; height: auto; border-radius: 15px; margin-bottom: 20px; border: 5px solid white; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);"></video>
+            <video id="intro-video" controls autoplay muted playsinline src="./Dúvidas_de_Adolescente_Sobre_Higiene.mp4" style="width: 100%; max-width: 600px; height: auto; border-radius: 15px; margin-bottom: 20px; border: 5px solid white; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);"></video>
             
             <button id="start-button">▶️ Começar Jogo!</button>
         </div>
@@ -368,7 +391,7 @@
             <div class="victory-text" id="victory-message">🏆 PARABÉNS! VOCÊ É UM ESPECIALISTA EM DIGNIDADE MENSTRUAL! 🏆</div>
             <p id="final-score" style="font-size: 1.2em; margin-bottom: 10px; color: #5f27cd; font-weight: bold;">Pontuação: 0 PC e 0 moedas</p>
             
-            <img id="victory-image" **src="./Gemini_Generated_Image_2oxeve2oxeve2oxe.jpg"** alt="Imagem de Vitória" style="max-width: 100%; height: auto; border-radius: 15px;">
+            <img id="victory-image" src="./Gemini_Generated_Image_2oxeve2oxeve2oxe.jpg" alt="Imagem de Vitória" style="max-width: 100%; height: auto; border-radius: 15px;">
             
             <button id="restart-game-victory" class="answer-option" style="margin-top: 20px;">🔄 Jogar Novamente</button>
         </div>
@@ -414,7 +437,7 @@
 
     <div id="notification" class="notification"></div>
 
-    <div class="floating-underwear pink">🩲</div>
+    <div class="floating-underwear pink">🩲">🩲</div>
     <div class="floating-underwear purple">🩲</div>
     <div class="floating-underwear blue">🩲</div>
     <div class="floating-underwear green">🩲</div>
@@ -676,7 +699,11 @@
             } catch (e) { }
         }
 
-        function playDiceRoll() { /* ... */ }
+        function playDiceRoll() { 
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => playSound(200 + Math.random() * 300, 0.1, 'square'), i * 100);
+            }
+        }
         function playMoveSound() { playSound(440, 0.2, 'sine'); }
         function playQuestionSound() { playSound(523, 0.3, 'triangle'); }
         function playCorrectSound() { 
@@ -693,7 +720,7 @@
             setTimeout(() => playSound(1000, 0.15, 'sine'), 100);
         }
 
-        // Animação de moedas flutuantes (mantida)
+        // Animação de moedas flutuantes
         function showCoinAnimation() {
             playCoinSound();
             for (let i = 0; i < 5; i++) {
@@ -716,17 +743,14 @@
             }
         }
         
-        // Função principal para mover a Cris (mantida)
+        // Função principal para mover a Cris
         function rollDice() {
             if (gameState.isRolling || gameState.gameEnded) return;
             gameState.isRolling = true;
             document.getElementById('roll-button').disabled = true;
             initAudioContext();
             
-            // Simular som de dado
-            for (let i = 0; i < 10; i++) {
-                setTimeout(() => playSound(200 + Math.random() * 300, 0.1, 'square'), i * 100);
-            }
+            playDiceRoll();
 
             const roulette = document.getElementById('roulette-wheel');
             const rollResult = Math.floor(Math.random() * 6) + 1;
@@ -738,10 +762,12 @@
             const totalRotation = 1440 + finalAngle; 
 
             roulette.classList.add('spinning');
+            roulette.style.transition = 'transform 3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
             roulette.style.transform = `rotate(${totalRotation}deg)`;
 
             setTimeout(() => {
                 roulette.classList.remove('spinning');
+                roulette.style.transition = 'none';
                 setTimeout(() => {
                     moveCris(rollResult);
                 }, 500);
@@ -796,8 +822,13 @@
         }
 
         function showQuestion() {
-            const unusedQuestions = questions.filter(q => !q.answered);
-            const questionPool = unusedQuestions.length > 0 ? unusedQuestions : questions;
+            // Lógica para pegar uma pergunta não respondida
+            const availableQuestions = questions.filter(q => !q.answered);
+            if (availableQuestions.length === 0) {
+                // Se todas foram respondidas, recarrega para evitar repetição
+                questions.forEach(q => q.answered = false);
+            }
+            const questionPool = questions.filter(q => !q.answered);
             const randomIndex = Math.floor(Math.random() * questionPool.length);
             const randomQuestion = questionPool[randomIndex];
 
@@ -817,11 +848,15 @@
                 
                 let buttonProcessing = false;
                 
-                function processAnswer() {
+                function processAnswer(e) {
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
                     if (buttonProcessing) return false;
                     buttonProcessing = true;
                     
-                    const allButtons = document.querySelectorAll('.answer-option');
+                    const allButtons = document.querySelectorAll('#question-modal .answer-option');
                     allButtons.forEach(btn => {
                         btn.disabled = true;
                         btn.style.pointerEvents = 'none';
@@ -836,7 +871,7 @@
                 }
                 
                 button.addEventListener('click', processAnswer, { passive: false });
-                button.addEventListener('touchend', (e) => { e.preventDefault(); e.stopPropagation(); setTimeout(processAnswer, 50); }, { passive: false });
+                button.addEventListener('touchend', processAnswer, { passive: false });
 
                 optionsContainer.appendChild(button);
             });
@@ -870,7 +905,7 @@
                 showNotification(`❌ Erro! ${explanation}`, 'negative');
             }
 
-            // Marca a questão como respondida (para não repetir imediatamente)
+            // Marca a questão como respondida
             questionObject.answered = true;
 
             gameState.questionsAnswered++;
@@ -904,13 +939,14 @@
             document.getElementById('questions-answered').textContent = gameState.questionsAnswered;
         }
 
-        // Modifica a função de fim de jogo para mostrar a modal de vitória/reinício
+        // Função para mostrar a modal de vitória/reinício
         function endGame(victory) {
             gameState.gameEnded = true;
             document.getElementById('roll-button').disabled = true;
             document.getElementById('game-container').style.display = 'none';
 
-            const maxPoints = (boardConfig.totalCells - 2) * 10; 
+            const maxQuestions = boardConfig.totalCells - 2;
+            const maxPoints = maxQuestions * 10; 
             const percentage = Math.round((gameState.knowledgePoints / maxPoints) * 100);
 
             const victoryModal = document.getElementById('victory-modal');
@@ -970,13 +1006,16 @@
                 const vh = window.innerHeight * 0.01;
                 document.documentElement.style.setProperty('--vh', `${vh}px`);
                 document.body.style.height = window.innerHeight + 'px';
-                document.getElementById('game-container').style.height = window.innerHeight + 'px';
+                const gameContainer = document.getElementById('game-container');
+                if (gameContainer.style.display === 'flex') {
+                     gameContainer.style.height = window.innerHeight + 'px';
+                }
             };
             setIOSHeight();
             window.addEventListener('resize', setIOSHeight);
             window.addEventListener('orientationchange', () => setTimeout(setIOSHeight, 500));
             
-            // Ativação do áudio (necessário para o Web Audio API)
+            // Ativação do áudio 
             const initAudio = function() {
                 initAudioContext();
                 document.removeEventListener('touchstart', initAudio);
@@ -1000,10 +1039,12 @@
             rouletteContainer.addEventListener('touchend', (e) => { e.preventDefault(); setTimeout(rollDice, 50); }, { passive: false });
             
             const restartVictoryButton = document.getElementById('restart-game-victory');
-            restartVictoryButton.addEventListener('click', resetGame);
-            restartVictoryButton.addEventListener('touchend', (e) => { e.preventDefault(); resetGame(); });
+            if (restartVictoryButton) {
+                restartVictoryButton.addEventListener('click', resetGame);
+                restartVictoryButton.addEventListener('touchend', (e) => { e.preventDefault(); resetGame(); });
+            }
 
-            // Inicia com a tela de introdução (o corpo do jogo fica oculto)
+            // Inicia com a tela de introdução
             document.getElementById('game-container').style.display = 'none';
             document.getElementById('intro-modal').classList.add('show');
         }
