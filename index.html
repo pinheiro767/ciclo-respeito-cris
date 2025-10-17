@@ -873,17 +873,17 @@
   <div class="heart-particle" style="left: 98%; animation-delay: 3.2s;">
    💕
   </div><!-- Elementos de áudio -->
-  <audio id="audio-bgm" loop preload="auto"><source src="./background-music.mp3" type="audio/mpeg"> <source src="./background-music.ogg" type="audio/ogg">
+  <audio id="audio-bgm" loop preload="auto" muted><source src="./audio/bgm.mp3" type="audio/mpeg">
   </audio>
-  <audio id="audio-dice" preload="auto"><source src="./dice-roll.mp3" type="audio/mpeg"> <source src="./dice-roll.ogg" type="audio/ogg">
+  <audio id="audio-dice" preload="auto"><source src="./audio/dice_roll.ogg" type="audio/ogg">
   </audio>
-  <audio id="audio-move" preload="auto"><source src="./move-sound.mp3" type="audio/mpeg"> <source src="./move-sound.ogg" type="audio/ogg">
+  <audio id="audio-move" preload="auto"><source src="./audio/mover.mp3" type="audio/mpeg">
   </audio>
-  <audio id="audio-correct" preload="auto"><source src="./correct-answer.mp3" type="audio/mpeg"> <source src="./correct-answer.ogg" type="audio/ogg">
+  <audio id="audio-correct" preload="auto"><source src="./audio/ganhar.wav" type="audio/wav">
   </audio>
-  <audio id="audio-incorrect" preload="auto"><source src="./incorrect-answer.mp3" type="audio/mpeg"> <source src="./incorrect-answer.ogg" type="audio/ogg">
+  <audio id="audio-incorrect" preload="auto"><source src="./audio/erro.mp3" type="audio/mpeg">
   </audio>
-  <audio id="audio-coin" preload="auto"><source src="./coin-sound.mp3" type="audio/mpeg"> <source src="./coin-sound.ogg" type="audio/ogg">
+  <audio id="audio-coin" preload="auto"><source src="./audio/moeda.wav" type="audio/wav">
   </audio>
   <script>
         // VARIÁVEIS GLOBAIS DE ÁUDIO
@@ -1054,15 +1054,15 @@
             },
             // Perguntas gerais complementares
             {
-                question: "Em média, de quanto em quanto tempo o absorvente deve ser trocado para evitar riscos à saúde?",
+                question: "Em média, de quanto em quanto tempo o absorvente deve ser trocado para evitar riscos à saúde, dependendo do fluxo?",
                 options: [
                     "Uma vez por dia",
-                    "Aproximadamente a cada 4-6 horas",
+                    "Aproximadamente seis horas",
                     "A cada 12 horas",
                     "Apenas quando necessário"
                 ],
                 correct: 1,
-                explanation: "✅ Correto! Aproximadamente a cada 4-6 horas, mas caso o fluxo seja muito intenso você pode aumentar a frequência conforme sua necessidade.",
+                explanation: "✅ Correto! Aproximadamente seis horas, mas caso o fluxo seja muito intenso você pode aumentar a frequência conforme sua necessidade.",
                 points: 10
             },
             {
@@ -1140,13 +1140,13 @@
             {
                 question: "A menstruação serve como um método de prevenção de gravidez ou de infecções sexualmente transmissíveis (IST)?",
                 options: [
-                    "Sim, previne gravidez e ISTs",
+                    "Sim, previne gravidez e IST",
                     "Não. É preciso usar método contraceptivo para gravidez e preservativo para IST",
                     "Apenas previne gravidez",
-                    "Apenas previne ISTs"
+                    "Apenas previne IST"
                 ],
                 correct: 1,
-                explanation: "✅ Correto! A menstruação é um processo natural do corpo feminino e não oferece proteção contra gravidez ou ISTs. É sempre necessário usar métodos contraceptivos e preservativos adequados.",
+                explanation: "✅ Correto! A menstruação é um processo natural do corpo feminino e não oferece proteção contra gravidez ou IST. É sempre necessário usar métodos contraceptivos e preservativos adequados.",
                 points: 10
             },
             {
@@ -1172,6 +1172,43 @@
                 correct: 1,
                 explanation: "✅ Correto! Panos sujos ou papel higiênico não são adequados pois podem conter bactérias e não oferecem proteção adequada, aumentando o risco de infecções.",
                 points: 10
+            },
+            // Perguntas sobre Acesso ao Programa (Farmácia Popular)
+            {
+                question: "Para retirar os absorventes na Farmácia Popular, qual documento essencial deve ser gerado pelo Meu SUS Digital, além do CPF e documento com foto?",
+                options: [
+                    "Receita médica",
+                    "A 'Autorização do Programa Dignidade Menstrual'",
+                    "Comprovante de renda",
+                    "Cartão do SUS físico"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! A 'Autorização do Programa Dignidade Menstrual' é o documento essencial que deve ser gerado pelo aplicativo Meu SUS Digital para retirar os absorventes gratuitamente na Farmácia Popular.",
+                points: 15
+            },
+            {
+                question: "Qual é o período correto (em dias) que Cris tem direito a retirar um novo estoque de 40 absorventes?",
+                options: [
+                    "A cada 28 dias",
+                    "A cada 56 dias (para cobrir dois ciclos menstruais)",
+                    "A cada 30 dias",
+                    "A cada 90 dias"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! A cada 56 dias, o que equivale a aproximadamente dois ciclos menstruais, garantindo que a pessoa tenha absorventes suficientes para suas necessidades.",
+                points: 15
+            },
+            {
+                question: "Se Cris esquecer de ir à farmácia por um mês, ela pode retirar os absorventes referentes ao mês anterior?",
+                options: [
+                    "Sim, pode retirar quantos meses quiser",
+                    "Não, pois não podem ser feitas retiradas referentes a meses anteriores",
+                    "Apenas se apresentar justificativa médica",
+                    "Sim, mas apenas do mês imediatamente anterior"
+                ],
+                correct: 1,
+                explanation: "✅ Correto! O programa não permite retiradas retroativas. É importante manter a regularidade nas retiradas para garantir o acesso contínuo aos absorventes.",
+                points: 15
             }
         ];
 
@@ -1578,5 +1615,7 @@
             document.getElementById('restart-game-victory').addEventListener('click', restartGame);
         });
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98fccb9172d7f25e',t:'MTc2MDY3MjY0Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98fd0ddf22ae01ac',t:'MTc2MDY3NTM1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
+
